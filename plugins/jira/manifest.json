@@ -1,0 +1,47 @@
+{
+  "name": "jira",
+  "version": "0.1.0",
+  "description": "Manage Jira issues using jira-cli — create, search, update, and track work items",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "homepage": "https://github.com/eranco74/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eranco74/claude-plugins.git"
+  },
+  "keywords": [
+    "jira",
+    "task-management",
+    "developer-tools"
+  ],
+  "skills": [
+    {
+      "name": "jira-task-management",
+      "path": "skills/jira-task-management/SKILL.md",
+      "description": "Manage Jira issues on Red Hat Jira (issues.redhat.com) using jira-cli. Use this skill whenever the user mentions Jira tickets, issues, bugs, tasks, epics, sprints, or wants to create/update/search work items. Also use when the user references MGMT-* issue keys, asks about task status, or wants to track work in the MGMT project.",
+      "tags": ["jira", "tasks", "project-management"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "jira": {
+        "required": true,
+        "description": "jira-cli (ankitpokhrel/jira-cli) — interactive Jira command line tool",
+        "installUrl": "https://github.com/ankitpokhrel/jira-cli"
+      },
+      "jq": {
+        "required": false,
+        "description": "JSON processor for parsing raw output"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Project Management"
+  ]
+}
