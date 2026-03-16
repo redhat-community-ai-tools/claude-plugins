@@ -1,0 +1,57 @@
+{
+  "name": "skipper",
+  "version": "0.1.0",
+  "description": "Containerized development workflow using skipper — build, test, and run commands inside Docker/Podman containers with reproducible toolchains",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "skipper",
+    "docker",
+    "podman",
+    "containerized-build",
+    "developer-tools"
+  ],
+  "skills": [
+    {
+      "name": "skipper-dev-workflow",
+      "path": "skills/skipper-dev-workflow/SKILL.md",
+      "description": "Containerized development using skipper — build, test, lint, and run commands inside Docker/Podman containers with consistent toolchains. Use this skill whenever the user mentions skipper, skipper.yaml, or wants to run make targets, build images, run tests, or execute commands inside a containerized dev environment. Also use when troubleshooting container build failures, skipper configuration, or setting up a reproducible development workflow in a git repository.",
+      "tags": ["skipper", "docker", "podman", "build", "containers"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "skipper": {
+        "required": true,
+        "description": "Skipper CLI — runs make targets inside containers",
+        "installUrl": "https://github.com/Stratoscale/skipper"
+      },
+      "docker": {
+        "required": false,
+        "description": "Docker container runtime (alternative to podman)"
+      },
+      "podman": {
+        "required": false,
+        "description": "Podman container runtime (alternative to docker)"
+      },
+      "python3": {
+        "required": true,
+        "description": "Python 3 for running skipper"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Build Systems"
+  ]
+}

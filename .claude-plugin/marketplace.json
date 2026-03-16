@@ -1,7 +1,7 @@
 {
   "name": "ecosystem-claude-plugins",
   "owner": {
-    "name": "eranco74"
+    "name": "redhat-community-ai-tools"
   },
   "plugins": [
     {
@@ -17,6 +17,15 @@
       "name": "jira",
       "source": "./plugins/jira",
       "description": "Manage Jira issues using jira-cli — create, search, update, and track work items",
+      "version": "0.1.0",
+      "author": {
+        "name": "Eran Cohen"
+      }
+    },
+    {
+      "name": "skipper",
+      "source": "./plugins/skipper",
+      "description": "Containerized development workflow using skipper — build, test, and run commands inside Docker/Podman containers with reproducible toolchains",
       "version": "0.1.0",
       "author": {
         "name": "Eran Cohen"

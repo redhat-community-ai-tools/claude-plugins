@@ -5,10 +5,10 @@
   "author": {
     "name": "Eran Cohen"
   },
-  "homepage": "https://github.com/eranco74/claude-plugins",
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
   "repository": {
     "type": "git",
-    "url": "https://github.com/eranco74/claude-plugins.git"
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
   },
   "keywords": [
     "jira",

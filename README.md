@@ -2,20 +2,13 @@
 
 A collection of Claude Code plugins for various operations and workflows.
 
-**Author:** Eran Cohen
 **License:** MIT
 
 ## Available Plugins
 
 ### OpenShift Operations (`openshift-ops`)
 
-Comprehensive Claude Code plugin providing expert-level skills for OpenShift cluster management, troubleshooting, and operations.
-
-**Version:** 1.0.0
-**Installation:**
-```bash
-/plugin marketplace add https://github.com/eranco74/claude-plugins
-```
+Comprehensive skills for OpenShift cluster management, troubleshooting, and operations.
 
 **Skills Included:**
 - OpenShift Debugging - Troubleshoot pods, nodes, operators, networking, and storage
@@ -25,6 +18,24 @@ Comprehensive Claude Code plugin providing expert-level skills for OpenShift clu
 
 **[Documentation →](plugins/openshift-ops/README.md)**
 
+### Jira (`jira`)
+
+Manage Jira issues on Red Hat Jira using `jira-cli`.
+
+**Skills Included:**
+- Jira Task Management - Create, search, update, transition, and comment on issues, epics, and sprints
+
+**[Documentation →](plugins/jira/README.md)**
+
+### Skipper (`skipper`)
+
+Containerized development using skipper — build, test, and run commands inside Docker/Podman containers with reproducible toolchains.
+
+**Skills Included:**
+- Skipper Dev Workflow - Build, test, lint, and run commands inside containerized environments
+
+**[Documentation →](plugins/skipper/README.md)**
+
 ---
 
 ## Installation
@@ -33,7 +44,7 @@ Comprehensive Claude Code plugin providing expert-level skills for OpenShift clu
 
 ```bash
 # Add the plugin repository to Claude Code
-/plugin marketplace add https://github.com/eranco74/claude-plugins
+/plugin marketplace add https://github.com/redhat-community-ai-tools/claude-plugins
 
 # Verify installation
 /plugin list
@@ -43,7 +54,7 @@ Comprehensive Claude Code plugin providing expert-level skills for OpenShift clu
 
 ```bash
 # Clone the repository
-git clone https://github.com/eranco74/claude-plugins.git
+git clone https://github.com/redhat-community-ai-tools/claude-plugins.git
 cd claude-plugins/plugins/openshift-ops
 
 # Install locally
@@ -57,19 +68,25 @@ claude-plugins/
 ├── README.md                    # This file
 ├── .claude-plugin/
 │   └── marketplace.json        # Repository marketplace metadata
-└── plugins/                    # Plugin directory
-    ├── openshift-ops/          # OpenShift Operations Plugin
+└── plugins/
+    ├── openshift-ops/          # OpenShift Operations
     │   ├── manifest.json
-    │   ├── marketplace.json
     │   ├── README.md
-    │   ├── PUBLISHING.md
-    │   ├── LICENSE
     │   └── skills/
     │       ├── openshift-debugging/
     │       ├── openshift-cluster-upgrade/
     │       ├── openshift-node-operations/
     │       └── openshift-operator-troubleshooting/
-    └── [future-plugins]/       # Additional plugins will go here
+    ├── jira/                   # Jira Task Management
+    │   ├── manifest.json
+    │   ├── README.md
+    │   └── skills/
+    │       └── jira-task-management/
+    └── skipper/                # Skipper Dev Workflow
+        ├── manifest.json
+        ├── README.md
+        └── skills/
+            └── skipper-dev-workflow/
 ```
 
 ## Contributing

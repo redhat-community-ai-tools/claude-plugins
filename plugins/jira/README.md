@@ -17,6 +17,6 @@ View, create, update, transition, comment on, and search Jira issues, epics, and
 ## Installation
 
 ```bash
-claude plugin marketplace add eranco74/claude-plugins
+claude plugin marketplace add redhat-community-ai-tools/claude-plugins
 claude plugin install jira@ecosystem-claude-plugins
 ```

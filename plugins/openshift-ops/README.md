@@ -76,10 +76,10 @@ Deep dive into operator issues including:
 
 ```bash
 # Install directly from GitHub
-/plugin marketplace add https://github.com/eranco74/claude-plugins
+/plugin marketplace add https://github.com/redhat-community-ai-tools/claude-plugins
 
 # Or clone and install locally
-git clone https://github.com/eranco74/claude-plugins.git
+git clone https://github.com/redhat-community-ai-tools/claude-plugins.git
 cd claude-plugins/plugins/openshift-ops
 /plugin install .
 ```
@@ -231,7 +231,7 @@ If skills or commands aren't working:
 
 Contributions are welcome! To enhance this plugin:
 
-1. Fork the repository at https://github.com/eranco74/claude-plugins
+1. Fork the repository at https://github.com/redhat-community-ai-tools/claude-plugins
 2. Make your changes in the `plugins/openshift-ops/` directory
 3. Test your changes thoroughly
 4. Submit a pull request with a clear description of improvements

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Comprehensive Claude Code plugin providing expert-level skills for OpenShift cluster management, troubleshooting, and operations",
   "author": "Eran Cohen",
-  "homepage": "https://github.com/eranco74/claude-plugins",
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
   "repository": {
     "type": "git",
-    "url": "https://github.com/eranco74/claude-plugins.git"
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
   },
   "keywords": [
     "openshift",
