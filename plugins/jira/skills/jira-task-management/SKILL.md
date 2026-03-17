@@ -28,7 +28,7 @@ Do not set priority — it's not relevant for this project.
 
 ## Command Reference
 
-All commands below use `--plain` for clean output and `--no-input` to skip interactive prompts. These flags are important because `jira-cli` defaults to interactive/colored output that doesn't work well in non-TTY contexts.
+`--plain` is supported on **read commands** (view, list, epic list, sprint list) for clean output. `--no-input` is needed on **write commands** (create, edit) to skip interactive prompts. Note: `--plain` is **not supported** on create, edit, move, assign, or comment commands — use `--raw` on create if you need JSON output.
 
 ### View
 
