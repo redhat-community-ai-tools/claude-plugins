@@ -36,6 +36,15 @@ Containerized development using skipper — build, test, and run commands inside
 
 **[Documentation →](plugins/skipper/README.md)**
 
+### Daily Summary (`daily-summary`)
+
+Generate daily status updates formatted for Slack from Jira, GitHub, and git activity.
+
+**Skills Included:**
+- Daily Summary - Cross-references Jira, GitHub PRs, and git history to produce a Slack-ready standup update with clickable Jira links
+
+**[Documentation →](plugins/daily-summary/README.md)**
+
 ---
 
 ## Installation
@@ -82,11 +91,17 @@ claude-plugins/
     │   ├── README.md
     │   └── skills/
     │       └── jira-task-management/
-    └── skipper/                # Skipper Dev Workflow
+    ├── skipper/                # Skipper Dev Workflow
+    │   ├── manifest.json
+    │   ├── README.md
+    │   └── skills/
+    │       └── skipper-dev-workflow/
+    └── daily-summary/          # Daily Summary for Slack
         ├── manifest.json
         ├── README.md
+        ├── .claude-code/commands/
         └── skills/
-            └── skipper-dev-workflow/
+            └── daily-summary/
 ```
 
 ## Contributing
