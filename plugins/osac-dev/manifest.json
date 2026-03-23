@@ -1,0 +1,72 @@
+{
+  "name": "osac-dev",
+  "version": "1.0.0",
+  "description": "OSAC development workflows: bug fix and bug reporting with Jira integration",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "bug",
+    "fix",
+    "report",
+    "jira",
+    "pr",
+    "workflow"
+  ],
+  "commands": [
+    {
+      "name": "fix-bug",
+      "path": ".claude-code/commands/fix-bug.md",
+      "description": "End-to-end bug fix workflow with Jira and PR"
+    },
+    {
+      "name": "report-bug",
+      "path": ".claude-code/commands/report-bug.md",
+      "description": "Report a bug in Jira without fixing it"
+    }
+  ],
+  "skills": [
+    {
+      "name": "fix-bug",
+      "path": "skills/fix-bug/SKILL.md",
+      "description": "End-to-end bug fix workflow — opens a Jira bug, writes the fix with tests, verifies build/format/tests pass, commits, posts a PR, and moves the ticket to Code Review. Use when the user says 'fix this bug', 'open a bug and fix it', or describes a bug they want tracked and resolved in Jira with a PR.",
+      "tags": ["bug", "fix", "jira", "pr", "workflow"]
+    },
+    {
+      "name": "report-bug",
+      "path": "skills/report-bug/SKILL.md",
+      "description": "Report a bug in Jira without fixing it — creates a Bug ticket with proper description, links it to an epic, and assigns it. Use when the user says 'report a bug', 'file a bug', 'log a bug', 'open a bug ticket', or wants to track a bug without immediately writing a fix.",
+      "tags": ["bug", "report", "jira", "ticket"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "jira": {
+        "required": true,
+        "description": "jira-cli (ankitpokhrel/jira-cli) — interactive Jira command line tool",
+        "installUrl": "https://github.com/ankitpokhrel/jira-cli"
+      },
+      "gh": {
+        "required": true,
+        "description": "GitHub CLI for creating pull requests"
+      },
+      "jq": {
+        "required": false,
+        "description": "JSON processor for parsing raw output"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Workflow"
+  ]
+}

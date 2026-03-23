@@ -45,6 +45,14 @@ Generate daily status updates formatted for Slack from Jira, GitHub, and git act
 
 **[Documentation →](plugins/daily-summary/README.md)**
 
+### OSAC Dev (`osac-dev`)
+
+OSAC development workflows: bug fix and bug reporting with Jira integration.
+
+**Skills Included:**
+- Fix Bug - End-to-end bug fix workflow — opens a Jira bug, writes the fix with tests, verifies build/format/tests pass, commits, posts a PR, and moves the ticket to Code Review
+- Report Bug - Report a bug in Jira without fixing it — creates a Bug ticket with proper description, links it to an epic, and assigns it
+
 ---
 
 ## Installation
@@ -96,12 +104,18 @@ claude-plugins/
     │   ├── README.md
     │   └── skills/
     │       └── skipper-dev-workflow/
-    └── daily-summary/          # Daily Summary for Slack
+    ├── daily-summary/          # Daily Summary for Slack
+    │   ├── manifest.json
+    │   ├── README.md
+    │   ├── .claude-code/commands/
+    │   └── skills/
+    │       └── daily-summary/
+    └── osac-dev/               # OSAC Dev Workflows
         ├── manifest.json
-        ├── README.md
         ├── .claude-code/commands/
         └── skills/
-            └── daily-summary/
+            ├── fix-bug/
+            └── report-bug/
 ```
 
 ## Contributing

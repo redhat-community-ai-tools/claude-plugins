@@ -48,6 +48,15 @@
       "author": {
         "name": "Eran Cohen"
       }
+    },
+    {
+      "name": "osac-dev",
+      "source": "./plugins/osac-dev",
+      "description": "OSAC development workflows: bug fix and bug reporting with Jira integration",
+      "version": "1.0.0",
+      "author": {
+        "name": "Eran Cohen"
+      }
     }
   ]
 }
