@@ -1,204 +1,99 @@
 # Claude Code Plugins
 
-A collection of Claude Code plugins for various operations and workflows.
+A marketplace of Claude Code plugins for OpenShift operations, Jira workflows, CI/CD, and developer productivity.
 
-**License:** MIT
+## Quick Start
+
+```bash
+# Add this marketplace to Claude Code
+claude plugin marketplace add https://github.com/redhat-community-ai-tools/claude-plugins
+
+# Install a plugin
+claude plugin install jira
+
+# List installed plugins
+claude plugin list
+
+# Update a plugin
+claude plugin update jira
+```
 
 ## Available Plugins
 
-### OpenShift Operations (`openshift-ops`)
+| Plugin | Description | Install | Requires |
+|--------|-------------|---------|----------|
+| **openshift-ops** | Cluster management, debugging, upgrades, node ops | `claude plugin install openshift-ops` | `oc` |
+| **jira** | Create, search, update, and track Jira issues | `claude plugin install jira` | `jira` (jira-cli) |
+| **skipper** | Build and test inside Docker/Podman containers | `claude plugin install skipper` | `skipper`, `python3` |
+| **daily-summary** | Generate Slack-formatted daily standup updates | `claude plugin install daily-summary` | `jira`, `gh` |
+| **osac-dev** | Bug fix and bug reporting workflows with Jira+PR | `claude plugin install osac-dev` | `jira`, `gh` |
+| **google** | Google Workspace — Gmail, Docs, Slides, Sheets, Calendar, Drive | `claude plugin install google` | `gws` |
+| **skill-scanner** | Scan plugins for security vulnerabilities | `claude plugin install skill-scanner` | — |
 
-Comprehensive skills for OpenShift cluster management, troubleshooting, and operations.
+### openshift-ops
 
-**Skills Included:**
-- OpenShift Debugging - Troubleshoot pods, nodes, operators, networking, and storage
-- Cluster Upgrade - Plan, execute, and troubleshoot cluster upgrades
-- Node Operations - Manage node lifecycle, cordoning, draining, and maintenance
-- Operator Troubleshooting - Debug cluster operators, OLM, and subscription issues
+4 skills for OpenShift cluster management:
+- **openshift-debugging** — Troubleshoot pods, nodes, operators, networking, storage
+- **openshift-cluster-upgrade** — Plan, execute, and troubleshoot cluster upgrades
+- **openshift-node-operations** — Add/remove nodes, cordoning, draining, maintenance
+- **openshift-operator-troubleshooting** — Debug cluster operators, OLM, subscriptions
 
-**[Documentation →](plugins/openshift-ops/README.md)**
+### jira
 
-### Jira (`jira`)
+5 skills for Jira issue management on Red Hat Jira:
+- **jira-task-management** — Create, search, update, transition issues and sprints
+- **capture-tasks-from-meeting-notes** — Extract action items from meeting notes into Jira
+- **generate-status-report** — Generate project status reports from Jira data
+- **spec-to-backlog** — Transform spec documents into structured Jira backlogs
+- **triage-issue** — Triage bug reports, check for duplicates, create well-structured tickets
 
-Manage Jira issues on Red Hat Jira using `jira-cli`.
+### skipper
 
-**Skills Included:**
-- Jira Task Management - Create, search, update, transition, and comment on issues, epics, and sprints
+- **skipper-dev-workflow** — Build, test, lint inside containerized environments with consistent toolchains
 
-**[Documentation →](plugins/jira/README.md)**
+### daily-summary
 
-### Skipper (`skipper`)
+- **daily-summary** — Cross-references Jira, GitHub PRs, and git history for a Slack-ready standup update
 
-Containerized development using skipper — build, test, and run commands inside Docker/Podman containers with reproducible toolchains.
+### osac-dev
 
-**Skills Included:**
-- Skipper Dev Workflow - Build, test, lint, and run commands inside containerized environments
+- **fix-bug** — Background agent: end-to-end bug fix from Jira ticket to merged PR
+- **report-bug** — Create a well-structured Jira bug ticket with links and assignment
 
-**[Documentation →](plugins/skipper/README.md)**
+### google
 
-### Daily Summary (`daily-summary`)
+Google Workspace integration via the `gws` CLI:
+- **Gmail** — Send, read, reply, reply-all, forward, triage inbox, watch for new emails
+- **Google Docs** — Read and write documents
+- **Google Slides** — Read and write presentations
+- **Google Sheets** — Read values and append rows
+- **Google Calendar** — View agenda, create events with Meet links
+- **Google Drive** — Manage files/folders, upload files
 
-Generate daily status updates formatted for Slack from Jira, GitHub, and git activity.
+### skill-scanner
 
-**Skills Included:**
-- Daily Summary - Cross-references Jira, GitHub PRs, and git history to produce a Slack-ready standup update with clickable Jira links
+- **skill-scanner** — Scan installed plugins for prompt injection, malicious instructions, and security issues
 
-**[Documentation →](plugins/daily-summary/README.md)**
-
-### OSAC Dev (`osac-dev`)
-
-OSAC development workflows: bug fix and bug reporting with Jira integration.
-
-**Agents:**
-- Fix Bug - Background agent that runs end-to-end: opens a Jira bug, writes the fix with tests, verifies build/format/tests pass, commits, posts a PR, and moves the ticket to Code Review
-
-**Skills Included:**
-- Fix Bug (launcher) - Gathers inputs and launches the fix-bug agent in the background
-- Report Bug - Report a bug in Jira without fixing it — creates a Bug ticket with proper description, links it to an epic, and assigns it
-
-### Google Workspace (`google`)
-
-Google Workspace integration via the [`gws` CLI](https://github.com/googleworkspace/cli) — Gmail, Docs, Slides, Sheets, Calendar, and Drive.
-
-**Skills Included:**
-- Gmail - Send, read, reply, reply-all, forward, triage inbox, and watch for new emails
-- Google Docs - Read and write documents
-- Google Slides - Read and write presentations
-- Google Sheets - Read values and append rows to spreadsheets
-- Google Calendar - View agenda, create events with Meet links
-- Google Drive - Manage files/folders, upload files
-
----
-
-## Installation
-
-### Install from Marketplace
+## Managing Plugins
 
 ```bash
-# Add the plugin repository to Claude Code
-/plugin marketplace add https://github.com/redhat-community-ai-tools/claude-plugins
+# Uninstall a plugin
+claude plugin uninstall jira
 
-# Verify installation
-/plugin list
-```
+# Install for current project only (not globally)
+claude plugin install jira --scope project
 
-### Install from Local Development
+# Update all marketplace data
+claude plugin marketplace update
 
-```bash
-# Clone the repository
-git clone https://github.com/redhat-community-ai-tools/claude-plugins.git
-cd claude-plugins/plugins/openshift-ops
-
-# Install locally
-/plugin install .
-```
-
-## Repository Structure
-
-```
-claude-plugins/
-├── README.md                    # This file
-├── .claude-plugin/
-│   └── marketplace.json        # Repository marketplace metadata
-└── plugins/
-    ├── openshift-ops/          # OpenShift Operations
-    │   ├── manifest.json
-    │   ├── README.md
-    │   └── skills/
-    │       ├── openshift-debugging/
-    │       ├── openshift-cluster-upgrade/
-    │       ├── openshift-node-operations/
-    │       └── openshift-operator-troubleshooting/
-    ├── jira/                   # Jira Task Management
-    │   ├── manifest.json
-    │   ├── README.md
-    │   └── skills/
-    │       └── jira-task-management/
-    ├── skipper/                # Skipper Dev Workflow
-    │   ├── manifest.json
-    │   ├── README.md
-    │   └── skills/
-    │       └── skipper-dev-workflow/
-    ├── daily-summary/          # Daily Summary for Slack
-    │   ├── manifest.json
-    │   ├── README.md
-    │   ├── .claude-code/commands/
-    │   └── skills/
-    │       └── daily-summary/
-    ├── osac-dev/               # OSAC Dev Workflows
-    │   ├── manifest.json
-    │   ├── .claude-code/commands/
-    │   ├── agents/
-    │   │   └── fix-bug.md
-    │   └── skills/
-    │       ├── fix-bug/
-    │       └── report-bug/
-    └── google/                 # Google Workspace
-        ├── manifest.json
-        └── skills/
-            ├── gws-shared/
-            ├── gws-gmail/
-            ├── gws-gmail-send/
-            ├── gws-gmail-read/
-            ├── gws-gmail-reply/
-            ├── gws-gmail-reply-all/
-            ├── gws-gmail-forward/
-            ├── gws-gmail-triage/
-            ├── gws-gmail-watch/
-            ├── gws-docs/
-            ├── gws-docs-write/
-            ├── gws-slides/
-            ├── gws-sheets/
-            ├── gws-sheets-read/
-            ├── gws-sheets-append/
-            ├── gws-calendar/
-            ├── gws-calendar-agenda/
-            ├── gws-calendar-insert/
-            ├── gws-drive/
-            └── gws-drive-upload/
+# Remove this marketplace
+claude plugin marketplace remove ecosystem-claude-plugins
 ```
 
 ## Contributing
 
-Contributions are welcome! To add a new plugin or improve existing ones:
-
-1. Fork the repository
-2. Create a new branch for your changes
-3. Add your plugin in a new subdirectory
-4. Ensure proper `manifest.json` and documentation
-5. Test your plugin locally
-6. Submit a pull request
-
-## Plugin Development
-
-Each plugin should follow this structure:
-
-```
-plugin-name/
-├── manifest.json          # Plugin metadata and configuration
-├── marketplace.json       # Marketplace submission metadata
-├── README.md             # Plugin documentation
-├── LICENSE               # License file
-└── skills/               # Skill definitions
-    └── skill-name/
-        └── SKILL.md
-```
-
-### Creating a New Plugin
-
-1. Create a new directory with your plugin name
-2. Add required files (manifest.json, README.md, etc.)
-3. Follow the structure of existing plugins
-4. Test locally before submitting
-
-## Support
-
-For issues, questions, or suggestions:
-- Open an issue in this repository
-- Reference the specific plugin in your issue title
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to create plugins, versioning rules, and the review process.
 
 ## License
 
-Each plugin is licensed under MIT unless otherwise specified in its directory.
-
-Copyright (c) 2025 Eran Cohen
+MIT. See individual plugin directories for any exceptions.
