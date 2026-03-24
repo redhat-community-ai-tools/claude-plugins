@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import sys
+from graphlib import CycleError, TopologicalSorter
 from pathlib import Path
 from typing import Any
 
@@ -126,6 +127,37 @@ def validate_duplicate_skill_names(*, plugin_dirs: list[Path]) -> list[str]:
     return errors
 
 
+def validate_plugin_dependencies(*, plugin_dirs: list[Path]) -> list[str]:
+    available = {d.name for d in plugin_dirs}
+    dep_graph: dict[str, list[str]] = {}
+    errors: list[str] = []
+
+    for plugin_dir in plugin_dirs:
+        manifest = load_json(path=plugin_dir / "manifest.json")
+        if "dependencies" not in manifest or "plugins" not in manifest["dependencies"]:
+            continue
+        deps = manifest["dependencies"]["plugins"]
+        seen: set[str] = set()
+        for dep in deps:
+            if dep in seen:
+                errors.append(f"{plugin_dir.name}: duplicate plugin dependency '{dep}'")
+                continue
+            seen.add(dep)
+            if dep == plugin_dir.name:
+                errors.append(f"{plugin_dir.name}: depends on itself")
+            elif dep not in available:
+                errors.append(f"{plugin_dir.name}: depends on plugin '{dep}' which does not exist in the marketplace")
+        dep_graph[plugin_dir.name] = list((seen - {plugin_dir.name}) & available)
+
+    try:
+        TopologicalSorter(dep_graph).prepare()
+    except CycleError as e:
+        cycle = e.args[1]
+        errors.append(f"circular dependency: {' -> '.join(cycle)}")
+
+    return errors
+
+
 def validate_marketplace(*, plugin_dirs: list[Path]) -> list[str]:
     marketplace = load_json(path=MARKETPLACE_FILE)
     errors: list[str] = []
@@ -173,6 +205,7 @@ def main() -> int:
         all_errors.extend(validate_file_references(plugin_dir=plugin_dir))
 
     all_errors.extend(validate_duplicate_skill_names(plugin_dirs=plugin_dirs))
+    all_errors.extend(validate_plugin_dependencies(plugin_dirs=plugin_dirs))
     all_errors.extend(validate_marketplace(plugin_dirs=plugin_dirs))
 
     if all_errors:

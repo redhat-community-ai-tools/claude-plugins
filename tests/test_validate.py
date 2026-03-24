@@ -394,6 +394,75 @@ def test_skill_body_whitespace_only(*, results: Results) -> None:
         results.expect_errors(name="skill-body-whitespace-only", errors=errors, containing="no content after frontmatter")
 
 
+def test_plugin_dep_exists(*, results: Results) -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        manifest_a = {**GOOD_MANIFEST, "name": "plugin-a",
+                      "dependencies": {"plugins": ["plugin-b"]}}
+        manifest_b = {**GOOD_MANIFEST, "name": "plugin-b"}
+        make_plugin(tmp=tmp_path, name="plugin-a", manifest=manifest_a,
+                    skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        dir_b = make_plugin(tmp=tmp_path, name="plugin-b", manifest=manifest_b,
+                            skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        plugin_dirs = [dir_b.parent / "plugin-a", dir_b]
+        errors = validate.validate_plugin_dependencies(plugin_dirs=plugin_dirs)
+        results.expect_clean(name="plugin-dep-exists", errors=errors)
+
+
+def test_plugin_dep_missing(*, results: Results) -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        manifest = {**GOOD_MANIFEST, "dependencies": {"plugins": ["nonexistent"]}}
+        plugin_dir = make_plugin(tmp=Path(tmp), name="test-plugin", manifest=manifest,
+                                 skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        errors = validate.validate_plugin_dependencies(plugin_dirs=[plugin_dir])
+        results.expect_errors(name="plugin-dep-missing", errors=errors, containing="does not exist")
+
+
+def test_plugin_dep_self(*, results: Results) -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        manifest = {**GOOD_MANIFEST, "dependencies": {"plugins": ["test-plugin"]}}
+        plugin_dir = make_plugin(tmp=Path(tmp), name="test-plugin", manifest=manifest,
+                                 skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        errors = validate.validate_plugin_dependencies(plugin_dirs=[plugin_dir])
+        results.expect_errors(name="plugin-dep-self", errors=errors, containing="depends on itself")
+        if len(errors) != 1:
+            results.failed += 1
+            results.details.append(f"  FAIL: plugin-dep-self — expected exactly 1 error, got {len(errors)}: {errors}")
+
+
+def test_plugin_no_deps(*, results: Results) -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        plugin_dir = make_plugin(tmp=Path(tmp), name="test-plugin", manifest=GOOD_MANIFEST,
+                                 skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        errors = validate.validate_plugin_dependencies(plugin_dirs=[plugin_dir])
+        results.expect_clean(name="plugin-no-deps", errors=errors)
+
+
+def test_plugin_dep_circular(*, results: Results) -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        manifest_a = {**GOOD_MANIFEST, "name": "plugin-a",
+                      "dependencies": {"plugins": ["plugin-b"]}}
+        manifest_b = {**GOOD_MANIFEST, "name": "plugin-b",
+                      "dependencies": {"plugins": ["plugin-a"]}}
+        make_plugin(tmp=tmp_path, name="plugin-a", manifest=manifest_a,
+                    skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        dir_b = make_plugin(tmp=tmp_path, name="plugin-b", manifest=manifest_b,
+                            skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        plugin_dirs = [dir_b.parent / "plugin-a", dir_b]
+        errors = validate.validate_plugin_dependencies(plugin_dirs=plugin_dirs)
+        results.expect_errors(name="plugin-dep-circular", errors=errors, containing="circular dependency")
+
+
+def test_plugin_dep_duplicate(*, results: Results) -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        manifest = {**GOOD_MANIFEST, "dependencies": {"plugins": ["jira", "jira"]}}
+        plugin_dir = make_plugin(tmp=Path(tmp), name="test-plugin", manifest=manifest,
+                                 skills={"skills/test-skill/SKILL.md": GOOD_FRONTMATTER})
+        errors = validate.validate_plugin_dependencies(plugin_dirs=[plugin_dir])
+        results.expect_errors(name="plugin-dep-duplicate", errors=errors, containing="duplicate plugin dependency")
+
+
 ALL_TESTS = [
     test_real_plugins,
     test_good_plugin,
@@ -426,6 +495,12 @@ ALL_TESTS = [
     test_marketplace_source_wrong,
     test_empty_skill_body,
     test_skill_body_whitespace_only,
+    test_plugin_dep_exists,
+    test_plugin_dep_missing,
+    test_plugin_dep_self,
+    test_plugin_no_deps,
+    test_plugin_dep_circular,
+    test_plugin_dep_duplicate,
 ]
 
 
