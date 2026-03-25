@@ -66,6 +66,28 @@
         }
       }
     },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "description"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "\\.md$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      }
+    },
     "commands": {
       "type": "array",
       "items": {

@@ -52,6 +52,16 @@ def validate_file_references(*, plugin_dir: Path) -> list[str]:
             skill_path=skill_path,
         ))
 
+    if "agents" in manifest:
+        for agent in manifest["agents"]:
+            agent_path = (plugin_dir / agent["path"]).resolve()
+            if not agent_path.is_relative_to(plugin_dir.resolve()):
+                errors.append(f"{plugin_dir.name}: agent '{agent['name']}' escapes plugin directory: {agent['path']}")
+                continue
+            if not agent_path.exists():
+                errors.append(f"{plugin_dir.name}: agent '{agent['name']}' references missing file: {agent['path']}")
+
+
     if "commands" in manifest:
         for cmd in manifest["commands"]:
             cmd_path = (plugin_dir / cmd["path"]).resolve()
