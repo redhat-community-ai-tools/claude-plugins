@@ -1,0 +1,23 @@
+{
+  "skill_name": "operate",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "My subnet sub-east-1 has been stuck in DELETING state for 20 minutes. The fulfillment API shows deletion_timestamp is set but state is still DELETING. I'm working in the osac-eran namespace. Can you help me figure out what's wrong and fix it?",
+      "expected_output": "Claude should follow the diagnosis checklist: check fulfillment API state, check K8s CR, check finalizers, check AAP job status, check operator logs. Should identify the cause and suggest the appropriate fix (signal first, force-remove finalizer only as last resort with user confirmation).",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I just rebuilt the fulfillment-service and osac-operator images with tag 'dev-fix-123'. I need to update my deployment in the eran overlay to use these new images and redeploy. Walk me through it.",
+      "expected_output": "Claude should explain how to edit kustomization.yaml to update image references, then apply the overlay. Should reference the correct file paths and kustomize commands.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to do a full cleanup of my dev environment in the osac-eran namespace - delete all resources through the API and clean up any stuck K8s resources. There are a few VMs, subnets, and virtual networks.",
+      "expected_output": "Claude should confirm before deleting, follow the ordered deletion sequence (ComputeInstances first, then Subnets, then VirtualNetworks), and handle any stuck resources. Should NOT just run the commands without asking for confirmation first.",
+      "files": []
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "name": "osac-dev",
   "version": "1.0.0",
-  "description": "OSAC development workflows: bug fix and bug reporting with Jira integration",
+  "description": "OSAC development workflows: bug fix, bug reporting, and platform operations with Jira integration",
   "author": {
     "name": "Eran Cohen"
   },
@@ -16,7 +16,11 @@
     "report",
     "jira",
     "pr",
-    "workflow"
+    "workflow",
+    "deploy",
+    "debug",
+    "operate",
+    "kubernetes"
   ],
   "agents": [
     {
@@ -49,6 +53,12 @@
       "path": "skills/report-bug/SKILL.md",
       "description": "Report a bug in Jira without fixing it — creates a Bug ticket with proper description, links it to an epic, and assigns it. Use when the user says 'report a bug', 'file a bug', 'log a bug', 'open a bug ticket', or wants to track a bug without immediately writing a fix.",
       "tags": ["bug", "report", "jira", "ticket"]
+    },
+    {
+      "name": "operate",
+      "path": "skills/operate/SKILL.md",
+      "description": "Deploy, debug, and operate the OSAC platform — covers building images, deploying via kustomize, debugging stuck resources, checking logs, fixing finalizer issues, signaling resources, AAP job troubleshooting, and end-to-end cleanup. Use when the user says 'deploy', 'debug', 'why is X stuck', 'check logs', 'clean up', 'restart controller', 'signal resource', 'check AAP job', 'build images', or asks about OSAC operational issues.",
+      "tags": ["deploy", "debug", "operate", "kubernetes", "aap", "cleanup"]
     }
   ],
   "dependencies": {
@@ -65,6 +75,14 @@
       "jq": {
         "required": false,
         "description": "JSON processor for parsing raw output"
+      },
+      "kubectl": {
+        "required": false,
+        "description": "Kubernetes CLI for cluster operations (required for operate skill)"
+      },
+      "grpcurl": {
+        "required": false,
+        "description": "gRPC CLI for API operations and signaling (required for operate skill)"
       }
     }
   },
