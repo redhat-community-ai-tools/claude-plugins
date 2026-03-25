@@ -56,6 +56,18 @@ OSAC development workflows: bug fix and bug reporting with Jira integration.
 - Fix Bug (launcher) - Gathers inputs and launches the fix-bug agent in the background
 - Report Bug - Report a bug in Jira without fixing it — creates a Bug ticket with proper description, links it to an epic, and assigns it
 
+### Google Workspace (`google`)
+
+Google Workspace integration via the [`gws` CLI](https://github.com/googleworkspace/cli) — Gmail, Docs, Slides, Sheets, Calendar, and Drive.
+
+**Skills Included:**
+- Gmail - Send, read, reply, reply-all, forward, triage inbox, and watch for new emails
+- Google Docs - Read and write documents
+- Google Slides - Read and write presentations
+- Google Sheets - Read values and append rows to spreadsheets
+- Google Calendar - View agenda, create events with Meet links
+- Google Drive - Manage files/folders, upload files
+
 ---
 
 ## Installation
@@ -113,14 +125,37 @@ claude-plugins/
     │   ├── .claude-code/commands/
     │   └── skills/
     │       └── daily-summary/
-    └── osac-dev/               # OSAC Dev Workflows
+    ├── osac-dev/               # OSAC Dev Workflows
+    │   ├── manifest.json
+    │   ├── .claude-code/commands/
+    │   ├── agents/
+    │   │   └── fix-bug.md
+    │   └── skills/
+    │       ├── fix-bug/
+    │       └── report-bug/
+    └── google/                 # Google Workspace
         ├── manifest.json
-        ├── .claude-code/commands/
-        ├── agents/
-        │   └── fix-bug.md
         └── skills/
-            ├── fix-bug/
-            └── report-bug/
+            ├── gws-shared/
+            ├── gws-gmail/
+            ├── gws-gmail-send/
+            ├── gws-gmail-read/
+            ├── gws-gmail-reply/
+            ├── gws-gmail-reply-all/
+            ├── gws-gmail-forward/
+            ├── gws-gmail-triage/
+            ├── gws-gmail-watch/
+            ├── gws-docs/
+            ├── gws-docs-write/
+            ├── gws-slides/
+            ├── gws-sheets/
+            ├── gws-sheets-read/
+            ├── gws-sheets-append/
+            ├── gws-calendar/
+            ├── gws-calendar-agenda/
+            ├── gws-calendar-insert/
+            ├── gws-drive/
+            └── gws-drive-upload/
 ```
 
 ## Contributing
