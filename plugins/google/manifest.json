@@ -1,0 +1,163 @@
+{
+  "name": "google",
+  "version": "0.1.0",
+  "description": "Google Workspace integration — Gmail, Docs, Slides, Sheets, Calendar, and Drive via the gws CLI",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "homepage": "https://github.com/googleworkspace/cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "google",
+    "gmail",
+    "docs",
+    "slides",
+    "sheets",
+    "calendar",
+    "drive",
+    "google-workspace",
+    "productivity"
+  ],
+  "skills": [
+    {
+      "name": "gws-shared",
+      "path": "skills/gws-shared/SKILL.md",
+      "description": "gws CLI: Shared patterns for authentication, global flags, and output formatting. Prerequisite for all other Google Workspace skills.",
+      "tags": ["google", "gws", "auth", "shared"]
+    },
+    {
+      "name": "gws-gmail",
+      "path": "skills/gws-gmail/SKILL.md",
+      "description": "Gmail: Send, read, and manage email using the gws CLI. Use when the user wants to work with email, send messages, read inbox, or manage Gmail.",
+      "tags": ["google", "gmail", "email"]
+    },
+    {
+      "name": "gws-gmail-send",
+      "path": "skills/gws-gmail-send/SKILL.md",
+      "description": "Gmail: Send an email with optional attachments, CC/BCC, and HTML support.",
+      "tags": ["google", "gmail", "email", "send"]
+    },
+    {
+      "name": "gws-gmail-read",
+      "path": "skills/gws-gmail-read/SKILL.md",
+      "description": "Gmail: Read a message and extract its body or headers.",
+      "tags": ["google", "gmail", "email", "read"]
+    },
+    {
+      "name": "gws-gmail-reply",
+      "path": "skills/gws-gmail-reply/SKILL.md",
+      "description": "Gmail: Reply to a message with automatic threading.",
+      "tags": ["google", "gmail", "email", "reply"]
+    },
+    {
+      "name": "gws-gmail-reply-all",
+      "path": "skills/gws-gmail-reply-all/SKILL.md",
+      "description": "Gmail: Reply-all to a message with automatic threading.",
+      "tags": ["google", "gmail", "email", "reply-all"]
+    },
+    {
+      "name": "gws-gmail-forward",
+      "path": "skills/gws-gmail-forward/SKILL.md",
+      "description": "Gmail: Forward a message to new recipients.",
+      "tags": ["google", "gmail", "email", "forward"]
+    },
+    {
+      "name": "gws-gmail-triage",
+      "path": "skills/gws-gmail-triage/SKILL.md",
+      "description": "Gmail: Show unread inbox summary (sender, subject, date).",
+      "tags": ["google", "gmail", "email", "triage", "inbox"]
+    },
+    {
+      "name": "gws-gmail-watch",
+      "path": "skills/gws-gmail-watch/SKILL.md",
+      "description": "Gmail: Watch for new emails and stream them as NDJSON.",
+      "tags": ["google", "gmail", "email", "watch", "streaming"]
+    },
+    {
+      "name": "gws-docs",
+      "path": "skills/gws-docs/SKILL.md",
+      "description": "Google Docs: Read and write documents using the gws CLI. Use when the user wants to create, read, or update Google Docs.",
+      "tags": ["google", "docs", "documents"]
+    },
+    {
+      "name": "gws-docs-write",
+      "path": "skills/gws-docs-write/SKILL.md",
+      "description": "Google Docs: Append text to a document.",
+      "tags": ["google", "docs", "documents", "write"]
+    },
+    {
+      "name": "gws-slides",
+      "path": "skills/gws-slides/SKILL.md",
+      "description": "Google Slides: Read and write presentations using the gws CLI. Use when the user wants to create or manage Google Slides presentations.",
+      "tags": ["google", "slides", "presentations"]
+    },
+    {
+      "name": "gws-sheets",
+      "path": "skills/gws-sheets/SKILL.md",
+      "description": "Google Sheets: Read and write spreadsheets using the gws CLI. Use when the user wants to work with Google Sheets.",
+      "tags": ["google", "sheets", "spreadsheets"]
+    },
+    {
+      "name": "gws-sheets-read",
+      "path": "skills/gws-sheets-read/SKILL.md",
+      "description": "Google Sheets: Read values from a spreadsheet.",
+      "tags": ["google", "sheets", "spreadsheets", "read"]
+    },
+    {
+      "name": "gws-sheets-append",
+      "path": "skills/gws-sheets-append/SKILL.md",
+      "description": "Google Sheets: Append a row to a spreadsheet.",
+      "tags": ["google", "sheets", "spreadsheets", "append", "write"]
+    },
+    {
+      "name": "gws-calendar",
+      "path": "skills/gws-calendar/SKILL.md",
+      "description": "Google Calendar: Manage calendars and events using the gws CLI. Use when the user wants to view, create, or manage calendar events.",
+      "tags": ["google", "calendar", "events", "scheduling"]
+    },
+    {
+      "name": "gws-calendar-agenda",
+      "path": "skills/gws-calendar-agenda/SKILL.md",
+      "description": "Google Calendar: Show upcoming events across all calendars.",
+      "tags": ["google", "calendar", "agenda", "events"]
+    },
+    {
+      "name": "gws-calendar-insert",
+      "path": "skills/gws-calendar-insert/SKILL.md",
+      "description": "Google Calendar: Create a new event with optional attendees and Google Meet link.",
+      "tags": ["google", "calendar", "events", "create"]
+    },
+    {
+      "name": "gws-drive",
+      "path": "skills/gws-drive/SKILL.md",
+      "description": "Google Drive: Manage files, folders, and shared drives using the gws CLI. Use when the user wants to upload, download, list, or share files in Google Drive.",
+      "tags": ["google", "drive", "files", "storage"]
+    },
+    {
+      "name": "gws-drive-upload",
+      "path": "skills/gws-drive-upload/SKILL.md",
+      "description": "Google Drive: Upload a file with automatic metadata detection.",
+      "tags": ["google", "drive", "upload", "files"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "gws": {
+        "required": true,
+        "description": "Google Workspace CLI (googleworkspace/cli)",
+        "installUrl": "https://github.com/googleworkspace/cli"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Google Workspace"
+  ]
+}
