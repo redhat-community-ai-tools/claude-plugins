@@ -63,7 +63,7 @@ claude plugin update jira
 
 ### google
 
-Google Workspace integration via the `gws` CLI:
+Google Workspace integration via the [`gws`](https://github.com/googleworkspace/cli) CLI:
 - **Gmail** — Send, read, reply, reply-all, forward, triage inbox, watch for new emails
 - **Google Docs** — Read and write documents
 - **Google Slides** — Read and write presentations
