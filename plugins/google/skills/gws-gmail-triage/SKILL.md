@@ -44,6 +44,7 @@ gws gmail +triage --labels
 
 - Read-only — never modifies your mailbox.
 - Defaults to table output format.
+- To read a message from the triage output, invoke the `google:gws-gmail-read` skill.
 
 ## See Also
 
