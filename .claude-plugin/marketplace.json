@@ -66,6 +66,15 @@
       "author": {
         "name": "Eran Cohen"
       }
+    },
+    {
+      "name": "quarterly-connection",
+      "source": "./plugins/quarterly-connection",
+      "description": "Generate Red Hat Quarterly Connection reports by aggregating accomplishments from Jira, GitHub, Google Workspace, and GitLab into a structured performance review document",
+      "version": "1.0.0",
+      "author": {
+        "name": "Eran Cohen"
+      }
     }
   ]
 }
