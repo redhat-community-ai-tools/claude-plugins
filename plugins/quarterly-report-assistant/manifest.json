@@ -17,6 +17,13 @@
     "reporting",
     "ai-powered"
   ],
+  "commands": [
+    {
+      "name": "quarterly-report",
+      "path": ".claude-code/commands/quarterly-report.md",
+      "description": "Generate AI-powered quarterly achievement report with cycle time analysis and polished narratives"
+    }
+  ],
   "skills": [
     {
       "name": "quarterly-report-assistant",
