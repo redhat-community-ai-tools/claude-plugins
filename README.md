@@ -29,6 +29,7 @@ claude plugin update jira
 | **osac-dev** | Bug fix and bug reporting workflows with Jira+PR | `claude plugin install osac-dev` | `jira`, `gh` |
 | **google** | Google Workspace — Gmail, Docs, Slides, Sheets, Calendar, Drive | `claude plugin install google` | `gws` |
 | **quarterly-connection** | Red Hat Quarterly Connection reports from Jira, GitHub, Google Workspace, GitLab | `claude plugin install quarterly-connection` | `jira`, `gh`, `gws` |
+| **quarterly-report-assistant** | AI-powered performance review assistant with cycle time analysis and narrative refinement | `claude plugin install quarterly-report-assistant` | `jira`, `gh` |
 | **skill-scanner** | Scan plugins for security vulnerabilities | `claude plugin install skill-scanner` | — |
 
 ### openshift-ops
@@ -74,6 +75,10 @@ Google Workspace integration via the `gws` CLI:
 ### quarterly-connection
 
 - **quarterly-connection** — Generates Red Hat Quarterly Connection reports by aggregating data from Jira, GitHub, Google Docs/Slides/Calendar, and GitLab into the structured QC format (accomplishments with WHAT+HOW, priorities, development, career growth)
+
+### quarterly-report-assistant
+
+- **quarterly-report-assistant** — AI-powered performance review assistant that automates quarterly achievement reports through cycle time analysis and narrative refinement. Analyzes Jira issues and GitHub PRs to identify longest-running strategic work, ranks achievements by cycle time/impact/complexity, and transforms technical descriptions into polished business-impact narratives using three frameworks (business impact, technical depth, leadership). Works in Claude Code and Cursor.
 
 ### skill-scanner
 

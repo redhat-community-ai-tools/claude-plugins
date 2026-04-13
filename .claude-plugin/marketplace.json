@@ -75,6 +75,15 @@
       "author": {
         "name": "Eran Cohen"
       }
+    },
+    {
+      "name": "quarterly-report-assistant",
+      "source": "./plugins/quarterly-report-assistant",
+      "description": "AI-powered performance review assistant that automates quarterly achievement report generation by aggregating Jira, GitHub, and GitLab data, analyzing cycle times, identifying top achievements, and transforming technical descriptions into polished narratives",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ronnie Rasouli"
+      }
     }
   ]
 }
