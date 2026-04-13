@@ -1,0 +1,80 @@
+{
+  "name": "quarterly-connection",
+  "version": "1.0.0",
+  "description": "Generate Red Hat Quarterly Connection reports by aggregating accomplishments from Jira, GitHub, Google Workspace, and GitLab into a structured performance review document",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "keywords": [
+    "quarterly",
+    "performance-review",
+    "reporting",
+    "jira",
+    "github",
+    "gitlab",
+    "google-workspace",
+    "calendar"
+  ],
+  "commands": [
+    {
+      "name": "quarterly",
+      "path": ".claude-code/commands/quarterly.md",
+      "description": "Generate a full quarterly achievement report across Jira, GitHub, and GitLab"
+    },
+    {
+      "name": "report",
+      "path": ".claude-code/commands/report.md",
+      "description": "Generate a single-platform summary for a custom date range"
+    },
+    {
+      "name": "configure",
+      "path": ".claude-code/commands/configure.md",
+      "description": "Verify and set up the quarterly MCP server and platform credentials"
+    },
+    {
+      "name": "platforms",
+      "path": ".claude-code/commands/platforms.md",
+      "description": "Quick check of which platforms are responding"
+    }
+  ],
+  "skills": [
+    {
+      "name": "quarterly-connection",
+      "path": "skills/quarterly-connection/SKILL.md",
+      "description": "Generate Red Hat Quarterly Connection reports by aggregating accomplishments from Jira, GitHub, Google Workspace (Docs, Slides, Calendar), and GitLab into a structured performance review document following the Red Hat Quarterly Connection format. Use when the user mentions quarterly reviews, quarterly connections, performance reviews, quarterly reports, quarterly accomplishments, Q1/Q2/Q3/Q4 summaries, or wants to gather their work output across platforms for a specific time period. Also trigger when the user asks 'what did I accomplish', 'what did I ship', 'what did I work on' for a quarter or multi-month period.",
+      "tags": ["quarterly", "performance-review", "reporting", "jira", "github", "gitlab", "google-workspace"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "quarterly-mcp-server": {
+        "required": false,
+        "description": "Optional MCP server for Jira/GitHub/GitLab summaries — falls back to jira CLI, gh CLI, and gws CLI",
+        "installUrl": "https://github.com/redhat-community-ai-tools/quarterly-mcp-server"
+      },
+      "jira": {
+        "required": false,
+        "description": "jira-cli for querying Jira issues (used as fallback when MCP server unavailable)",
+        "installUrl": "https://github.com/ankitpokhrel/jira-cli"
+      },
+      "gh": {
+        "required": false,
+        "description": "GitHub CLI for querying pull requests (used as fallback when MCP server unavailable)",
+        "installUrl": "https://cli.github.com/"
+      },
+      "gws": {
+        "required": false,
+        "description": "Google Workspace CLI for Docs, Slides, Calendar data",
+        "installUrl": "https://github.com/redhat-community-ai-tools/gws"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Productivity"
+  ]
+}

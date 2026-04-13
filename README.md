@@ -28,6 +28,7 @@ claude plugin update jira
 | **daily-summary** | Generate Slack-formatted daily standup updates | `claude plugin install daily-summary` | `jira`, `gh` |
 | **osac-dev** | Bug fix and bug reporting workflows with Jira+PR | `claude plugin install osac-dev` | `jira`, `gh` |
 | **google** | Google Workspace — Gmail, Docs, Slides, Sheets, Calendar, Drive | `claude plugin install google` | `gws` |
+| **quarterly-connection** | Red Hat Quarterly Connection reports from Jira, GitHub, Google Workspace, GitLab | `claude plugin install quarterly-connection` | `jira`, `gh`, `gws` |
 | **skill-scanner** | Scan plugins for security vulnerabilities | `claude plugin install skill-scanner` | — |
 
 ### openshift-ops
@@ -69,6 +70,10 @@ Google Workspace integration via the `gws` CLI:
 - **Google Sheets** — Read values and append rows
 - **Google Calendar** — View agenda, create events with Meet links
 - **Google Drive** — Manage files/folders, upload files
+
+### quarterly-connection
+
+- **quarterly-connection** — Generates Red Hat Quarterly Connection reports by aggregating data from Jira, GitHub, Google Docs/Slides/Calendar, and GitLab into the structured QC format (accomplishments with WHAT+HOW, priorities, development, career growth)
 
 ### skill-scanner
 
