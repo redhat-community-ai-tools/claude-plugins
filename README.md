@@ -73,7 +73,7 @@ Google Workspace integration via the [`gws`](https://github.com/googleworkspace/
 
 ### quarterly-connection
 
-- **quarterly-connection** — Generates Red Hat Quarterly Connection reports by aggregating data from Jira, GitHub, Google Docs/Slides/Calendar, and GitLab into the structured QC format (accomplishments with WHAT+HOW, priorities, development, career growth)
+- **quarterly-connection** — Generates Red Hat Quarterly Connection reports by aggregating data from Jira, GitHub, Google Docs/Slides/Calendar, and GitLab. Includes `/quarterly` for official Red Hat QC format and `/quarterly-report` for enhanced analysis with cycle time ranking, achievement analysis by multiple metrics, and AI-powered narrative refinement (business impact, technical depth, leadership frameworks)
 
 ### skill-scanner
 
