@@ -1,7 +1,7 @@
 {
   "name": "quarterly-connection",
-  "version": "1.0.0",
-  "description": "Generate Red Hat Quarterly Connection reports by aggregating accomplishments from Jira, GitHub, Google Workspace, and GitLab into a structured performance review document",
+  "version": "1.1.0",
+  "description": "Generate Red Hat Quarterly Connection reports by aggregating accomplishments from Jira, GitHub, Google Workspace, and GitLab. Includes cycle time analysis, achievement ranking, and AI-powered narrative refinement for polished performance review documents",
   "author": {
     "name": "Eran Cohen"
   },
@@ -13,7 +13,10 @@
     "github",
     "gitlab",
     "google-workspace",
-    "calendar"
+    "calendar",
+    "cycle-time",
+    "achievement-ranking",
+    "narrative-refinement"
   ],
   "commands": [
     {
@@ -35,6 +38,11 @@
       "name": "platforms",
       "path": ".claude-code/commands/platforms.md",
       "description": "Quick check of which platforms are responding"
+    },
+    {
+      "name": "quarterly-report",
+      "path": ".claude-code/commands/quarterly-report.md",
+      "description": "Generate enhanced quarterly report with cycle time analysis and polished narratives"
     }
   ],
   "skills": [
@@ -43,6 +51,12 @@
       "path": "skills/quarterly-connection/SKILL.md",
       "description": "Generate Red Hat Quarterly Connection reports by aggregating accomplishments from Jira, GitHub, Google Workspace (Docs, Slides, Calendar), and GitLab into a structured performance review document following the Red Hat Quarterly Connection format. Use when the user mentions quarterly reviews, quarterly connections, performance reviews, quarterly reports, quarterly accomplishments, Q1/Q2/Q3/Q4 summaries, or wants to gather their work output across platforms for a specific time period. Also trigger when the user asks 'what did I accomplish', 'what did I ship', 'what did I work on' for a quarter or multi-month period.",
       "tags": ["quarterly", "performance-review", "reporting", "jira", "github", "gitlab", "google-workspace"]
+    },
+    {
+      "name": "cycle-time-analysis",
+      "path": "skills/cycle-time-analysis/SKILL.md",
+      "description": "Analyzes cycle times for Jira issues and GitHub PRs to identify longest-running strategic work, ranks achievements by cycle time/impact/complexity using three metrics, and transforms technical descriptions into polished performance review narratives using AI-powered frameworks (business impact, technical depth, leadership). Extends quarterly-connection with deep achievement analysis. Use when the user asks to 'analyze cycle times', 'rank my achievements', 'identify top work', or wants enhanced quarterly report with narrative polish. Activated by command: /quarterly-report",
+      "tags": ["cycle-time", "achievement-ranking", "narrative-refinement", "analysis"]
     }
   ],
   "dependencies": {
