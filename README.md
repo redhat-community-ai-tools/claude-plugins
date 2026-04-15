@@ -23,7 +23,8 @@ claude plugin update jira
 | Plugin | Description | Install | Requires |
 |--------|-------------|---------|----------|
 | **openshift-ops** | Cluster management, debugging, upgrades, node ops | `claude plugin install openshift-ops` | `oc` |
-| **jira** | Create, search, update, and track Jira issues | `claude plugin install jira` | `jira` (jira-cli) |
+| **jira** | CLI-based JIRA management with advanced skills | `claude plugin install jira` | `jira` (jira-cli) |
+| **jira-mcp** | AI-assisted JIRA management via MCP server | `claude plugin install jira-mcp` | `jira-mcp-server`, `jira-cli` |
 | **skipper** | Build and test inside Docker/Podman containers | `claude plugin install skipper` | `skipper`, `python3` |
 | **daily-summary** | Generate Slack-formatted daily standup updates | `claude plugin install daily-summary` | `jira`, `gh` |
 | **osac-dev** | Bug fix and bug reporting workflows with Jira+PR | `claude plugin install osac-dev` | `jira`, `gh` |
@@ -41,12 +42,25 @@ claude plugin update jira
 
 ### jira
 
-5 skills for Jira issue management on Red Hat Jira:
+5 skills for Jira issue management on Red Hat Jira (CLI-based):
 - **jira-task-management** — Create, search, update, transition issues and sprints
 - **capture-tasks-from-meeting-notes** — Extract action items from meeting notes into Jira
 - **generate-status-report** — Generate project status reports from Jira data
 - **spec-to-backlog** — Transform spec documents into structured Jira backlogs
 - **triage-issue** — Triage bug reports, check for duplicates, create well-structured tickets
+
+**Best for:** Shell scripts, CI/CD, one-off commands, advanced workflow skills
+
+### jira-mcp
+
+AI-assisted JIRA management via Model Context Protocol:
+- **jira-mcp-management** — Natural language JIRA interaction, batch operations, context-aware workflows through MCP server integration
+
+**Best for:** Interactive AI workflows, natural language commands, batch processing with decision logic, Claude Desktop/Code with MCP
+
+**Key Difference:** `jira` uses jira-cli directly (traditional CLI). `jira-mcp` uses MCP server for AI-assisted natural language interaction. Both can coexist.
+
+See [plugins/jira-mcp/README.md](plugins/jira-mcp/README.md)
 
 ### skipper
 

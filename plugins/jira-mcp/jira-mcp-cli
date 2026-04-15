@@ -1,0 +1,276 @@
+#!/usr/bin/env python3
+"""
+JIRA MCP CLI - Command-line interface for JIRA operations via Direct API
+Uses JIRA REST API directly with basic auth for reliable operation
+"""
+
+import os
+import sys
+import json
+import subprocess
+import argparse
+
+# Configuration
+JIRA_URL = os.getenv("JIRA_URL", "https://redhat.atlassian.net")
+JIRA_DEFAULT_PROJECT = os.getenv("JIRA_DEFAULT_PROJECT", "WINC")
+JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
+JIRA_USER = os.getenv("JIRA_USER")
+
+if not JIRA_USER:
+    print("ERROR: JIRA_USER environment variable not set", file=sys.stderr)
+    print("Set it with: export JIRA_USER=your-email@redhat.com", file=sys.stderr)
+    sys.exit(1)
+
+def api_call(method, endpoint, data=None):
+    """Make a JIRA REST API call using curl"""
+    if not JIRA_API_TOKEN:
+        print(json.dumps({"error": "JIRA_API_TOKEN environment variable not set"}, indent=2), file=sys.stderr)
+        sys.exit(1)
+
+    url = f"{JIRA_URL}/rest/api/2/{endpoint}"
+    cmd = [
+        "curl", "-s", "-X", method, url,
+        "-u", f"{JIRA_USER}:{JIRA_API_TOKEN}",
+        "-H", "Content-Type: application/json"
+    ]
+
+    if data:
+        cmd.extend(["-d", json.dumps(data)])
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response", "raw": result.stdout}
+
+
+def get_issue(args):
+    """Get JIRA issue details"""
+    response = api_call("GET", f"issue/{args.issue_key}")
+
+    if "errorMessages" in response or "error" in response:
+        print(json.dumps(response, indent=2), file=sys.stderr)
+        return 1
+
+    print(f"Key: {response['key']}")
+    print(f"Summary: {response['fields']['summary']}")
+    print(f"Status: {response['fields']['status']['name']}")
+    print(f"Assignee: {response['fields']['assignee']['displayName'] if response['fields'].get('assignee') else 'Unassigned'}")
+    if response['fields'].get('labels'):
+        print(f"Labels: {', '.join(response['fields']['labels'])}")
+    print(f"\nDescription:\n{response['fields']['description']}")
+    return 0
+
+
+def search_issues(args):
+    """Search JIRA issues using JQL"""
+    response = api_call("POST", "search", {"jql": args.jql, "maxResults": 50})
+
+    if "errorMessages" in response or "error" in response:
+        print(json.dumps(response, indent=2), file=sys.stderr)
+        return 1
+
+    for issue in response.get("issues", []):
+        print(f"{issue['key']}: {issue['fields']['summary']} [{issue['fields']['status']['name']}]")
+
+    print(f"\nTotal: {response.get('total', 0)} issues")
+    return 0
+
+
+def create_issue(args):
+    """Create a new JIRA issue"""
+    project = args.project or JIRA_DEFAULT_PROJECT
+
+    fields = {
+        "project": {"key": project},
+        "summary": args.summary,
+        "issuetype": {"name": args.type}
+    }
+
+    if args.description:
+        fields["description"] = args.description
+
+    if args.labels:
+        fields["labels"] = [label.strip() for label in args.labels.split(",")]
+
+    if args.assignee:
+        # Get account ID from username
+        user_response = api_call("GET", f"user/search?query={args.assignee}")
+        if user_response and len(user_response) > 0:
+            fields["assignee"] = {"accountId": user_response[0]["accountId"]}
+
+    response = api_call("POST", "issue", {"fields": fields})
+
+    if "errorMessages" in response or "error" in response:
+        print(json.dumps(response, indent=2), file=sys.stderr)
+        return 1
+
+    print(f"Created: {response['key']}")
+    print(f"URL: {JIRA_URL}/browse/{response['key']}")
+    return 0
+
+
+def update_issue(args):
+    """Update a JIRA issue"""
+    fields = {}
+
+    if args.summary:
+        fields["summary"] = args.summary
+
+    if args.description:
+        fields["description"] = args.description
+
+    if args.assignee:
+        user_response = api_call("GET", f"user/search?query={args.assignee}")
+        if user_response and len(user_response) > 0:
+            fields["assignee"] = {"accountId": user_response[0]["accountId"]}
+
+    if args.labels:
+        fields["labels"] = [label.strip() for label in args.labels.split(",")]
+
+    response = api_call("PUT", f"issue/{args.issue_key}", {"fields": fields})
+
+    if "errorMessages" in response or "error" in response:
+        print(json.dumps(response, indent=2), file=sys.stderr)
+        return 1
+
+    print(f"Updated: {args.issue_key}")
+    return 0
+
+
+def transition_issue(args):
+    """Transition a JIRA issue"""
+    # Get available transitions
+    trans_response = api_call("GET", f"issue/{args.issue_key}/transitions")
+
+    if "errorMessages" in trans_response or "error" in trans_response:
+        print(json.dumps(trans_response, indent=2), file=sys.stderr)
+        return 1
+
+    # Find matching transition
+    transition_id = None
+    for trans in trans_response.get("transitions", []):
+        if trans["name"].lower() == args.status.lower() or trans["to"]["name"].lower() == args.status.lower():
+            transition_id = trans["id"]
+            break
+
+    if not transition_id:
+        print(f"Error: Transition '{args.status}' not found", file=sys.stderr)
+        print(f"Available transitions: {', '.join([t['name'] for t in trans_response.get('transitions', [])])}", file=sys.stderr)
+        return 1
+
+    data = {"transition": {"id": transition_id}}
+    if args.comment:
+        data["update"] = {"comment": [{"add": {"body": args.comment}}]}
+
+    response = api_call("POST", f"issue/{args.issue_key}/transitions", data)
+
+    if "errorMessages" in response or "error" in response:
+        print(json.dumps(response, indent=2), file=sys.stderr)
+        return 1
+
+    print(f"Transitioned {args.issue_key} to {args.status}")
+    return 0
+
+
+def link_issues(args):
+    """Link two JIRA issues"""
+    # Map common link type names
+    link_type_map = {
+        "blocks": "Blocks",
+        "relates": "Relates",
+        "relates to": "Relates",
+        "duplicates": "Duplicate"
+    }
+
+    link_type = link_type_map.get(args.link_type.lower(), args.link_type)
+
+    data = {
+        "type": {"name": link_type},
+        "inwardIssue": {"key": args.inward_issue},
+        "outwardIssue": {"key": args.outward_issue}
+    }
+
+    response = api_call("POST", "issueLink", data)
+
+    if "errorMessages" in response or "error" in response:
+        print(json.dumps(response, indent=2), file=sys.stderr)
+        return 1
+
+    print(f"Linked {args.inward_issue} and {args.outward_issue} ({link_type})")
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="JIRA MCP CLI - JIRA operations via MCP server wrapper",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("--project", "-p", help=f"JIRA project key (default: {JIRA_DEFAULT_PROJECT})")
+
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # get command
+    get_parser = subparsers.add_parser("get", help="Get issue details")
+    get_parser.add_argument("issue_key", help="Issue key (e.g., WINC-1234)")
+
+    # search command
+    search_parser = subparsers.add_parser("search", help="Search issues using JQL")
+    search_parser.add_argument("jql", help="JQL query string")
+
+    # create command
+    create_parser = subparsers.add_parser("create", help="Create a new issue")
+    create_parser.add_argument("--type", "-t", required=True, help="Issue type (Task, Bug, Story, etc.)")
+    create_parser.add_argument("--summary", "-s", required=True, help="Issue summary")
+    create_parser.add_argument("--description", "-d", help="Issue description")
+    create_parser.add_argument("--assignee", "-a", help="Assignee username")
+    create_parser.add_argument("--labels", "-l", help="Comma-separated labels")
+    create_parser.add_argument("--epic", "-P", help="Epic key to link to")
+
+    # update command
+    update_parser = subparsers.add_parser("update", help="Update an issue")
+    update_parser.add_argument("issue_key", help="Issue key (e.g., WINC-1234)")
+    update_parser.add_argument("--summary", "-s", help="New summary")
+    update_parser.add_argument("--description", "-d", help="New description")
+    update_parser.add_argument("--assignee", "-a", help="New assignee")
+    update_parser.add_argument("--labels", "-l", help="Comma-separated labels to add")
+
+    # transition command
+    transition_parser = subparsers.add_parser("transition", help="Transition issue status")
+    transition_parser.add_argument("issue_key", help="Issue key (e.g., WINC-1234)")
+    transition_parser.add_argument("status", help="New status (e.g., 'In Progress', 'Done')")
+    transition_parser.add_argument("--comment", "-c", help="Comment to add during transition")
+
+    # link command
+    link_parser = subparsers.add_parser("link", help="Link two issues")
+    link_parser.add_argument("inward_issue", help="Inward issue key")
+    link_parser.add_argument("outward_issue", help="Outward issue key")
+    link_parser.add_argument("link_type", help="Link type (e.g., 'blocks', 'relates to')")
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        return 1
+
+    # Route to appropriate handler
+    handlers = {
+        "get": get_issue,
+        "search": search_issues,
+        "create": create_issue,
+        "update": update_issue,
+        "transition": transition_issue,
+        "link": link_issues,
+    }
+
+    handler = handlers.get(args.command)
+    if handler:
+        return handler(args)
+    else:
+        print(f"Unknown command: {args.command}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,56 @@
+{
+  "name": "jira-mcp",
+  "version": "0.1.0",
+  "description": "JIRA integration via Model Context Protocol server for AI-assisted issue management, batch operations, and natural language workflows",
+  "author": {
+    "name": "Ronnie Rasouli",
+    "email": "rrasouli@redhat.com"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "jira",
+    "mcp",
+    "issue-management",
+    "project-management",
+    "atlassian"
+  ],
+  "skills": [
+    {
+      "name": "jira-mcp-management",
+      "path": "skills/jira-mcp-management/SKILL.md",
+      "description": "Manage JIRA issues using jira-mcp-server Model Context Protocol integration. Use this skill when you need MCP-based JIRA operations, batch processing, or when jira-cli is insufficient. Provides natural language JIRA interaction through MCP tools.",
+      "tags": ["jira", "mcp", "issues", "project-management", "ai-assisted"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "jira": {
+        "required": true,
+        "description": "jira-cli (ankitpokhrel/jira-cli) — required by jira-mcp-server",
+        "installUrl": "https://github.com/ankitpokhrel/jira-cli"
+      },
+      "python3": {
+        "required": true,
+        "description": "Python 3 runtime for jira-mcp-server"
+      },
+      "jira-mcp-server": {
+        "required": true,
+        "description": "JIRA MCP Server - Model Context Protocol server for JIRA",
+        "installUrl": "https://github.com/redhat-community-ai-tools/jira-mcp-server"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Project Management",
+    "MCP Integration"
+  ]
+}

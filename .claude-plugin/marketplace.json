@@ -75,6 +75,15 @@
       "author": {
         "name": "Eran Cohen"
       }
+    },
+    {
+      "name": "jira-mcp",
+      "source": "./plugins/jira-mcp",
+      "description": "JIRA integration via Model Context Protocol server for AI-assisted issue management, batch operations, and natural language workflows",
+      "version": "0.1.0",
+      "author": {
+        "name": "Ronnie Rasouli"
+      }
     }
   ]
 }
