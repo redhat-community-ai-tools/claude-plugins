@@ -24,6 +24,7 @@ claude plugin update jira
 |--------|-------------|---------|----------|
 | **openshift-ops** | Cluster management, debugging, upgrades, node ops | `claude plugin install openshift-ops` | `oc` |
 | **jira** | Create, search, update, and track Jira issues | `claude plugin install jira` | `jira` (jira-cli) |
+| **polarion** | Manage Polarion test cases for OpenShift Extended Testing | `claude plugin install polarion` | `python3`, `polarion-mcp-server` |
 | **skipper** | Build and test inside Docker/Podman containers | `claude plugin install skipper` | `skipper`, `python3` |
 | **daily-summary** | Generate Slack-formatted daily standup updates | `claude plugin install daily-summary` | `jira`, `gh` |
 | **osac-dev** | Bug fix and bug reporting workflows with Jira+PR | `claude plugin install osac-dev` | `jira`, `gh` |
@@ -47,6 +48,13 @@ claude plugin update jira
 - **generate-status-report** — Generate project status reports from Jira data
 - **spec-to-backlog** — Transform spec documents into structured Jira backlogs
 - **triage-issue** — Triage bug reports, check for duplicates, create well-structured tickets
+
+### polarion
+
+Polarion ALM test case management for OpenShift Extended Testing:
+- **polarion-test-management** — Create, search, update test cases and test steps on Red Hat's Polarion instance (polarion.engineering.redhat.com). Includes automatic backup/restore for test steps, auto-delete handling for Polarion REST API limitations, and step ordering preservation. Integrates with openshift-tests-private workflow for converting JIRA bugs into automated test cases.
+
+See [plugins/polarion/README.md](plugins/polarion/README.md)
 
 ### skipper
 

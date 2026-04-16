@@ -1,0 +1,55 @@
+{
+  "name": "polarion",
+  "version": "0.1.0",
+  "description": "Manage Polarion test cases for OpenShift Extended Testing — create, search, update test documentation",
+  "author": {
+    "name": "Ronnie Rasouli",
+    "email": "rrasouli@redhat.com"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "polarion",
+    "test-management",
+    "openshift",
+    "testing",
+    "alm"
+  ],
+  "skills": [
+    {
+      "name": "polarion-test-management",
+      "path": "skills/polarion-test-management/SKILL.md",
+      "description": "Manage Polarion test cases for OpenShift Extended Testing on Polarion ALM (polarion.engineering.redhat.com). Use this skill when the user mentions Polarion test cases, OCP-XXXXX IDs, creating test cases, searching test cases, updating test documentation, or converting bugs/features into test cases.",
+      "tags": ["polarion", "testing", "test-cases", "alm"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "polarion-cli": {
+        "required": true,
+        "description": "Polarion CLI wrapper (bundled with this plugin)",
+        "installUrl": "https://github.com/redhat-community-ai-tools/polarion-mcp-server"
+      },
+      "python3": {
+        "required": true,
+        "description": "Python 3 runtime for polarion-cli"
+      },
+      "jq": {
+        "required": false,
+        "description": "JSON processor for parsing command output"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Testing",
+    "Quality Assurance"
+  ]
+}
