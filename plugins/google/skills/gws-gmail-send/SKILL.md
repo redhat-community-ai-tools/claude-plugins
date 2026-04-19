@@ -1,6 +1,6 @@
 ---
 name: gws-gmail-send
-description: "Gmail: Send an email."
+description: "Gmail: Send an email with optional attachments, CC/BCC, and HTML support. Use when the user wants to compose and send an email, draft a message, or email someone."
 metadata:
   version: 0.22.0
   openclaw:
@@ -64,4 +64,4 @@ gws gmail +send --to alice@example.com --subject 'Hello' --body 'Hi!' --draft
 ## See Also
 
 - [gws-shared](../gws-shared/SKILL.md) — Global flags and auth
-- [gws-gmail](../gws-gmail/SKILL.md) — All send, read, and manage email commands
+- [gws-gmail](../gws-gmail/SKILL.md) — All Gmail commands and common workflows

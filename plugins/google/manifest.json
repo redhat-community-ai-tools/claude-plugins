@@ -31,49 +31,49 @@
     {
       "name": "gws-gmail",
       "path": "skills/gws-gmail/SKILL.md",
-      "description": "Gmail: Send, read, and manage email using the gws CLI. Use when the user wants to work with email, send messages, read inbox, or manage Gmail.",
+      "description": "Gmail: Send, read, and manage email. Use when the user wants to check email, read messages, summarize threads, search inbox, send replies, forward messages, or do anything involving Gmail — even if they don't say 'Gmail' explicitly (e.g., 'what did Alice email me about', 'summarize that NVIDIA thread', 'check my inbox').",
       "tags": ["google", "gmail", "email"]
     },
     {
       "name": "gws-gmail-send",
       "path": "skills/gws-gmail-send/SKILL.md",
-      "description": "Gmail: Send an email with optional attachments, CC/BCC, and HTML support.",
+      "description": "Gmail: Send an email with optional attachments, CC/BCC, and HTML support. Use when the user wants to compose and send an email, draft a message, or email someone.",
       "tags": ["google", "gmail", "email", "send"]
     },
     {
       "name": "gws-gmail-read",
       "path": "skills/gws-gmail-read/SKILL.md",
-      "description": "Gmail: Read a message and extract its body or headers.",
+      "description": "Gmail: Read a message and extract its body or headers. Use this to get the full content of an email after finding its ID via +triage or a threads/messages search. Handles base64 decoding, HTML-to-text conversion, and multipart messages automatically — prefer this over raw messages.get for reading email bodies.",
       "tags": ["google", "gmail", "email", "read"]
     },
     {
       "name": "gws-gmail-reply",
       "path": "skills/gws-gmail-reply/SKILL.md",
-      "description": "Gmail: Reply to a message with automatic threading.",
+      "description": "Gmail: Reply to a message (handles threading automatically). Use when the user wants to respond to an email, reply to a thread, or send a response to a specific message.",
       "tags": ["google", "gmail", "email", "reply"]
     },
     {
       "name": "gws-gmail-reply-all",
       "path": "skills/gws-gmail-reply-all/SKILL.md",
-      "description": "Gmail: Reply-all to a message with automatic threading.",
+      "description": "Gmail: Reply-all to a message (handles threading automatically). Use when the user wants to reply to all recipients in a thread, respond to a group email, or send a reply-all.",
       "tags": ["google", "gmail", "email", "reply-all"]
     },
     {
       "name": "gws-gmail-forward",
       "path": "skills/gws-gmail-forward/SKILL.md",
-      "description": "Gmail: Forward a message to new recipients.",
+      "description": "Gmail: Forward a message to new recipients. Use when the user wants to forward an email, share a message with someone else, or send an existing email to a different person.",
       "tags": ["google", "gmail", "email", "forward"]
     },
     {
       "name": "gws-gmail-triage",
       "path": "skills/gws-gmail-triage/SKILL.md",
-      "description": "Gmail: Show unread inbox summary (sender, subject, date).",
+      "description": "Gmail: Show unread inbox summary (sender, subject, date). Use when the user wants to check their inbox, see what's new, find recent emails, or get an overview of unread messages. Supports custom Gmail search queries to filter by sender, subject, label, or date.",
       "tags": ["google", "gmail", "email", "triage", "inbox"]
     },
     {
       "name": "gws-gmail-watch",
       "path": "skills/gws-gmail-watch/SKILL.md",
-      "description": "Gmail: Watch for new emails and stream them as NDJSON.",
+      "description": "Gmail: Watch for new emails and stream them as NDJSON. Use when the user wants to monitor their inbox in real-time, get notified of new emails, or set up email watching/polling.",
       "tags": ["google", "gmail", "email", "watch", "streaming"]
     },
     {

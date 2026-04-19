@@ -1,6 +1,6 @@
 ---
 name: gws-gmail-watch
-description: "Gmail: Watch for new emails and stream them as NDJSON."
+description: "Gmail: Watch for new emails and stream them as NDJSON. Use when the user wants to monitor their inbox in real-time, get notified of new emails, or set up email watching/polling."
 metadata:
   version: 0.22.0
   openclaw:
@@ -56,4 +56,4 @@ gws gmail +watch --project my-project --cleanup --output-dir ./emails
 ## See Also
 
 - [gws-shared](../gws-shared/SKILL.md) — Global flags and auth
-- [gws-gmail](../gws-gmail/SKILL.md) — All send, read, and manage email commands
+- [gws-gmail](../gws-gmail/SKILL.md) — All Gmail commands and common workflows
