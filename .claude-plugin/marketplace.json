@@ -75,6 +75,15 @@
       "author": {
         "name": "Eran Cohen"
       }
+    },
+    {
+      "name": "polarion",
+      "source": "./plugins/polarion",
+      "description": "Manage Polarion test cases for OpenShift Extended Testing — create, search, update test documentation",
+      "version": "0.1.0",
+      "author": {
+        "name": "Ronnie Rasouli"
+      }
     }
   ]
 }

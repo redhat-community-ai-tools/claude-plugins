@@ -1,0 +1,409 @@
+#!/usr/bin/env python3
+"""
+Polarion CLI - Command-line interface for Polarion test case management
+Wraps the Polarion MCP server functionality for CLI usage
+"""
+
+import os
+import sys
+import json
+import argparse
+from pathlib import Path
+import urllib3
+
+# Disable SSL warnings
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# Add polarion-mcp-server to path
+POLARION_SERVER_PATH = os.path.expanduser("~/Documents/GitHub/polarion-mcp-server")
+sys.path.insert(0, POLARION_SERVER_PATH)
+
+from polarion_client import PolarionClient
+
+# Configuration
+POLARION_URL = os.getenv("POLARION_URL", "https://polarion.engineering.redhat.com")
+POLARION_TOKEN = os.getenv("POLARION_TOKEN")
+DEFAULT_PROJECT = os.getenv("POLARION_PROJECT", "OSE")
+VERIFY_SSL = os.getenv("POLARION_VERIFY_SSL", "false").lower() == "true"
+
+if not POLARION_TOKEN:
+    print("ERROR: POLARION_TOKEN environment variable not set", file=sys.stderr)
+    print("Set it with: export POLARION_TOKEN=your-token-here", file=sys.stderr)
+    sys.exit(1)
+
+# Initialize client
+client = PolarionClient(POLARION_URL, POLARION_TOKEN, VERIFY_SSL)
+
+
+def test_connection(args):
+    """Test connection to Polarion"""
+    try:
+        result = client.test_connection(args.project or DEFAULT_PROJECT)
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("status") == "ok" else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def create_test_case(args):
+    """Create a new test case"""
+    try:
+        # Parse test steps into list of dicts if provided
+        test_steps_list = None
+        if args.test_steps:
+            steps = args.test_steps.strip().split('\n')
+            expected = args.expected_results.strip().split('\n') if args.expected_results else []
+            # Pad expected results if shorter than steps
+            while len(expected) < len(steps):
+                expected.append("")
+
+            test_steps_list = [
+                {"step": step.strip(), "expectedResult": expected[i].strip()}
+                for i, step in enumerate(steps)
+                if step.strip()
+            ]
+
+        result = client.create_test_case(
+            title=args.title,
+            description=args.description,
+            project_id=args.project or DEFAULT_PROJECT,
+            test_steps=test_steps_list,
+            severity=args.severity,
+            status=args.status
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("status") == "success" else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def get_test_case(args):
+    """Get test case details"""
+    try:
+        result = client.get_test_case(
+            test_case_id=args.test_case_id,
+            project_id=args.project or DEFAULT_PROJECT
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("id") else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def search_test_cases(args):
+    """Search for test cases"""
+    try:
+        result = client.search_test_cases(
+            query=args.query,
+            project_id=args.project or DEFAULT_PROJECT,
+            limit=args.limit
+        )
+        print(json.dumps(result, indent=2))
+        return 0
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def update_test_case(args):
+    """Update test case"""
+    try:
+        # Build fields dict from provided arguments
+        fields = {}
+        if args.title:
+            fields["title"] = args.title
+        if args.description:
+            fields["description"] = args.description
+        if args.severity:
+            fields["severity"] = args.severity
+        if args.status:
+            fields["status"] = args.status
+
+        result = client.update_test_case(
+            test_case_id=args.test_case_id,
+            project_id=args.project or DEFAULT_PROJECT,
+            **fields
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("status") == "updated" else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def add_test_steps(args):
+    """Add test steps to a test case"""
+    try:
+        project_id = args.project or DEFAULT_PROJECT
+
+        # SAFETY: Backup existing test steps before modifying
+        backup_file = f"/tmp/polarion-backup-{args.test_case_id}-steps.json"
+        try:
+            import requests
+            headers = {
+                "Authorization": f"Bearer {POLARION_TOKEN}",
+                "Accept": "application/json"
+            }
+
+            # Get existing test steps
+            list_url = f"{POLARION_URL}/polarion/rest/v1/projects/{project_id}/workitems/{args.test_case_id}/teststeps"
+            response = requests.get(list_url, headers=headers, verify=VERIFY_SSL)
+
+            if response.status_code == 200:
+                existing_steps = response.json().get("data", [])
+
+                if existing_steps:
+                    # Fetch full details for each step (preserves order via step IDs)
+                    backup_data = {
+                        "test_case_id": args.test_case_id,
+                        "project_id": project_id,
+                        "steps": []
+                    }
+
+                    # Steps come from API in order (1, 2, 3, etc.)
+                    # We preserve this order by iterating in sequence
+                    for step in existing_steps:
+                        step_id = step["id"].split("/")[-1]
+                        detail_url = f"{list_url}/{step_id}"
+                        detail_response = requests.get(detail_url, headers=headers, verify=VERIFY_SSL)
+
+                        if detail_response.status_code == 200:
+                            step_data = detail_response.json().get("data", {})
+                            # step_data includes "id" field like "OSE/OCP-32615/1" for ordering
+                            backup_data["steps"].append(step_data)
+
+                    # Save backup
+                    with open(backup_file, 'w') as f:
+                        json.dump(backup_data, f, indent=2)
+
+                    print(f"Backed up {len(existing_steps)} existing test steps (with ordering) to: {backup_file}", file=sys.stderr)
+
+                    # DELETE all existing steps (Polarion REST API requirement for updating)
+                    # Keep deleting until no steps remain (handle renumbering)
+                    print(f"Deleting existing test steps to allow update...", file=sys.stderr)
+                    max_attempts = 20  # Prevent infinite loop
+                    attempt = 0
+                    while attempt < max_attempts:
+                        # Get current steps
+                        check_response = requests.get(list_url, headers=headers, verify=VERIFY_SSL)
+                        if check_response.status_code != 200:
+                            break
+
+                        current_steps = check_response.json().get("data", [])
+                        if not current_steps:
+                            break  # All steps deleted
+
+                        # Delete all current steps
+                        for step in current_steps:
+                            step_id = step["id"].split("/")[-1]
+                            delete_url = f"{list_url}/{step_id}"
+                            requests.delete(delete_url, headers=headers, verify=VERIFY_SSL)
+
+                        attempt += 1
+
+                    print(f"Deleted all existing steps, ready to add new ones", file=sys.stderr)
+        except Exception as backup_err:
+            print(f"Warning: Could not backup/delete existing steps: {backup_err}", file=sys.stderr)
+
+        # Parse new test steps
+        steps = args.test_steps.strip().split('\n')
+        expected = args.expected_results.strip().split('\n') if args.expected_results else []
+        # Pad expected results if shorter than steps
+        while len(expected) < len(steps):
+            expected.append("")
+
+        test_steps_list = [
+            {"step": step.strip(), "expectedResult": expected[i].strip()}
+            for i, step in enumerate(steps)
+            if step.strip()
+        ]
+
+        result = client.add_test_steps(
+            test_case_id=args.test_case_id,
+            test_steps=test_steps_list,
+            project_id=project_id
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("status") == "success" else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def restore_test_steps(args):
+    """Restore test steps from backup file"""
+    try:
+        import requests
+
+        backup_file = args.backup_file
+
+        if not os.path.exists(backup_file):
+            print(json.dumps({"status": "failed", "error": f"Backup file not found: {backup_file}"}, indent=2), file=sys.stderr)
+            return 1
+
+        with open(backup_file, 'r') as f:
+            backup_data = json.load(f)
+
+        test_case_id = backup_data["test_case_id"]
+        project_id = backup_data.get("project_id", args.project or DEFAULT_PROJECT)
+        steps = backup_data.get("steps", [])
+
+        if not steps:
+            print(json.dumps({"status": "failed", "error": "No steps found in backup"}, indent=2), file=sys.stderr)
+            return 1
+
+        # CRITICAL: Sort steps by their original index to preserve order
+        # Step IDs are like "OSE/OCP-32615/1", extract the index
+        def get_step_index(step):
+            step_id = step.get("id", "")
+            try:
+                return int(step_id.split("/")[-1])
+            except (ValueError, IndexError):
+                return 999999  # Put malformed IDs at the end
+
+        sorted_steps = sorted(steps, key=get_step_index)
+        print(f"Restoring {len(sorted_steps)} test steps in original order...", file=sys.stderr)
+
+        # STEP 1: Delete ALL existing test steps first (Polarion REST API requirement)
+        headers = {
+            "Authorization": f"Bearer {POLARION_TOKEN}",
+            "Accept": "application/json"
+        }
+
+        list_url = f"{POLARION_URL}/polarion/rest/v1/projects/{project_id}/workitems/{test_case_id}/teststeps"
+
+        try:
+            # Get existing steps
+            response = requests.get(list_url, headers=headers, verify=VERIFY_SSL)
+            if response.status_code == 200:
+                existing_steps = response.json().get("data", [])
+
+                if existing_steps:
+                    print(f"Deleting {len(existing_steps)} existing test steps...", file=sys.stderr)
+
+                    for step in existing_steps:
+                        step_id = step["id"].split("/")[-1]
+                        delete_url = f"{list_url}/{step_id}"
+                        delete_response = requests.delete(delete_url, headers=headers, verify=VERIFY_SSL)
+                        # Ignore 404s (already deleted)
+                        if delete_response.status_code not in [200, 204, 404]:
+                            print(f"Warning: Failed to delete step {step_id}: {delete_response.status_code}", file=sys.stderr)
+
+                    print(f"Deleted all existing steps", file=sys.stderr)
+        except Exception as delete_err:
+            print(f"Warning: Error deleting existing steps: {delete_err}", file=sys.stderr)
+
+        # STEP 2: Convert backup format to test_steps format, maintaining order
+        test_steps_list = []
+        for step in sorted_steps:
+            attrs = step.get("attributes", {})
+            values = attrs.get("values", [])
+            if len(values) >= 2:
+                step_text = values[0].get("value", "").replace("<br/>", "\n")
+                expected = values[1].get("value", "").replace("<br/>", "\n")
+                test_steps_list.append({
+                    "step": step_text,
+                    "expectedResult": expected
+                })
+
+        # STEP 3: Add sorted test steps back
+        print(f"Adding {len(test_steps_list)} test steps in correct order...", file=sys.stderr)
+        result = client.add_test_steps(
+            test_case_id=test_case_id,
+            test_steps=test_steps_list,
+            project_id=project_id
+        )
+
+        print(json.dumps({
+            "status": "success",
+            "message": f"Restored {len(test_steps_list)} test steps from backup in original order",
+            "backup_file": backup_file,
+            "steps_order": [f"Step {i+1}" for i in range(len(test_steps_list))],
+            "result": result
+        }, indent=2))
+        return 0 if result.get("status") == "success" else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Polarion CLI - Test case management tool",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("--project", "-p", help=f"Polarion project ID (default: {DEFAULT_PROJECT})")
+
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # test-connection command
+    test_conn_parser = subparsers.add_parser("test-connection", help="Test Polarion connection")
+
+    # create command
+    create_parser = subparsers.add_parser("create", help="Create a new test case")
+    create_parser.add_argument("--title", "-t", required=True, help="Test case title")
+    create_parser.add_argument("--description", "-d", required=True, help="Test case description")
+    create_parser.add_argument("--test-steps", help="Test steps (newline-separated)")
+    create_parser.add_argument("--expected-results", help="Expected results (newline-separated, one per step)")
+    create_parser.add_argument("--severity", default="should_have",
+                               choices=["must_have", "should_have", "nice_to_have", "will_not_have"],
+                               help="Test case severity")
+    create_parser.add_argument("--status", default="draft", help="Initial status")
+
+    # get command
+    get_parser = subparsers.add_parser("get", help="Get test case details")
+    get_parser.add_argument("test_case_id", help="Test case ID (e.g., OCP-12345)")
+
+    # search command
+    search_parser = subparsers.add_parser("search", help="Search for test cases")
+    search_parser.add_argument("query", help="Search query")
+    search_parser.add_argument("--limit", type=int, default=50, help="Maximum results")
+
+    # update command
+    update_parser = subparsers.add_parser("update", help="Update test case")
+    update_parser.add_argument("test_case_id", help="Test case ID (e.g., OCP-12345)")
+    update_parser.add_argument("--title", "-t", help="New title")
+    update_parser.add_argument("--description", "-d", help="New description")
+    update_parser.add_argument("--severity", choices=["must_have", "should_have", "nice_to_have", "will_not_have"])
+    update_parser.add_argument("--status", help="New status")
+
+    # add-test-steps command
+    add_steps_parser = subparsers.add_parser("add-test-steps", help="Add/update test steps (auto-backs up and replaces existing steps)")
+    add_steps_parser.add_argument("test_case_id", help="Test case ID (e.g., OCP-12345)")
+    add_steps_parser.add_argument("--test-steps", required=True, help="Test steps (newline-separated)")
+    add_steps_parser.add_argument("--expected-results", help="Expected results (newline-separated, one per step)")
+
+    # restore-test-steps command
+    restore_steps_parser = subparsers.add_parser("restore-test-steps", help="Restore test steps from backup file")
+    restore_steps_parser.add_argument("backup_file", help="Path to backup file (e.g., /tmp/polarion-backup-OCP-32615-steps.json)")
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        return 1
+
+    # Route to appropriate handler
+    handlers = {
+        "test-connection": test_connection,
+        "create": create_test_case,
+        "get": get_test_case,
+        "search": search_test_cases,
+        "update": update_test_case,
+        "add-test-steps": add_test_steps,
+        "restore-test-steps": restore_test_steps,
+    }
+
+    handler = handlers.get(args.command)
+    if handler:
+        return handler(args)
+    else:
+        print(f"Unknown command: {args.command}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
