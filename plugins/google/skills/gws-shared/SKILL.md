@@ -12,19 +12,21 @@ metadata:
 
 # gws — Shared Reference
 
-## Installation
+## Installation & Setup
 
-The `gws` binary must be on `$PATH`. See the project README for install options.
+The `gws` binary must be on `$PATH`. Full setup instructions (GCP project creation, OAuth credentials, API enablement) are in the [plugin README](../../README.md).
 
 ## Authentication
 
 ```bash
-# Browser-based OAuth (interactive)
-gws auth login
+# Browser-based OAuth (interactive — requires GCP project setup first)
+gws auth login -s drive,docs,sheets,gmail,calendar
 
 # Service Account
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
 ```
+
+If the user gets auth errors (`403`, `accessNotConfigured`, `Failed to set project`), refer them to the Troubleshooting section in the [plugin README](../../README.md#common-gotchas).
 
 ## Global Flags
 
