@@ -77,6 +77,15 @@
       }
     },
     {
+      "name": "polarion",
+      "source": "./plugins/polarion",
+      "description": "Manage Polarion test cases for OpenShift Extended Testing — create, search, update test documentation",
+      "version": "0.1.0",
+      "author": {
+        "name": "Ronnie Rasouli"
+      }
+    },
+    {
       "name": "jira-mcp",
       "source": "./plugins/jira-mcp",
       "description": "JIRA integration via Model Context Protocol server for AI-assisted issue management, batch operations, and natural language workflows",
