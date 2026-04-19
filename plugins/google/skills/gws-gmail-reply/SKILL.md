@@ -1,6 +1,6 @@
 ---
 name: gws-gmail-reply
-description: "Gmail: Reply to a message (handles threading automatically)."
+description: "Gmail: Reply to a message (handles threading automatically). Use when the user wants to respond to an email, reply to a thread, or send a response to a specific message."
 metadata:
   version: 0.22.0
   openclaw:
@@ -63,4 +63,4 @@ gws gmail +reply --message-id 18f1a2b3c4d --body 'Draft reply' --draft
 ## See Also
 
 - [gws-shared](../gws-shared/SKILL.md) — Global flags and auth
-- [gws-gmail](../gws-gmail/SKILL.md) — All send, read, and manage email commands
+- [gws-gmail](../gws-gmail/SKILL.md) — All Gmail commands and common workflows

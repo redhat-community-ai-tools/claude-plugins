@@ -52,6 +52,21 @@ gws <service> <resource> [sub-resource] <method> [flags]
 | `--page-limit <N>` | Max pages when using --page-all (default: 10) |
 | `--page-delay <MS>` | Delay between pages in ms (default: 100) |
 
+## API-Specific Defaults
+
+Some Google APIs require path parameters that have sensible defaults. Include these automatically — don't wait for a validation error.
+
+| Service | Parameter | Default | Notes |
+|---------|-----------|---------|-------|
+| Gmail | `userId` | `"me"` | Required on every `users.*` method |
+| Calendar | `calendarId` | `"primary"` | Required on `events.*`, `acl.*`, etc. |
+| Drive | `corpora` | `"user"` | For `files.list` scope |
+
+**Example** — Gmail thread list with the required `userId`:
+```bash
+gws gmail users threads list --params '{"userId": "me", "q": "subject:weekly report", "maxResults": 5}'
+```
+
 ## Security Rules
 
 - **Never** output secrets (API keys, tokens) directly

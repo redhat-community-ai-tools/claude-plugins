@@ -1,6 +1,6 @@
 ---
 name: gws-gmail-forward
-description: "Gmail: Forward a message to new recipients."
+description: "Gmail: Forward a message to new recipients. Use when the user wants to forward an email, share a message with someone else, or send an existing email to a different person."
 metadata:
   version: 0.22.0
   openclaw:
@@ -66,4 +66,4 @@ gws gmail +forward --message-id 18f1a2b3c4d --to dave@example.com --draft
 ## See Also
 
 - [gws-shared](../gws-shared/SKILL.md) — Global flags and auth
-- [gws-gmail](../gws-gmail/SKILL.md) — All send, read, and manage email commands
+- [gws-gmail](../gws-gmail/SKILL.md) — All Gmail commands and common workflows
