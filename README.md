@@ -93,6 +93,8 @@ Google Workspace integration via the [`gws`](https://github.com/googleworkspace/
 - **Google Calendar** — View agenda, create events with Meet links
 - **Google Drive** — Manage files/folders, upload files
 
+**Requires setup:** GCP project with OAuth credentials. See [plugins/google/README.md](plugins/google/README.md) for step-by-step instructions.
+
 ### quarterly-connection
 
 - **quarterly-connection** — Generates Red Hat Quarterly Connection reports by aggregating data from Jira, GitHub, Google Docs/Slides/Calendar, and GitLab. Includes `/quarterly` for official Red Hat QC format and `/quarterly-report` for enhanced analysis with cycle time ranking, achievement analysis by multiple metrics, and AI-powered narrative refinement (business impact, technical depth, leadership frameworks)
