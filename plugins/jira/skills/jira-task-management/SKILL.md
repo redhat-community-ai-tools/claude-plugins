@@ -28,7 +28,7 @@ Do not set priority — it's not relevant for this project.
 
 ## Command Reference
 
-`--plain` is supported on **read commands** (view, list, epic list, sprint list) for clean output. `--no-input` is needed on **write commands** (create, edit) to skip interactive prompts. Note: `--plain` is **not supported** on create, edit, move, assign, or comment commands — use `--raw` on create if you need JSON output.
+`--plain` is supported on **read commands** (view, list, epic list, sprint list) for clean output. `--no-input` is needed on **create and edit only** to skip interactive prompts — do **not** use `--no-input` with move, assign, comment, or link (they don't support it and will error). `--plain` is also **not supported** on create, edit, move, assign, or comment — use `--raw` on create if you need JSON output.
 
 ### View
 
@@ -184,6 +184,7 @@ jira open           # Open project page
 
 - **"No result found for given query in project MGMT":** The query is scoped to the default MGMT project. To search across projects, start `-q` with `project IS NOT EMPTY AND ...`. See the Search section above.
 - **"Expecting ',' but got 'ORDER'" JQL error:** You included `ORDER BY` in a `-q` query. Remove it — jira-cli appends its own `ORDER BY created DESC` automatically.
+- **"unknown flag: --no-input" on move/assign/comment:** `--no-input` is only valid for `create` and `edit`. Remove it — move, assign, comment, and link don't need it.
 - **Auth errors / HTML in response:** Token may be expired. Regenerate at https://id.atlassian.com/manage-profile/security/api-tokens, update `~/.netrc`.
 - **"API v3" errors:** Config must use `installation: Cloud`. Re-run `jira init --installation cloud`.
 - **Interactive prompts hang:** Always pass `--no-input` for create/edit operations.
