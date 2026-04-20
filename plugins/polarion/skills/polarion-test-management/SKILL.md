@@ -22,7 +22,8 @@ Manage test cases on Red Hat Polarion ALM (`polarion.engineering.redhat.com/pola
 export POLARION_URL="https://polarion.engineering.redhat.com"
 export POLARION_PROJECT="OSE"
 export POLARION_TOKEN="your-personal-access-token"
-export POLARION_VERIFY_SSL="false"
+# Optional: For development with self-signed certificates
+# export POLARION_VERIFY_SSL="false"
 ```
 
 ## Command Reference

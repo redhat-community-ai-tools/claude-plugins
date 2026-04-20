@@ -70,8 +70,23 @@ Set environment variables for authentication:
 export POLARION_URL="https://polarion.engineering.redhat.com"
 export POLARION_PROJECT="OSE"
 export POLARION_TOKEN="your-personal-access-token"
+```
+
+### SSL Certificate Configuration
+
+SSL verification is enabled by default for security. If you encounter certificate errors with self-signed certificates or internal servers:
+
+**Option 1: Install the CA certificate (recommended)**
+```bash
+export POLARION_CA_CERT="/path/to/ca-cert.pem"
+```
+
+**Option 2: Disable SSL verification (development only)**
+```bash
 export POLARION_VERIFY_SSL="false"
 ```
+
+**Note:** Disabling SSL verification should only be used in trusted development environments, never in production.
 
 ### Getting a Personal Access Token
 
@@ -246,10 +261,18 @@ echo $POLARION_TOKEN
 # Regenerate at: https://polarion.engineering.redhat.com/polarion/#/userSettings?settings=tokens
 ```
 
+## Security Considerations
+
+- Never commit `POLARION_TOKEN` to version control
+- Use environment variables or secure vaults
+- SSL verification is enabled by default for secure connections
+- Limit token permissions to minimum required
+
 ## Common Errors
 
 - **"POLARION_TOKEN environment variable not set"**: Export your token
 - **"Authentication failed"**: Token expired or invalid — regenerate
+- **"SSL certificate verify failed"**: Configure POLARION_CA_CERT or POLARION_VERIFY_SSL (see SSL Certificate Configuration)
 - **"REST API failed: already contains Test Steps"**: Should not occur with add-test-steps auto-delete. If it does, use restore-test-steps
 - **"Backup file not found"**: Backup is only created if test case has existing steps
 
