@@ -39,20 +39,31 @@ jira issue view <KEY> --plain --comments 100     # Include comments
 
 ### Search
 
+**IMPORTANT: `jira-cli` always prepends `project="MGMT"` to `-q`/`--jql` queries.** Use `-q` (not `--jql`) for all searches, and follow these rules:
+
+- **Within MGMT project:** Use `-q` normally — the project is auto-prepended.
+- **Across all projects:** Start the query with `project IS NOT EMPTY AND ...` — jira-cli detects the existing `project` clause and skips prepending.
+- **Specific other project:** Start with `project = OTHERKEY AND ...`.
+- **Never include `ORDER BY`** in `-q` queries — jira-cli appends its own `ORDER BY created DESC`, causing a JQL syntax error from duplicate ORDER BY clauses.
+- **Use filter flags** (`-r`, `-t`, `-a`, `-s`) instead of embedding them in JQL when possible — they're appended cleanly.
+
 ```bash
-# JQL queries — the primary way to search
-jira issue list --jql '<JQL>' --plain
+# Within MGMT (project auto-prepended)
+jira issue list -q 'status = "In Progress"' --plain
+jira issue list -q 'labels = OSAC AND updated >= -7d' --plain
+jira issue list -q 'assignee = currentUser() AND status not in (Closed, Done)' --plain
 
-# Common patterns
-jira issue list --jql 'assignee = currentUser() AND status not in (Closed, Done)' --plain
-jira issue list --jql 'project = MGMT AND status = "In Progress"' --plain
-jira issue list --jql 'project = MGMT AND labels = OSAC AND updated >= -7d' --plain
+# Across ALL projects
+jira issue list -q 'project IS NOT EMPTY AND type = Epic AND text ~ "search term"' -r "$(jira me)" --plain
 
-# Text search
+# Specific other project
+jira issue list -q 'project = CNF AND type = Epic' --plain
+
+# Text search (scoped to default project)
 jira issue list "search text" --plain
 
 # Pagination
-jira issue list --jql '...' --paginate 50 --plain
+jira issue list -q '...' --paginate 50 --plain
 ```
 
 JQL tips: String values with spaces need double quotes inside single quotes — `'status = "In Progress"'`. Field names with spaces need double quotes too — `'"Epic Link" = MGMT-22619'`.
@@ -171,6 +182,8 @@ jira open           # Open project page
 
 ## Troubleshooting
 
+- **"No result found for given query in project MGMT":** The query is scoped to the default MGMT project. To search across projects, start `-q` with `project IS NOT EMPTY AND ...`. See the Search section above.
+- **"Expecting ',' but got 'ORDER'" JQL error:** You included `ORDER BY` in a `-q` query. Remove it — jira-cli appends its own `ORDER BY created DESC` automatically.
 - **Auth errors / HTML in response:** Token may be expired. Regenerate at https://id.atlassian.com/manage-profile/security/api-tokens, update `~/.netrc`.
 - **"API v3" errors:** Config must use `installation: Cloud`. Re-run `jira init --installation cloud`.
 - **Interactive prompts hang:** Always pass `--no-input` for create/edit operations.
