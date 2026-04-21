@@ -50,7 +50,7 @@ gws docs documents get --params '{"documentId": "DOC_ID", "includeTabsContent": 
 The API returns structured JSON, not plain text. To extract readable text:
 
 ```bash
-gws docs documents get --params '{"documentId": "DOC_ID", "includeTabsContent": true}' | python3 -c "
+gws docs documents get --params '{"documentId": "DOC_ID", "includeTabsContent": true}' 2>/dev/null | python3 -c "
 import json, sys
 doc = json.load(sys.stdin)
 
