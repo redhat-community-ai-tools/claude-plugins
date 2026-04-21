@@ -33,6 +33,55 @@ gws docs <resource> <method> [flags]
   - `create` — Creates a blank document using the title given in the request. Other fields in the request, including any provided content, are ignored. Returns the created document.
   - `get` — Gets the latest version of the specified document.
 
+## Reading a Document
+
+All parameters go through `--params` as a JSON object — there are no per-field flags like `--document-id`.
+
+```bash
+# Get document (JSON output, includes body content from first tab)
+gws docs documents get --params '{"documentId": "DOC_ID"}'
+
+# Get document with all tabs content
+gws docs documents get --params '{"documentId": "DOC_ID", "includeTabsContent": true}'
+```
+
+### Extracting plain text from document JSON
+
+The API returns structured JSON, not plain text. To extract readable text:
+
+```bash
+gws docs documents get --params '{"documentId": "DOC_ID", "includeTabsContent": true}' | python3 -c "
+import json, sys
+doc = json.load(sys.stdin)
+
+def extract_text(elements):
+    text = ''
+    for el in elements:
+        if 'paragraph' in el:
+            for run in el['paragraph'].get('elements', []):
+                if 'textRun' in run:
+                    text += run['textRun']['content']
+        elif 'table' in el:
+            for row in el['table'].get('tableRows', []):
+                for cell in row.get('tableCells', []):
+                    text += extract_text(cell.get('content', []))
+    return text
+
+for tab in doc.get('tabs', []):
+    title = tab.get('tabProperties', {}).get('title', 'Main')
+    body = tab.get('documentTab', {}).get('body', {})
+    text = extract_text(body.get('content', []))
+    print(f'=== {title} ===')
+    print(text)
+"
+```
+
+### Common mistakes
+
+- **`--params documentId=X`** — Wrong. `--params` requires JSON: `--params '{"documentId": "X"}'`
+- **`--document-id X`** — Does not exist. Use `--params '{"documentId": "X"}'`
+- **`--format text`** — Invalid format. Valid options: `json`, `table`, `yaml`, `csv`. Invalid formats emit a warning to stdout that breaks JSON piping.
+
 ## Discovering Commands
 
 Before calling any API method, inspect it:

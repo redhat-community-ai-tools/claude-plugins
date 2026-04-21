@@ -52,8 +52,13 @@ KEY=$(jira issue create -t Bug --project MGMT \
 <what actually happens>" \
   --label OSAC \
   --affects-version "OSAC" \
-  --no-input 2>&1 | grep -oP '[A-Z]+-\d+')
+  --no-input --raw 2>/dev/null | jq -r '.key')
 ```
+
+**Key extraction notes:**
+- Use `--raw` to get JSON output on stdout, then `jq -r '.key'` to extract the issue key reliably.
+- Redirect stderr to `/dev/null` — the success message (`✓ Issue created`) goes to stderr and is not needed.
+- Do **not** use `grep -oP` on the text output — it can match multiple keys in the URL or fail silently.
 
 ### Link to epic
 

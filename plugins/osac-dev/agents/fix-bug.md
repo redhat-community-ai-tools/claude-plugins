@@ -34,8 +34,10 @@ KEY=$(jira issue create -t Bug --project MGMT \
 <what actually happens>" \
   --label OSAC \
   --affects-version "OSAC" \
-  --no-input 2>&1 | grep -oP '[A-Z]+-\d+')
+  --no-input --raw 2>/dev/null | jq -r '.key')
 ```
+
+**Key extraction:** `--raw` outputs JSON to stdout; `jq -r '.key'` extracts the issue key reliably. Do not use `grep -oP` — the text output goes to stderr and `grep` fails silently.
 
 Then link to epic, assign, and move to In Progress:
 
