@@ -19,6 +19,7 @@ POLARION_SERVER_PATH = os.path.expanduser("~/Documents/GitHub/polarion-mcp-serve
 sys.path.insert(0, POLARION_SERVER_PATH)
 
 from polarion_client import PolarionClient
+from test_runs import TestRunManager
 
 # Configuration
 POLARION_URL = os.getenv("POLARION_URL", "https://polarion.engineering.redhat.com")
@@ -31,8 +32,9 @@ if not POLARION_TOKEN:
     print("Set it with: export POLARION_TOKEN=your-token-here", file=sys.stderr)
     sys.exit(1)
 
-# Initialize client
+# Initialize client and test run manager
 client = PolarionClient(POLARION_URL, POLARION_TOKEN, VERIFY_SSL)
+test_run_mgr = TestRunManager(client)
 
 
 def test_connection(args):
@@ -40,7 +42,7 @@ def test_connection(args):
     try:
         result = client.test_connection(args.project or DEFAULT_PROJECT)
         print(json.dumps(result, indent=2))
-        return 0 if result.get("status") == "ok" else 1
+        return 0 if result.get("status") in ["ok", "success"] else 1
     except Exception as e:
         print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
         return 1
@@ -330,9 +332,186 @@ def restore_test_steps(args):
         return 1
 
 
+def create_test_run(args):
+    """Create a new test run"""
+    try:
+        project_id = args.project or DEFAULT_PROJECT
+        result = test_run_mgr.create_test_run(
+            title=args.title,
+            template=getattr(args, 'template', None),
+            project_id=project_id,
+            test_case_ids=args.test_case_ids.split(',') if args.test_case_ids else None,
+            query=args.query
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("status") in ["success", "partial"] else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def update_test_result(args):
+    """Update test result in a test run"""
+    try:
+        project_id = args.project or DEFAULT_PROJECT
+        result = test_run_mgr.update_test_result(
+            test_run_id=args.test_run_id,
+            test_case_id=args.test_case_id,
+            result=args.result,
+            project_id=project_id,
+            comment=args.comment,
+            executed_by=args.executed_by
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("status") == "success" else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def get_test_run_status(args):
+    """Get test run status"""
+    try:
+        project_id = args.project or DEFAULT_PROJECT
+        result = test_run_mgr.get_test_run_status(
+            test_run_id=args.test_run_id,
+            project_id=project_id
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result.get("status") == "success" else 1
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
+def import_results(args):
+    """Import test results from Excel/CSV file and create/update test runs"""
+    try:
+        import openpyxl
+        from datetime import datetime
+
+        project_id = args.project or DEFAULT_PROJECT
+        file_path = args.file
+
+        # Determine file type
+        if file_path.endswith('.xlsx'):
+            wb = openpyxl.load_workbook(file_path)
+            sheets = wb.sheetnames
+        else:
+            print(json.dumps({"status": "failed", "error": "Only Excel (.xlsx) files are supported"}, indent=2), file=sys.stderr)
+            return 1
+
+        results = []
+
+        for sheet_name in sheets:
+            if sheet_name.lower() == 'summary':
+                continue
+
+            sheet = wb[sheet_name]
+
+            # Parse test results from sheet
+            test_cases = []
+            for row in range(2, sheet.max_row + 1):
+                test_id = sheet.cell(row, 1).value
+                title = sheet.cell(row, 2).value
+                status = sheet.cell(row, 3).value
+
+                if test_id and title:
+                    # Normalize test_id
+                    if isinstance(test_id, int):
+                        test_id = f"OCP-{test_id}"
+                    elif not str(test_id).startswith("OCP-"):
+                        test_id_str = str(test_id).strip()
+                        # Skip invalid IDs
+                        if not test_id_str.isdigit():
+                            continue
+                        test_id = f"OCP-{test_id}"
+
+                    test_cases.append({
+                        "id": test_id,
+                        "title": title,
+                        "status": status
+                    })
+
+            if not test_cases:
+                print(f"Skipping {sheet_name}: No test cases found", file=sys.stderr)
+                continue
+
+            # Create test run
+            title = args.title_template.replace("{platform}", sheet_name).replace("{date}", datetime.now().strftime('%Y-%m-%d'))
+
+            test_case_ids = [tc["id"] for tc in test_cases]
+
+            create_result = test_run_mgr.create_test_run(
+                title=title,
+                template=args.template,
+                project_id=project_id,
+                test_case_ids=test_case_ids
+            )
+
+            if create_result.get("status") not in ["success", "partial"]:
+                print(f"Failed to create test run for {sheet_name}: {create_result.get('error')}", file=sys.stderr)
+                continue
+
+            test_run_id = create_result.get("test_run_id")
+            print(f"\nCreated test run for {sheet_name}: {test_run_id}", file=sys.stderr)
+
+            # Update test results
+            passed = 0
+            failed = 0
+
+            for tc in test_cases:
+                # Determine result
+                result = "passed"  # default
+                if tc.get("status"):
+                    status_str = str(tc["status"]).lower()
+                    if "pass" in status_str:
+                        result = "passed"
+                    elif "fail" in status_str:
+                        result = "failed"
+                    elif "block" in status_str:
+                        result = "blocked"
+
+                # Update result
+                update_result = test_run_mgr.update_test_result(
+                    test_run_id=test_run_id,
+                    test_case_id=tc["id"],
+                    result=result,
+                    project_id=project_id
+                )
+
+                if update_result.get("status") == "success":
+                    if result == "passed":
+                        passed += 1
+                    elif result == "failed":
+                        failed += 1
+
+            results.append({
+                "platform": sheet_name,
+                "test_run_id": test_run_id,
+                "url": create_result.get("url"),
+                "passed": passed,
+                "failed": failed,
+                "total": len(test_cases)
+            })
+
+        # Print summary
+        print(json.dumps({
+            "status": "success",
+            "test_runs": results,
+            "total_runs": len(results)
+        }, indent=2))
+
+        return 0
+
+    except Exception as e:
+        print(json.dumps({"status": "failed", "error": str(e)}, indent=2), file=sys.stderr)
+        return 1
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Polarion CLI - Test case management tool",
+        description="Polarion CLI - Test case and test run management tool",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("--project", "-p", help=f"Polarion project ID (default: {DEFAULT_PROJECT})")
@@ -380,6 +559,34 @@ def main():
     restore_steps_parser = subparsers.add_parser("restore-test-steps", help="Restore test steps from backup file")
     restore_steps_parser.add_argument("backup_file", help="Path to backup file (e.g., /tmp/polarion-backup-OCP-32615-steps.json)")
 
+    # create-test-run command
+    create_run_parser = subparsers.add_parser("create-test-run", help="Create a new test run")
+    create_run_parser.add_argument("--title", "-t", required=True, help="Test run title")
+    create_run_parser.add_argument("--template", default="Empty", help="Test run template (default: Empty)")
+    create_run_parser.add_argument("--test-case-ids", help="Comma-separated test case IDs (e.g., OCP-12345,OCP-12346)")
+    create_run_parser.add_argument("--query", help="Lucene query to select test cases")
+
+    # update-test-result command
+    update_result_parser = subparsers.add_parser("update-test-result", help="Update test result in a test run")
+    update_result_parser.add_argument("test_run_id", help="Test run ID")
+    update_result_parser.add_argument("test_case_id", help="Test case ID (e.g., OCP-12345)")
+    update_result_parser.add_argument("--result", "-r", required=True,
+                                      choices=["passed", "failed", "blocked"],
+                                      help="Test result")
+    update_result_parser.add_argument("--comment", "-c", help="Comment/notes")
+    update_result_parser.add_argument("--executed-by", help="User who executed the test")
+
+    # get-test-run-status command
+    get_run_parser = subparsers.add_parser("get-test-run-status", help="Get test run status and statistics")
+    get_run_parser.add_argument("test_run_id", help="Test run ID")
+
+    # import-results command
+    import_parser = subparsers.add_parser("import-results", help="Import test results from Excel file and create test runs")
+    import_parser.add_argument("file", help="Path to Excel file (.xlsx)")
+    import_parser.add_argument("--title-template", default="Test Run - {platform} - {date}",
+                               help="Test run title template (use {platform} and {date} placeholders)")
+    import_parser.add_argument("--template", default="Empty", help="Test run template (default: Empty)")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -395,6 +602,10 @@ def main():
         "update": update_test_case,
         "add-test-steps": add_test_steps,
         "restore-test-steps": restore_test_steps,
+        "create-test-run": create_test_run,
+        "update-test-result": update_test_result,
+        "get-test-run-status": get_test_run_status,
+        "import-results": import_results,
     }
 
     handler = handlers.get(args.command)
