@@ -289,16 +289,21 @@ polarion-cli import-results results.xlsx \
 **Excel file format:**
 - Multi-sheet Excel (.xlsx) files supported
 - Each sheet represents a platform/test run
-- Columns: Test ID (col 1), Title (col 2), Status (col 3)
+- Test result columns: Test ID (col 1), Title (col 2), Status (col 3), Prow URL (col 4)
 - Status values: "Passed", "Failed", "Blocked" (case-insensitive)
-- Sheet named "Summary" is automatically skipped
+- Special sheets:
+  - "Summary" sheet is automatically skipped
+  - "Variants" sheet (optional): Platform (col 1), Variant (col 2), Job URL (col 3), Build Date (col 4)
+    - If present, variant information is added to test run descriptions
+    - Example variants: "proxy", "disconnected", "ipi-connected", "upi"
 
 **Behavior:**
-1. Creates one test run per Excel sheet
+1. Creates one test run per Excel sheet (excluding Summary and Variants)
 2. Adds all test cases from the sheet to the test run
 3. Updates test results based on Status column
-4. Skips invalid test IDs automatically
-5. Returns JSON summary with URLs to all created test runs
+4. If Variants sheet exists, adds variant links to test run descriptions
+5. Skips invalid test IDs automatically
+6. Returns JSON summary with URLs to all created test runs
 
 **Example workflow:**
 ```bash

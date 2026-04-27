@@ -19,7 +19,6 @@ POLARION_SERVER_PATH = os.path.expanduser("~/Documents/GitHub/polarion-mcp-serve
 sys.path.insert(0, POLARION_SERVER_PATH)
 
 from polarion_client import PolarionClient
-from test_runs import TestRunManager
 
 # Configuration
 POLARION_URL = os.getenv("POLARION_URL", "https://polarion.engineering.redhat.com")
@@ -32,9 +31,24 @@ if not POLARION_TOKEN:
     print("Set it with: export POLARION_TOKEN=your-token-here", file=sys.stderr)
     sys.exit(1)
 
-# Initialize client and test run manager
+# Initialize client
 client = PolarionClient(POLARION_URL, POLARION_TOKEN, VERIFY_SSL)
-test_run_mgr = TestRunManager(client)
+
+# Lazy-load test run manager (only when needed for test run commands)
+_test_run_mgr = None
+
+def get_test_run_mgr():
+    """Get or initialize test run manager"""
+    global _test_run_mgr
+    if _test_run_mgr is None:
+        try:
+            from test_runs import TestRunManager
+            _test_run_mgr = TestRunManager(client)
+        except ImportError:
+            print("ERROR: Test run management requires polarion-mcp-server with test_runs module", file=sys.stderr)
+            print("Update polarion-mcp-server to the latest version", file=sys.stderr)
+            sys.exit(1)
+    return _test_run_mgr
 
 
 def test_connection(args):
@@ -336,9 +350,9 @@ def create_test_run(args):
     """Create a new test run"""
     try:
         project_id = args.project or DEFAULT_PROJECT
-        result = test_run_mgr.create_test_run(
+        result = get_test_run_mgr().create_test_run(
             title=args.title,
-            template=getattr(args, 'template', None),
+            template=args.template,
             project_id=project_id,
             test_case_ids=args.test_case_ids.split(',') if args.test_case_ids else None,
             query=args.query
@@ -354,7 +368,7 @@ def update_test_result(args):
     """Update test result in a test run"""
     try:
         project_id = args.project or DEFAULT_PROJECT
-        result = test_run_mgr.update_test_result(
+        result = get_test_run_mgr().update_test_result(
             test_run_id=args.test_run_id,
             test_case_id=args.test_case_id,
             result=args.result,
@@ -373,7 +387,7 @@ def get_test_run_status(args):
     """Get test run status"""
     try:
         project_id = args.project or DEFAULT_PROJECT
-        result = test_run_mgr.get_test_run_status(
+        result = get_test_run_mgr().get_test_run_status(
             test_run_id=args.test_run_id,
             project_id=project_id
         )
@@ -387,11 +401,37 @@ def get_test_run_status(args):
 def import_results(args):
     """Import test results from Excel/CSV file and create/update test runs"""
     try:
-        import openpyxl
+        try:
+            import openpyxl
+        except ImportError:
+            print(json.dumps({
+                "status": "failed",
+                "error": "openpyxl package is required for Excel import. Install it with: pip install openpyxl"
+            }, indent=2), file=sys.stderr)
+            return 1
+
         from datetime import datetime
 
         project_id = args.project or DEFAULT_PROJECT
         file_path = args.file
+
+        # Parse update-test-run parameter
+        update_test_runs = {}
+        if args.update_test_run:
+            # Format: "OSE/20260426-1455" or "aws:OSE/20260426-1455,vsphere:OSE/20260426-1456_2"
+            if ":" in args.update_test_run:
+                # Multiple platforms
+                for mapping in args.update_test_run.split(","):
+                    platform, test_run_id = mapping.strip().split(":")
+                    update_test_runs[platform.strip()] = test_run_id.strip()
+            else:
+                # Single test run ID - will be used for first platform found
+                update_test_runs["_single_"] = args.update_test_run.strip()
+
+        # Parse platforms filter
+        platform_filter = None
+        if args.platforms:
+            platform_filter = [p.strip() for p in args.platforms.split(",")]
 
         # Determine file type
         if file_path.endswith('.xlsx'):
@@ -401,13 +441,43 @@ def import_results(args):
             print(json.dumps({"status": "failed", "error": "Only Excel (.xlsx) files are supported"}, indent=2), file=sys.stderr)
             return 1
 
+        # Read Variants sheet first if it exists
+        variants_by_platform = {}
+        if 'Variants' in sheets:
+            variants_sheet = wb['Variants']
+            for row in range(2, variants_sheet.max_row + 1):
+                platform = variants_sheet.cell(row, 1).value
+                variant = variants_sheet.cell(row, 2).value
+                job_url = variants_sheet.cell(row, 3).value
+                build_date = variants_sheet.cell(row, 4).value
+
+                if platform and variant:
+                    if platform not in variants_by_platform:
+                        variants_by_platform[platform] = []
+                    variants_by_platform[platform].append({
+                        "variant": variant,
+                        "job_url": job_url,
+                        "build_date": build_date
+                    })
+
         results = []
 
         for sheet_name in sheets:
-            if sheet_name.lower() == 'summary':
+            if sheet_name.lower() in ['summary', 'variants']:
+                continue
+
+            # Apply platform filter if specified
+            if platform_filter and sheet_name not in platform_filter:
+                print(f"Skipping {sheet_name}: Not in platform filter", file=sys.stderr)
                 continue
 
             sheet = wb[sheet_name]
+
+            # Validate header row (optional but recommended)
+            header_row = [str(cell.value).strip().lower() if cell.value else "" for cell in sheet[1]]
+            expected_headers = ["test id", "title", "status"]
+            if len(header_row) >= 3 and not any(expected in header_row[:3] for expected in expected_headers):
+                print(f"Warning: {sheet_name} sheet may have unexpected column layout. Expected columns: Test ID, Title, Status", file=sys.stderr)
 
             # Parse test results from sheet
             test_cases = []
@@ -415,6 +485,7 @@ def import_results(args):
                 test_id = sheet.cell(row, 1).value
                 title = sheet.cell(row, 2).value
                 status = sheet.cell(row, 3).value
+                prow_url = sheet.cell(row, 4).value  # Column D contains Prow URL
 
                 if test_id and title:
                     # Normalize test_id
@@ -430,31 +501,75 @@ def import_results(args):
                     test_cases.append({
                         "id": test_id,
                         "title": title,
-                        "status": status
+                        "status": status,
+                        "prow_url": prow_url
                     })
 
             if not test_cases:
                 print(f"Skipping {sheet_name}: No test cases found", file=sys.stderr)
                 continue
 
-            # Create test run
-            title = args.title_template.replace("{platform}", sheet_name).replace("{date}", datetime.now().strftime('%Y-%m-%d'))
+            # Check if updating existing test run
+            test_run_id = None
+            is_update = False
+            if sheet_name in update_test_runs:
+                test_run_id = update_test_runs[sheet_name]
+                is_update = True
+                print(f"\nUpdating existing test run for {sheet_name}: {test_run_id}", file=sys.stderr)
+            elif "_single_" in update_test_runs:
+                # Use _single_ sentinel only once for the first sheet, then remove it
+                test_run_id = update_test_runs["_single_"]
+                del update_test_runs["_single_"]  # Remove so it's not reused
+                is_update = True
+                print(f"\nUpdating existing test run for {sheet_name}: {test_run_id}", file=sys.stderr)
+            else:
+                # Create new test run
+                title = args.title_template.replace("{platform}", sheet_name).replace("{date}", datetime.now().strftime('%Y-%m-%d'))
 
-            test_case_ids = [tc["id"] for tc in test_cases]
+                test_case_ids = [tc["id"] for tc in test_cases]
 
-            create_result = test_run_mgr.create_test_run(
-                title=title,
-                template=args.template,
-                project_id=project_id,
-                test_case_ids=test_case_ids
-            )
+                create_result = get_test_run_mgr().create_test_run(
+                    title=title,
+                    template=args.template,
+                    project_id=project_id,
+                    test_case_ids=test_case_ids
+                )
 
-            if create_result.get("status") not in ["success", "partial"]:
-                print(f"Failed to create test run for {sheet_name}: {create_result.get('error')}", file=sys.stderr)
-                continue
+                if create_result.get("status") not in ["success", "partial"]:
+                    print(f"Failed to create test run for {sheet_name}: {create_result.get('error')}", file=sys.stderr)
+                    continue
 
-            test_run_id = create_result.get("test_run_id")
-            print(f"\nCreated test run for {sheet_name}: {test_run_id}", file=sys.stderr)
+                test_run_id = create_result.get("test_run_id")
+                print(f"\nCreated test run for {sheet_name}: {test_run_id}", file=sys.stderr)
+
+            # Update test run description with variant links (if variants exist for this platform)
+            if sheet_name in variants_by_platform:
+                variants = variants_by_platform[sheet_name]
+                description_lines = ["Test Run Variants:", ""]
+
+                for variant_info in variants:
+                    variant = variant_info.get("variant", "")
+                    job_url = variant_info.get("job_url", "")
+                    build_date = variant_info.get("build_date", "")
+
+                    if job_url:
+                        description_lines.append(f"- {variant}: {job_url} (Build Date: {build_date})")
+                    else:
+                        description_lines.append(f"- {variant}: (Build Date: {build_date})")
+
+                description = "\n".join(description_lines)
+
+                # Update test run description
+                desc_result = get_test_run_mgr().update_test_run_description(
+                    test_run_id=test_run_id,
+                    description=description,
+                    project_id=project_id
+                )
+
+                if desc_result.get("status") == "success":
+                    print(f"Updated description with {len(variants)} variant(s)", file=sys.stderr)
+                else:
+                    print(f"Warning: Failed to update description: {desc_result.get('error')}", file=sys.stderr)
 
             # Update test results
             passed = 0
@@ -472,12 +587,19 @@ def import_results(args):
                     elif "block" in status_str:
                         result = "blocked"
 
+                # Build comment with Prow URL for failed tests
+                comment = None
+                if result == "failed" and tc.get("prow_url"):
+                    prow_url = tc["prow_url"]
+                    comment = f"Failure: {prow_url}"
+
                 # Update result
-                update_result = test_run_mgr.update_test_result(
+                update_result = get_test_run_mgr().update_test_result(
                     test_run_id=test_run_id,
                     test_case_id=tc["id"],
                     result=result,
-                    project_id=project_id
+                    project_id=project_id,
+                    comment=comment
                 )
 
                 if update_result.get("status") == "success":
@@ -486,10 +608,29 @@ def import_results(args):
                     elif result == "failed":
                         failed += 1
 
+            # Update test run status to finished
+            finish_result = get_test_run_mgr().update_test_run_status(
+                test_run_id=test_run_id,
+                status="finished",
+                project_id=project_id
+            )
+
+            if finish_result.get("status") != "success":
+                print(f"Warning: Failed to set test run status to finished: {finish_result.get('error')}", file=sys.stderr)
+
+            # Construct URL for test run
+            if is_update:
+                # For updates, construct URL from test_run_id
+                tr_id = test_run_id.split("/")[-1] if "/" in test_run_id else test_run_id
+                url = f"https://polarion.engineering.redhat.com/polarion/redirect/project/{project_id}/testrun?id={tr_id}"
+            else:
+                # For new runs, use URL from create_result
+                url = create_result.get("url")
+
             results.append({
                 "platform": sheet_name,
                 "test_run_id": test_run_id,
-                "url": create_result.get("url"),
+                "url": url,
                 "passed": passed,
                 "failed": failed,
                 "total": len(test_cases)
@@ -586,6 +727,8 @@ def main():
     import_parser.add_argument("--title-template", default="Test Run - {platform} - {date}",
                                help="Test run title template (use {platform} and {date} placeholders)")
     import_parser.add_argument("--template", default="Empty", help="Test run template (default: Empty)")
+    import_parser.add_argument("--update-test-run", help="Update existing test run ID instead of creating new (format: OSE/20260426-1455 or platform:id,platform:id)")
+    import_parser.add_argument("--platforms", help="Only process specific platforms (comma-separated: aws,vsphere)")
 
     args = parser.parse_args()
 
