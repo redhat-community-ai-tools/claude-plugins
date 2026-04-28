@@ -59,6 +59,15 @@
       }
     },
     {
+      "name": "osac-ep-generator",
+      "source": "./plugins/osac-ep-generator",
+      "description": "OSAC enhancement proposal workflows: generate EPs from requirements and decompose into Jira epics with dependency mapping",
+      "version": "1.0.0",
+      "author": {
+        "name": "Eran Cohen"
+      }
+    },
+    {
       "name": "google",
       "source": "./plugins/google",
       "description": "Google Workspace integration — Gmail, Docs, Slides, Sheets, Calendar, and Drive via the gws CLI",
