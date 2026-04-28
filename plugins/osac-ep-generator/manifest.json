@@ -1,0 +1,76 @@
+{
+  "name": "osac-ep-generator",
+  "version": "1.0.0",
+  "description": "OSAC enhancement proposal workflows: generate EPs from requirements and decompose into Jira epics with dependency mapping",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "enhancement-proposal",
+    "planning",
+    "jira",
+    "osac",
+    "architecture"
+  ],
+  "skills": [
+    {
+      "name": "generate-ep",
+      "path": "skills/generate-ep/SKILL.md",
+      "description": "Generate OSAC enhancement proposals from high-level requirements, meeting notes, or Jira tickets. Includes interactive clarification, codebase exploration, PR submission, and review feedback iteration.",
+      "tags": ["enhancement-proposal", "planning", "documentation", "pr"]
+    },
+    {
+      "name": "ep-to-jira",
+      "path": "skills/ep-to-jira/SKILL.md",
+      "description": "Convert an approved OSAC enhancement proposal into a Jira epic with linked sub-tasks. Performs codebase-aware dependency mapping to identify cross-repo impacts and breaking changes.",
+      "tags": ["jira", "decomposition", "dependency-mapping", "complexity"]
+    }
+  ],
+  "commands": [
+    {
+      "name": "generate-ep",
+      "path": ".claude-code/commands/generate-ep.md",
+      "description": "Generate an OSAC enhancement proposal from requirements or meeting notes"
+    },
+    {
+      "name": "ep-to-jira",
+      "path": ".claude-code/commands/ep-to-jira.md",
+      "description": "Convert an approved EP into a Jira epic with sub-tasks"
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "gh": {
+        "required": true,
+        "description": "GitHub CLI for PR creation and review fetching"
+      },
+      "jira": {
+        "required": true,
+        "description": "jira-cli (ankitpokhrel/jira-cli) for epic and task creation",
+        "installUrl": "https://github.com/ankitpokhrel/jira-cli"
+      },
+      "rg": {
+        "required": true,
+        "description": "ripgrep for fast codebase exploration"
+      },
+      "jq": {
+        "required": false,
+        "description": "JSON processor for parsing CLI output"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Workflow",
+    "Planning"
+  ]
+}
