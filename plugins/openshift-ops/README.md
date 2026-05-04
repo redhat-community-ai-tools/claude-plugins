@@ -91,7 +91,7 @@ cd claude-plugins/plugins/openshift-ops
 /plugin list
 
 # View available skills
-/skill list
+/skills list
 ```
 
 ## Usage
@@ -223,7 +223,7 @@ The skills are designed to work together:
 
 If skills or commands aren't working:
 1. Verify plugin is installed: `/plugin list`
-2. Check available skills: `/skill list`
+2. Check available skills: `/skills list`
 3. Try explicitly requesting the skill by name or using slash commands
 4. Ensure `oc` CLI is installed and configured
 
