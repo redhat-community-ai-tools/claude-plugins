@@ -32,6 +32,7 @@ claude plugin update jira
 | **google** | Google Workspace — Gmail, Docs, Slides, Sheets, Calendar, Drive | `claude plugin install google` | `gws` |
 | **quarterly-connection** | Red Hat Quarterly Connection reports from Jira, GitHub, Google Workspace, GitLab | `claude plugin install quarterly-connection` | `jira`, `gh`, `gws` |
 | **skill-scanner** | Scan plugins for security vulnerabilities | `claude plugin install skill-scanner` | — |
+| **dci-mcp-server** | DCI, Jira, GitHub, GitLab, Google Drive, Red Hat Support via MCP | `claude plugin install dci-mcp-server` | `uv`, `python3` |
 
 ### openshift-ops
 
@@ -102,6 +103,15 @@ Google Workspace integration via the [`gws`](https://github.com/googleworkspace/
 ### skill-scanner
 
 - **skill-scanner** — Scan installed plugins for prompt injection, malicious instructions, and security issues
+
+### dci-mcp-server
+
+MCP server for [DCI (Distributed CI)](https://doc.distributed-ci.io/) with multi-platform integration:
+- **dci-mcp-management** — Search CI jobs, query components/teams/remotecis, manage Jira tickets, review GitHub/GitLab PRs, access Red Hat support cases, and create Google Docs — all via MCP server integration
+
+**Requires:** Python 3.14+, [uv](https://docs.astral.sh/uv/), DCI API credentials. Optional integrations: Jira, GitHub, GitLab, Red Hat Support, Google Drive.
+
+See [plugins/dci-mcp-server/README.md](plugins/dci-mcp-server/README.md)
 
 ## Managing Plugins
 
