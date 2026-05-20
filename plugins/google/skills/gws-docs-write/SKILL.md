@@ -39,7 +39,12 @@ gws docs +write --document DOC_ID --text 'Hello, world!'
 ## Tips
 
 - Text is inserted at the end of the document body.
-- For rich formatting, use the raw batchUpdate API instead.
+- For rich formatting, use the [`+format`](../gws-docs-format/SKILL.md) helper or the raw `batchUpdate` API.
+- **Long or complex text:** Write content to a temp file first, then use command substitution. Passing long strings directly via `--text '...'` often breaks due to shell interpretation of parentheses, quotes, backticks, and other special characters.
+  ```bash
+  # Write content to file, then pass via command substitution
+  gws docs +write --document DOC_ID --text "$(cat /tmp/my-content.txt)"
+  ```
 
 > [!CAUTION]
 > This is a **write** command — confirm with the user before executing.
