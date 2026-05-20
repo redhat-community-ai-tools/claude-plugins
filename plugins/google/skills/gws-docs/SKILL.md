@@ -223,6 +223,8 @@ Convert paragraphs into native Google Docs lists using `createParagraphBullets`.
 
 Common presets: `BULLET_DISC_CIRCLE_SQUARE` (● ○ ■), `BULLET_CHECKBOX` (☐), `NUMBERED_DECIMAL_ALPHA_ROMAN` (1. a. i.), `NUMBERED_DECIMAL_NESTED` (1. 1.1. 1.1.1.). See the [`+format`](../gws-docs-format/SKILL.md) skill for the full list.
 
+**Warning:** `createParagraphBullets` shifts character indices. If you need to delete text prefixes (`- `, `1. `) from existing content after converting to native lists, do it in a **separate** `batchUpdate` call — re-read the document first to get updated indices.
+
 ### Line spacing
 
 Set line spacing on paragraphs using `lineSpacing` as a percentage (100 = single, 150 = 1.5, 200 = double):
