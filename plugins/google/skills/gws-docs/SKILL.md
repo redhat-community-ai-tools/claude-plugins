@@ -175,6 +175,40 @@ Set foreground (text) or background (highlight) color using RGB values (0.0–1.
 
 Replace `foregroundColor` with `backgroundColor` for highlighting.
 
+### Font family
+
+Set the font for a text range. The font must be available in Google Docs (installed or from Google Fonts).
+
+```json
+{
+  "updateTextStyle": {
+    "range": {"startIndex": START, "endIndex": END},
+    "textStyle": {
+      "weightedFontFamily": {"fontFamily": "Red Hat Display"}
+    },
+    "fields": "weightedFontFamily"
+  }
+}
+```
+
+Common font families: `Red Hat Display`, `Red Hat Text`, `Roboto`, `Google Sans`, `Arial`, `Inter`.
+
+### Line spacing
+
+Set line spacing on paragraphs using `lineSpacing` as a percentage (100 = single, 150 = 1.5, 200 = double):
+
+```json
+{
+  "updateParagraphStyle": {
+    "range": {"startIndex": START, "endIndex": END},
+    "paragraphStyle": {"lineSpacing": 150},
+    "fields": "lineSpacing"
+  }
+}
+```
+
+To apply font or line spacing to the **entire document**, use the full document range (`1` to last index).
+
 ### Deleting content
 
 Remove text ranges with `deleteContentRange`. **Important:** deletions shift all subsequent indices, so apply them in reverse order (highest startIndex first) or separate them into a second `batchUpdate` call after formatting.

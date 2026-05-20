@@ -124,6 +124,40 @@ Common colors:
 | Blue | `0.0, 0.0, 0.8` |
 | Green | `0.0, 0.5, 0.0` |
 
+### Font Family
+
+Set the font for a text range. The font must be available in Google Docs (installed or from Google Fonts).
+
+```json
+{
+  "updateTextStyle": {
+    "range": {"startIndex": START, "endIndex": END},
+    "textStyle": {
+      "weightedFontFamily": {"fontFamily": "Red Hat Display"}
+    },
+    "fields": "weightedFontFamily"
+  }
+}
+```
+
+To set the font for the **entire document**, use the full document range (`1` to last index). To change the default font for all named styles at once, use `updateDocumentStyle` (see "Document-Wide Defaults" below).
+
+### Line Spacing
+
+Set line spacing on paragraphs using `lineSpacing` as a percentage (100 = single, 150 = 1.5, 200 = double):
+
+```json
+{
+  "updateParagraphStyle": {
+    "range": {"startIndex": START, "endIndex": END},
+    "paragraphStyle": {"lineSpacing": 150},
+    "fields": "lineSpacing"
+  }
+}
+```
+
+To apply to the **entire document**, use the full document range (`1` to last index).
+
 ### Deleting Content
 
 ```json
@@ -175,6 +209,25 @@ def color(start, end, r, g, b):
         }
     })
 
+def font(start, end, family):
+    requests.append({
+        "updateTextStyle": {
+            "range": {"startIndex": start, "endIndex": end},
+            "textStyle": {"weightedFontFamily": {"fontFamily": family}},
+            "fields": "weightedFontFamily"
+        }
+    })
+
+def line_spacing(start, end, pct):
+    """pct: 100 = single, 150 = 1.5, 200 = double."""
+    requests.append({
+        "updateParagraphStyle": {
+            "range": {"startIndex": start, "endIndex": end},
+            "paragraphStyle": {"lineSpacing": pct},
+            "fields": "lineSpacing"
+        }
+    })
+
 def delete(start, end):
     requests.append({"deleteContentRange": {"range": {"startIndex": start, "endIndex": end}}})
 
@@ -184,6 +237,9 @@ heading(191, 212, 1)
 heading(500, 540, 2)
 bold(100, 115)
 color(200, 250, 0.8, 0.0, 0.0)
+# Document-wide: set font and 1.5 line spacing on entire body (1 to last index)
+font(1, LAST_INDEX, "Red Hat Display")
+line_spacing(1, LAST_INDEX, 150)
 # Deletions MUST be in reverse index order
 delete(600, 656)
 delete(400, 456)
@@ -199,6 +255,47 @@ gws docs documents batchUpdate \
   --params '{"documentId": "DOC_ID"}' \
   --json "$(cat /tmp/format-requests.json)"
 ```
+
+## Document-Wide Defaults
+
+To set font and line spacing across the entire document body, apply `updateTextStyle` and `updateParagraphStyle` with a range covering the full content (`1` to the last index). Get the last index from the document JSON:
+
+```bash
+gws docs documents get --params '{"documentId": "DOC_ID", "includeTabsContent": true}' 2>/dev/null | python3 -c "
+import json, sys
+doc = json.load(sys.stdin)
+body = doc['tabs'][0]['documentTab']['body']
+last = body['content'][-1].get('endIndex', 1)
+print(last)
+"
+```
+
+Then apply both in one `batchUpdate`:
+
+```json
+{
+  "requests": [
+    {
+      "updateTextStyle": {
+        "range": {"startIndex": 1, "endIndex": LAST_INDEX},
+        "textStyle": {"weightedFontFamily": {"fontFamily": "Red Hat Display"}},
+        "fields": "weightedFontFamily"
+      }
+    },
+    {
+      "updateParagraphStyle": {
+        "range": {"startIndex": 1, "endIndex": LAST_INDEX},
+        "paragraphStyle": {"lineSpacing": 150},
+        "fields": "lineSpacing"
+      }
+    }
+  ]
+}
+```
+
+Common font families: `Red Hat Display`, `Red Hat Text`, `Roboto`, `Google Sans`, `Arial`, `Inter`.
+
+Line spacing values: `100` (single), `115` (1.15), `150` (1.5), `200` (double).
 
 ## Tips
 
