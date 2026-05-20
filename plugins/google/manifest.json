@@ -1,6 +1,6 @@
 {
   "name": "google",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Google Workspace integration — Gmail, Docs, Slides, Sheets, Calendar, and Drive via the gws CLI",
   "author": {
     "name": "Eran Cohen"
@@ -87,6 +87,12 @@
       "path": "skills/gws-docs-write/SKILL.md",
       "description": "Google Docs: Append text to a document.",
       "tags": ["google", "docs", "documents", "write"]
+    },
+    {
+      "name": "gws-docs-format",
+      "path": "skills/gws-docs-format/SKILL.md",
+      "description": "Google Docs: Apply rich formatting (headings, bold, colors, links, lists) to a document via batchUpdate.",
+      "tags": ["google", "docs", "documents", "format"]
     },
     {
       "name": "gws-slides",
