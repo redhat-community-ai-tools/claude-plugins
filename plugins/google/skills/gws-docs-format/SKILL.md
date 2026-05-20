@@ -142,6 +142,61 @@ Set the font for a text range. The font must be available in Google Docs (instal
 
 To set the font for the **entire document**, use the full document range (`1` to last index). To change the default font for all named styles at once, use `updateDocumentStyle` (see "Document-Wide Defaults" below).
 
+### Bulleted and Numbered Lists
+
+Convert paragraphs into native Google Docs lists using `createParagraphBullets`. The range should cover all paragraphs to include in the list. Each paragraph in the range becomes a list item.
+
+**Bulleted list:**
+
+```json
+{
+  "createParagraphBullets": {
+    "range": {"startIndex": START, "endIndex": END},
+    "bulletPreset": "BULLET_DISC_CIRCLE_SQUARE"
+  }
+}
+```
+
+**Numbered list:**
+
+```json
+{
+  "createParagraphBullets": {
+    "range": {"startIndex": START, "endIndex": END},
+    "bulletPreset": "NUMBERED_DECIMAL_ALPHA_ROMAN"
+  }
+}
+```
+
+**Remove bullets/numbering:**
+
+```json
+{
+  "deleteParagraphBullets": {
+    "range": {"startIndex": START, "endIndex": END}
+  }
+}
+```
+
+> [!IMPORTANT]
+> **Do not write list items with text prefixes** like `- ` or `1. ` when the intent is to create a native list. Write each item as a plain paragraph (one per line), then apply `createParagraphBullets` to the range. Native lists give proper indentation, numbering, and nesting — text prefixes are just plain text with no list behavior.
+
+Common bullet presets:
+| Preset | Style |
+|--------|-------|
+| `BULLET_DISC_CIRCLE_SQUARE` | ● ○ ■ (standard) |
+| `BULLET_DIAMONDX_ARROW3D_SQUARE` | ◆ ➤ ■ |
+| `BULLET_CHECKBOX` | ☐ ☐ ☐ |
+| `BULLET_ARROW_DIAMOND_DISC` | ➔ ◆ ● |
+
+Common numbered presets:
+| Preset | Style |
+|--------|-------|
+| `NUMBERED_DECIMAL_ALPHA_ROMAN` | 1. a. i. (standard) |
+| `NUMBERED_DECIMAL_ALPHA_ROMAN_PARENS` | 1) a) i) |
+| `NUMBERED_DECIMAL_NESTED` | 1. 1.1. 1.1.1. |
+| `NUMBERED_UPPERALPHA_ALPHA_ROMAN` | A. a. i. |
+
 ### Line Spacing
 
 Set line spacing on paragraphs using `lineSpacing` as a percentage (100 = single, 150 = 1.5, 200 = double):
@@ -209,6 +264,22 @@ def color(start, end, r, g, b):
         }
     })
 
+def bullet_list(start, end, preset="BULLET_DISC_CIRCLE_SQUARE"):
+    requests.append({
+        "createParagraphBullets": {
+            "range": {"startIndex": start, "endIndex": end},
+            "bulletPreset": preset
+        }
+    })
+
+def numbered_list(start, end, preset="NUMBERED_DECIMAL_ALPHA_ROMAN"):
+    requests.append({
+        "createParagraphBullets": {
+            "range": {"startIndex": start, "endIndex": end},
+            "bulletPreset": preset
+        }
+    })
+
 def font(start, end, family):
     requests.append({
         "updateTextStyle": {
@@ -237,6 +308,9 @@ heading(191, 212, 1)
 heading(500, 540, 2)
 bold(100, 115)
 color(200, 250, 0.8, 0.0, 0.0)
+# Convert paragraphs to native lists (range covers all items)
+bullet_list(300, 450)
+numbered_list(500, 600)
 # Document-wide: set font and 1.5 line spacing on entire body (1 to last index)
 font(1, LAST_INDEX, "Red Hat Display")
 line_spacing(1, LAST_INDEX, 150)
