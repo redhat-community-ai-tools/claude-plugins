@@ -71,7 +71,7 @@
       "name": "google",
       "source": "./plugins/google",
       "description": "Google Workspace integration — Gmail, Docs, Slides, Sheets, Calendar, and Drive via the gws CLI",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Eran Cohen"
       }
