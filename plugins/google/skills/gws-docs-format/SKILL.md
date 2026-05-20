@@ -124,6 +124,42 @@ Common colors:
 | Blue | `0.0, 0.0, 0.8` |
 | Green | `0.0, 0.5, 0.0` |
 
+### Links
+
+Make text a clickable hyperlink:
+
+```json
+{
+  "updateTextStyle": {
+    "range": {"startIndex": START, "endIndex": END},
+    "textStyle": {
+      "link": {"url": "https://example.com"}
+    },
+    "fields": "link"
+  }
+}
+```
+
+To remove a link while keeping the text, set `"link": null`.
+
+To insert new linked text (e.g., `[label](url)` style), use `insertText` to add the label text, then apply the link style to that range:
+
+```json
+{
+  "requests": [
+    {"insertText": {"location": {"index": INSERT_AT}, "text": "Click here"}},
+    {"updateTextStyle": {
+      "range": {"startIndex": INSERT_AT, "endIndex": INSERT_AT_PLUS_TEXT_LEN},
+      "textStyle": {"link": {"url": "https://example.com"}},
+      "fields": "link"
+    }}
+  ]
+}
+```
+
+> [!WARNING]
+> `insertText` shifts all subsequent indices. If inserting multiple links, work in reverse index order or calculate offsets.
+
 ### Font Family
 
 Set the font for a text range. The font must be available in Google Docs (installed or from Google Fonts).
@@ -264,6 +300,15 @@ def color(start, end, r, g, b):
             "range": {"startIndex": start, "endIndex": end},
             "textStyle": {"foregroundColor": {"color": {"rgbColor": {"red": r, "green": g, "blue": b}}}},
             "fields": "foregroundColor"
+        }
+    })
+
+def link(start, end, url):
+    requests.append({
+        "updateTextStyle": {
+            "range": {"startIndex": start, "endIndex": end},
+            "textStyle": {"link": {"url": url}},
+            "fields": "link"
         }
     })
 

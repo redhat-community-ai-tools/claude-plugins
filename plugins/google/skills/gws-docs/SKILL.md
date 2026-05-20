@@ -155,6 +155,24 @@ Apply character-level styles using `updateTextStyle`:
 
 For italic, use `{"italic": true}` with `"fields": "italic"`. Both can be combined: `"fields": "bold,italic"`.
 
+### Links
+
+Make text a clickable hyperlink:
+
+```json
+{
+  "updateTextStyle": {
+    "range": {"startIndex": START, "endIndex": END},
+    "textStyle": {
+      "link": {"url": "https://example.com"}
+    },
+    "fields": "link"
+  }
+}
+```
+
+To remove a link, set `"link": null`. See [`+format`](../gws-docs-format/SKILL.md) for inserting new linked text.
+
 ### Text color
 
 Set foreground (text) or background (highlight) color using RGB values (0.0–1.0):
