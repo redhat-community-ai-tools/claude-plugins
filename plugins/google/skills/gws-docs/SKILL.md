@@ -193,6 +193,36 @@ Set the font for a text range. The font must be available in Google Docs (instal
 
 Common font families: `Red Hat Display`, `Red Hat Text`, `Roboto`, `Google Sans`, `Arial`, `Inter`.
 
+### Bulleted and numbered lists
+
+Convert paragraphs into native Google Docs lists using `createParagraphBullets`. Each paragraph in the range becomes a list item. Do **not** write list items with text prefixes like `- ` or `1. ` — write plain paragraphs, then apply native list formatting.
+
+**Bulleted list:**
+
+```json
+{
+  "createParagraphBullets": {
+    "range": {"startIndex": START, "endIndex": END},
+    "bulletPreset": "BULLET_DISC_CIRCLE_SQUARE"
+  }
+}
+```
+
+**Numbered list:**
+
+```json
+{
+  "createParagraphBullets": {
+    "range": {"startIndex": START, "endIndex": END},
+    "bulletPreset": "NUMBERED_DECIMAL_ALPHA_ROMAN"
+  }
+}
+```
+
+**Remove bullets:** use `deleteParagraphBullets` with the same range structure.
+
+Common presets: `BULLET_DISC_CIRCLE_SQUARE` (● ○ ■), `BULLET_CHECKBOX` (☐), `NUMBERED_DECIMAL_ALPHA_ROMAN` (1. a. i.), `NUMBERED_DECIMAL_NESTED` (1. 1.1. 1.1.1.). See the [`+format`](../gws-docs-format/SKILL.md) skill for the full list.
+
 ### Line spacing
 
 Set line spacing on paragraphs using `lineSpacing` as a percentage (100 = single, 150 = 1.5, 200 = double):

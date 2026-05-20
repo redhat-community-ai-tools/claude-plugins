@@ -45,6 +45,7 @@ gws docs +write --document DOC_ID --text 'Hello, world!'
   # Write content to file, then pass via command substitution
   gws docs +write --document DOC_ID --text "$(cat /tmp/my-content.txt)"
   ```
+- **Lists:** Do not write bullet or numbered list items with text prefixes like `- ` or `1. `. Write each item as a plain line, then use [`+format`](../gws-docs-format/SKILL.md) to apply native Google Docs bulleted/numbered list formatting via `createParagraphBullets`.
 
 > [!CAUTION]
 > This is a **write** command — confirm with the user before executing.
