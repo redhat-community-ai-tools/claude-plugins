@@ -24,7 +24,7 @@ gws docs <resource> <method> [flags]
 | Command | Description |
 |---------|-------------|
 | [`+write`](../gws-docs-write/SKILL.md) | Append text to a document |
-| [`+format`](../gws-docs-format/SKILL.md) | Apply rich formatting (headings, bold, colors) to a document |
+| [`+format`](../gws-docs-format/SKILL.md) | Apply rich formatting (headings, bold, colors, links, lists) to a document |
 
 ## API Resources
 
@@ -109,7 +109,7 @@ for el in body.get('content', []):
 
 ## Formatting Documents with batchUpdate
 
-The `batchUpdate` method applies rich formatting — headings, bold, colors, deletions — in a single atomic call. All requests are validated before any are applied; if one fails, none take effect.
+The `batchUpdate` method applies rich formatting — headings, bold/italic, colors, links, lists, font, line spacing, and content deletion — in a single atomic call. For the **full formatting guide**, request types, Python helpers, and examples, see [`+format`](../gws-docs-format/SKILL.md).
 
 ```bash
 gws docs documents batchUpdate \
@@ -125,249 +125,19 @@ gws docs documents batchUpdate \
   --json "$(cat /tmp/format-requests.json)"
 ```
 
-### Heading styles
+Key rules:
+- **Write content first, format second.** Formatting uses character indices that shift when content changes.
+- **Formatting-only operations** (headings, bold, color) do not shift indices — only insertions and deletions do.
+- **Deletions must be in reverse index order** (highest `startIndex` first).
+- A single `batchUpdate` can hold hundreds of requests.
 
-Apply paragraph-level heading styles using `updateParagraphStyle`. Valid `namedStyleType` values: `TITLE`, `SUBTITLE`, `HEADING_1` through `HEADING_6`, `NORMAL_TEXT`.
+### Recommended workflow
 
-```json
-{
-  "updateParagraphStyle": {
-    "range": {"startIndex": 2, "endIndex": 67},
-    "paragraphStyle": {"namedStyleType": "HEADING_1"},
-    "fields": "namedStyleType"
-  }
-}
-```
-
-### Bold and italic
-
-Apply character-level styles using `updateTextStyle`:
-
-```json
-{
-  "updateTextStyle": {
-    "range": {"startIndex": 100, "endIndex": 115},
-    "textStyle": {"bold": true},
-    "fields": "bold"
-  }
-}
-```
-
-For italic, use `{"italic": true}` with `"fields": "italic"`. Both can be combined: `"fields": "bold,italic"`.
-
-### Links
-
-Make text a clickable hyperlink:
-
-```json
-{
-  "updateTextStyle": {
-    "range": {"startIndex": START, "endIndex": END},
-    "textStyle": {
-      "link": {"url": "https://example.com"}
-    },
-    "fields": "link"
-  }
-}
-```
-
-To remove a link, set `"link": null`. See [`+format`](../gws-docs-format/SKILL.md) for inserting new linked text.
-
-### Text color
-
-Set foreground (text) or background (highlight) color using RGB values (0.0–1.0):
-
-```json
-{
-  "updateTextStyle": {
-    "range": {"startIndex": 200, "endIndex": 250},
-    "textStyle": {
-      "foregroundColor": {
-        "color": {"rgbColor": {"red": 0.8, "green": 0.0, "blue": 0.0}}
-      }
-    },
-    "fields": "foregroundColor"
-  }
-}
-```
-
-Replace `foregroundColor` with `backgroundColor` for highlighting.
-
-### Font family
-
-Set the font for a text range. The font must be available in Google Docs (installed or from Google Fonts).
-
-```json
-{
-  "updateTextStyle": {
-    "range": {"startIndex": START, "endIndex": END},
-    "textStyle": {
-      "weightedFontFamily": {"fontFamily": "Red Hat Display"}
-    },
-    "fields": "weightedFontFamily"
-  }
-}
-```
-
-Common font families: `Red Hat Display`, `Red Hat Text`, `Roboto`, `Google Sans`, `Arial`, `Inter`.
-
-### Bulleted and numbered lists
-
-Convert paragraphs into native Google Docs lists using `createParagraphBullets`. Each paragraph in the range becomes a list item. Do **not** write list items with text prefixes like `- ` or `1. ` — write plain paragraphs, then apply native list formatting.
-
-**Bulleted list:**
-
-```json
-{
-  "createParagraphBullets": {
-    "range": {"startIndex": START, "endIndex": END},
-    "bulletPreset": "BULLET_DISC_CIRCLE_SQUARE"
-  }
-}
-```
-
-**Numbered list:**
-
-```json
-{
-  "createParagraphBullets": {
-    "range": {"startIndex": START, "endIndex": END},
-    "bulletPreset": "NUMBERED_DECIMAL_ALPHA_ROMAN"
-  }
-}
-```
-
-**Remove bullets:** use `deleteParagraphBullets` with the same range structure.
-
-Common presets: `BULLET_DISC_CIRCLE_SQUARE` (● ○ ■), `BULLET_CHECKBOX` (☐), `NUMBERED_DECIMAL_ALPHA_ROMAN` (1. a. i.), `NUMBERED_DECIMAL_NESTED` (1. 1.1. 1.1.1.). See the [`+format`](../gws-docs-format/SKILL.md) skill for the full list.
-
-**Warning:** `createParagraphBullets` shifts character indices. If you need to delete text prefixes (`- `, `1. `) from existing content after converting to native lists, do it in a **separate** `batchUpdate` call — re-read the document first to get updated indices.
-
-### Line spacing
-
-Set line spacing on paragraphs using `lineSpacing` as a percentage (100 = single, 150 = 1.5, 200 = double):
-
-```json
-{
-  "updateParagraphStyle": {
-    "range": {"startIndex": START, "endIndex": END},
-    "paragraphStyle": {"lineSpacing": 150},
-    "fields": "lineSpacing"
-  }
-}
-```
-
-To apply font or line spacing to the **entire document**, use the full document range (`1` to last index).
-
-### Deleting content
-
-Remove text ranges with `deleteContentRange`. **Important:** deletions shift all subsequent indices, so apply them in reverse order (highest startIndex first) or separate them into a second `batchUpdate` call after formatting.
-
-```json
-{
-  "deleteContentRange": {
-    "range": {"startIndex": 134, "endIndex": 190}
-  }
-}
-```
-
-### Combining requests
-
-A single `batchUpdate` can contain hundreds of requests. Mix different operations freely — just put deletions last and in reverse index order:
-
-```json
-{
-  "requests": [
-    {"updateParagraphStyle": {"range": {"startIndex": 2, "endIndex": 50}, "paragraphStyle": {"namedStyleType": "TITLE"}, "fields": "namedStyleType"}},
-    {"updateParagraphStyle": {"range": {"startIndex": 100, "endIndex": 130}, "paragraphStyle": {"namedStyleType": "HEADING_1"}, "fields": "namedStyleType"}},
-    {"updateTextStyle": {"range": {"startIndex": 200, "endIndex": 220}, "textStyle": {"bold": true}, "fields": "bold"}},
-    {"deleteContentRange": {"range": {"startIndex": 500, "endIndex": 556}}},
-    {"deleteContentRange": {"range": {"startIndex": 300, "endIndex": 356}}}
-  ]
-}
-```
-
-### Programmatic formatting with Python
-
-For documents with many formatting targets, generate the requests programmatically. Use the helper functions below to build requests, then pass them to `batchUpdate`:
-
-```python
-#!/usr/bin/env python3
-import json, subprocess
-
-DOC_ID = "YOUR_DOC_ID"
-requests = []
-
-def heading(start, end, level):
-    style_map = {"TITLE": "TITLE", 1: "HEADING_1", 2: "HEADING_2", 3: "HEADING_3"}
-    requests.append({
-        "updateParagraphStyle": {
-            "range": {"startIndex": start, "endIndex": end},
-            "paragraphStyle": {"namedStyleType": style_map[level]},
-            "fields": "namedStyleType"
-        }
-    })
-
-def bold(start, end):
-    requests.append({
-        "updateTextStyle": {
-            "range": {"startIndex": start, "endIndex": end},
-            "textStyle": {"bold": True},
-            "fields": "bold"
-        }
-    })
-
-def color(start, end, r, g, b):
-    requests.append({
-        "updateTextStyle": {
-            "range": {"startIndex": start, "endIndex": end},
-            "textStyle": {"foregroundColor": {"color": {"rgbColor": {"red": r, "green": g, "blue": b}}}},
-            "fields": "foregroundColor"
-        }
-    })
-
-def delete(start, end):
-    requests.append({"deleteContentRange": {"range": {"startIndex": start, "endIndex": end}}})
-
-# --- Build your formatting ---
-heading(2, 67, "TITLE")
-heading(191, 212, 1)
-bold(100, 115)
-color(200, 250, 0.8, 0.0, 0.0)  # red
-# Deletions in reverse index order
-delete(500, 556)
-delete(300, 356)
-
-# --- Write and apply ---
-with open("/tmp/format-requests.json", "w") as f:
-    json.dump({"requests": requests}, f)
-# Then run: gws docs documents batchUpdate --params '{"documentId": "DOC_ID"}' --json "$(cat /tmp/format-requests.json)"
-```
-
-## Recommended Workflow: Creating a Well-Formatted Document
-
-Creating a richly formatted Google Doc is a multi-step process:
-
-1. **Create the document:**
-   ```bash
-   gws docs documents create --json '{"title": "My Document Title"}'
-   ```
-   Save the `documentId` from the response.
-
-2. **Write plain text content** — use `+write` with content from a file to avoid shell escaping issues with parentheses, quotes, and special characters:
-   ```bash
-   # Write content to a temp file first, then pipe
-   gws docs +write --document DOC_ID --text "$(cat /tmp/my-content.txt)"
-   ```
-
-3. **Extract paragraph indices** — get the `startIndex`/`endIndex` for each paragraph (see "Extracting document structure with character indices" above).
-
-4. **Apply formatting** — build a `batchUpdate` request with headings, bold, colors, and deletions. For complex documents, use the Python helper pattern above.
-
-5. **Verify** — re-read the document to confirm formatting was applied correctly.
-
-> [!TIP]
-> Write all content as plain text first, **then** format. Formatting operations use character indices that shift when content changes — reformatting after edits requires recalculating all indices.
+1. **Create** the document with `documents create`
+2. **Write** plain text content with `+write`
+3. **Extract** paragraph indices (see "Extracting document structure with character indices" above)
+4. **Format** using `batchUpdate` — see [`+format`](../gws-docs-format/SKILL.md) for all request types and a reusable Python helper
+5. **Verify** by re-reading the document
 
 ## Discovering Commands
 

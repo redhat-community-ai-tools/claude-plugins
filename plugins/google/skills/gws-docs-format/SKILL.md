@@ -1,8 +1,8 @@
 ---
 name: gws-docs-format
-description: "Google Docs: Apply rich formatting (headings, bold, colors) to a document via batchUpdate."
+description: "Google Docs: Apply rich formatting (headings, bold, colors, links, lists) to a document via batchUpdate."
 metadata:
-  version: 0.22.0
+  version: 0.2.0
   openclaw:
     category: "productivity"
     requires:
@@ -276,7 +276,11 @@ DOC_ID = "YOUR_DOC_ID"
 requests = []
 
 def heading(start, end, level):
-    style_map = {"TITLE": "TITLE", 1: "HEADING_1", 2: "HEADING_2", 3: "HEADING_3"}
+    style_map = {
+        "TITLE": "TITLE", "SUBTITLE": "SUBTITLE",
+        1: "HEADING_1", 2: "HEADING_2", 3: "HEADING_3",
+        4: "HEADING_4", 5: "HEADING_5", 6: "HEADING_6",
+    }
     requests.append({
         "updateParagraphStyle": {
             "range": {"startIndex": start, "endIndex": end},
@@ -312,15 +316,7 @@ def link(start, end, url):
         }
     })
 
-def bullet_list(start, end, preset="BULLET_DISC_CIRCLE_SQUARE"):
-    requests.append({
-        "createParagraphBullets": {
-            "range": {"startIndex": start, "endIndex": end},
-            "bulletPreset": preset
-        }
-    })
-
-def numbered_list(start, end, preset="NUMBERED_DECIMAL_ALPHA_ROMAN"):
+def list_style(start, end, preset="BULLET_DISC_CIRCLE_SQUARE"):
     requests.append({
         "createParagraphBullets": {
             "range": {"startIndex": start, "endIndex": end},
@@ -357,11 +353,13 @@ heading(500, 540, 2)
 bold(100, 115)
 color(200, 250, 0.8, 0.0, 0.0)
 # Convert paragraphs to native lists (range covers all items)
-bullet_list(300, 450)
-numbered_list(500, 600)
-# Document-wide: set font and 1.5 line spacing on entire body (1 to last index)
-font(1, LAST_INDEX, "Red Hat Display")
-line_spacing(1, LAST_INDEX, 150)
+list_style(300, 450)
+list_style(500, 600, preset="NUMBERED_DECIMAL_ALPHA_ROMAN")
+# Document-wide: set font and 1.5 line spacing on entire body
+# Replace LAST_INDEX with the actual last index from the document JSON
+# (see "Document-Wide Defaults" section below for how to get it)
+font(1, last_index, "Red Hat Display")
+line_spacing(1, last_index, 150)
 # Deletions MUST be in reverse index order
 delete(600, 656)
 delete(400, 456)
