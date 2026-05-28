@@ -137,7 +137,8 @@ Key rules:
 2. **Write** plain text content with `+write`
 3. **Extract** paragraph indices (see "Extracting document structure with character indices" above)
 4. **Format** using `batchUpdate` — see [`+format`](../gws-docs-format/SKILL.md) for all request types and a reusable Python helper
-5. **Verify** by re-reading the document
+5. **Apply document-wide defaults** — always set 1.5 line spacing (`lineSpacing: 150`) across the full document range (`1` to last index). See the "Document-Wide Defaults" section in [`+format`](../gws-docs-format/SKILL.md)
+6. **Verify** by re-reading the document
 
 ## Discovering Commands
 

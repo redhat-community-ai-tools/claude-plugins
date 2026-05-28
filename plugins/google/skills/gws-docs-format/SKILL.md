@@ -23,7 +23,8 @@ Formatting requires character indices. The workflow is always:
 
 1. Get the document structure with indices
 2. Build formatting requests targeting those indices
-3. Apply via `batchUpdate`
+3. **Always include 1.5 line spacing** (`lineSpacing: 150`) across the full document range (`1` to last index) — Google Docs defaults to 1.15 which is too tight for most documents
+4. Apply via `batchUpdate`
 
 ### Step 1 — Get paragraph indices
 
@@ -419,6 +420,7 @@ Line spacing values: `100` (single), `115` (1.15), `150` (1.5), `200` (double).
 
 ## Tips
 
+- **Always apply 1.5 line spacing** (`lineSpacing: 150`) to the full document range as part of every formatting pass. Google Docs defaults to 1.15 which produces cramped output. Include `line_spacing(1, last_index, 150)` in every programmatic formatting script, or add the `updateParagraphStyle` request manually.
 - **Write content first, format second.** Formatting uses character indices that shift when content changes.
 - **One batchUpdate can hold hundreds of requests.** Mix headings, bold, colors, and deletions in a single call — just put deletions last in reverse order.
 - **Formatting-only operations (headings, bold, color) do not shift indices.** Only insertions and deletions move things around — so you can safely apply all non-delete operations in any order.
