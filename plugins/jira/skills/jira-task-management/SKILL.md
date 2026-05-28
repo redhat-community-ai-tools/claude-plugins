@@ -30,12 +30,16 @@ Do not set priority — it's not relevant for this project.
 
 `--plain` is supported on **read commands** (view, list, epic list, sprint list) for clean output. `--no-input` is needed on **create and edit only** to skip interactive prompts — do **not** use `--no-input` with move, assign, comment, or link (they don't support it and will error). `--plain` is also **not supported** on create, edit, move, assign, or comment — use `--raw` on create if you need JSON output.
 
+**`jira-cli` does NOT support `--json`.** Never use `--json` — it is not a valid flag on any command. Use `--plain` for readable output or `--raw` (on create only) for JSON.
+
 ### View
 
 ```bash
 jira issue view <KEY> --plain                    # View issue details
-jira issue view <KEY> --plain --comments 100     # Include comments
+jira issue view <KEY> --plain --comments 100     # Include comments (count is REQUIRED)
 ```
+
+**IMPORTANT:** `--comments` requires a numeric argument (e.g., `--comments 10`). Using `--comments` alone without a number will error with "flag needs an argument". Always specify a count.
 
 ### Search
 
@@ -184,6 +188,8 @@ jira open           # Open project page
 
 - **"No result found for given query in project MGMT":** The query is scoped to the default MGMT project. To search across projects, start `-q` with `project IS NOT EMPTY AND ...`. See the Search section above.
 - **"Expecting ',' but got 'ORDER'" JQL error:** You included `ORDER BY` in a `-q` query. Remove it — jira-cli appends its own `ORDER BY created DESC` automatically.
+- **"unknown flag: --json":** `jira-cli` has no `--json` flag. Use `--plain` for clean output or `--raw` (create only) for JSON.
+- **"flag needs an argument: --comments":** `--comments` requires a numeric count (e.g., `--comments 10`). Never use `--comments` without a number.
 - **"unknown flag: --no-input" on move/assign/comment:** `--no-input` is only valid for `create` and `edit`. Remove it — move, assign, comment, and link don't need it.
 - **Auth errors / HTML in response:** Token may be expired. Regenerate at https://id.atlassian.com/manage-profile/security/api-tokens, update `~/.netrc`.
 - **"API v3" errors:** Config must use `installation: Cloud`. Re-run `jira init --installation cloud`.
