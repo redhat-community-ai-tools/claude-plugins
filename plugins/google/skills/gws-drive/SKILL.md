@@ -25,6 +25,57 @@ gws drive <resource> <method> [flags]
 |---------|-------------|
 | [`+upload`](../gws-drive-upload/SKILL.md) | Upload a file with automatic metadata |
 
+## Common Recipes
+
+### List files
+
+```bash
+gws drive files list --params '{"pageSize": 10, "fields": "files(id,name,mimeType)"}'
+```
+
+### Get file metadata
+
+```bash
+gws drive files get --params '{"fileId": "FILE_ID", "fields": "id,name,mimeType,size,modifiedTime"}'
+```
+
+### Download a file
+
+> [!IMPORTANT]
+> Use `files get` with `"alt": "media"`, not `files download` (which may return backend errors).
+> The `--output` path must be relative (within the current directory).
+
+```bash
+gws drive files get --params '{"fileId": "FILE_ID", "alt": "media"}' --output ./filename.ext
+```
+
+### Export a Google Workspace document
+
+Google-native files (Docs, Sheets, Slides) cannot be downloaded directly — use `export` with a target MIME type:
+
+```bash
+# Export a Google Doc as PDF
+gws drive files export --params '{"fileId": "FILE_ID", "mimeType": "application/pdf"}' --output ./document.pdf
+
+# Export a Google Sheet as CSV
+gws drive files export --params '{"fileId": "FILE_ID", "mimeType": "text/csv"}' --output ./data.csv
+```
+
+### Search for files
+
+```bash
+gws drive files list --params '{"q": "name contains '\''report'\'' and mimeType = '\''application/pdf'\''", "pageSize": 10}'
+```
+
+### Share a file
+
+```bash
+gws drive permissions create --params '{"fileId": "FILE_ID"}' --json '{"role": "reader", "type": "user", "emailAddress": "user@example.com"}'
+```
+
+> [!CAUTION]
+> `permissions create` is a **write** command — confirm with the user before executing.
+
 ## API Resources
 
 ### about
