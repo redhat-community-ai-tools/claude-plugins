@@ -7,7 +7,7 @@ This document captures common review feedback patterns from past OSAC EP PRs to 
 ### Completeness
 - All template sections must be present, even if marked "TBD" or "N/A"
 - User stories should cover provider AND tenant perspectives
-- Implementation details should be thorough — successful EPs are 400-800 lines with deep technical content
+- Implementation details should be 400-800 lines with deep technical content covering proto schemas, controller logic, and integration points
 - Test plans should describe strategy, not just "tests will be added"
 
 ### Clarity
