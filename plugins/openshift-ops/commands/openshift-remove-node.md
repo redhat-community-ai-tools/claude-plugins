@@ -1,3 +1,6 @@
+---
+description: Remove a node from the cluster
+---
 # OpenShift Remove Node
 
 Use the openshift-node-operations skill to help me safely remove a node from my OpenShift cluster.

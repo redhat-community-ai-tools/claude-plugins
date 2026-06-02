@@ -1,0 +1,8 @@
+{
+  "name": "osac-dev",
+  "version": "1.0.0",
+  "description": "OSAC development workflows: bug fix and bug reporting with Jira integration",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "jira",
+  "version": "0.1.0",
+  "description": "Manage Jira issues using jira-cli \u2014 create, search, update, and track work items",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "skipper",
+  "version": "0.1.0",
+  "description": "Containerized development workflow using skipper \u2014 build, test, and run commands inside Docker/Podman containers with reproducible toolchains",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}

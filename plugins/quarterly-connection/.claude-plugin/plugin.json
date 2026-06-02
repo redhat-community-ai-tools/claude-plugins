@@ -1,0 +1,8 @@
+{
+  "name": "quarterly-connection",
+  "version": "1.1.0",
+  "description": "Generate Red Hat Quarterly Connection reports by aggregating accomplishments from Jira, GitHub, Google Workspace, and GitLab. Includes cycle time analysis, achievement ranking, and AI-powered narrative refinement for polished performance review documents",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}

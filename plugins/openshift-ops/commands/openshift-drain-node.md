@@ -1,3 +1,6 @@
+---
+description: Drain a node for maintenance
+---
 # OpenShift Node Draining
 
 Use the openshift-node-operations skill to help me safely drain a node for maintenance.

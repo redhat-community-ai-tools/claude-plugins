@@ -1,3 +1,6 @@
+---
+description: Execute a cluster upgrade
+---
 # OpenShift Execute Upgrade
 
 Use the openshift-cluster-upgrade skill to help me execute an OpenShift cluster upgrade.

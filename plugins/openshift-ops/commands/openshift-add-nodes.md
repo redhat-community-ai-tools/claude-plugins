@@ -1,3 +1,6 @@
+---
+description: Add nodes to an OpenShift cluster
+---
 # OpenShift Add Nodes
 
 Use the openshift-node-operations skill to help me add nodes to my OpenShift cluster.

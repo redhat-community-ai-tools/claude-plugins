@@ -1,0 +1,8 @@
+{
+  "name": "osac-ep-generator",
+  "version": "1.0.0",
+  "description": "OSAC enhancement proposal workflows: generate EPs from requirements and decompose into Jira epics with dependency mapping",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}
