@@ -277,7 +277,7 @@ oc adm certificate approve <csr-name>
 2. Provision new node with RHCOS
 3. Join new node to cluster
 4. Approve CSRs
-5. Label appropriately
+5. Apply role and environment labels (see Step 3)
 
 ## Machine and Machine Set Management
 

@@ -143,6 +143,10 @@ rules:
   context-budget:
     enabled: auto
     severity: warning
+    limits:
+      skill:
+        warn: 5000
+        error: 8000
 
   # Detect hedging, vague, and non-actionable language in instruction files
   content-weak-language:
@@ -266,4 +270,4 @@ exclude: []
 content-paths: []
 
 # Treat warnings as errors
-strict: false
+strict: true
