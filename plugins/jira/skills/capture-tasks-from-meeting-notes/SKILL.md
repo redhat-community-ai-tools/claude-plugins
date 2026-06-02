@@ -90,7 +90,7 @@ jira project list --plain
 
 ### Step 4: Present Action Items
 
-**CRITICAL:** Always show the parsed action items to the user BEFORE creating any tasks.
+Show the parsed action items to the user before creating any tasks.
 
 #### Presentation Format
 
@@ -212,3 +212,8 @@ If the same task appears multiple times, flag it and ask whether to create one o
 - Creating epics or stories from specs (use spec-to-backlog)
 
 **Use only when:** Meeting notes exist and action items need to become Jira tasks.
+
+## Rules
+
+- Always present parsed action items and wait for user confirmation before creating any Jira tasks
+- Use action verbs in task summaries: "Create", "Update", "Review", not "Chat feature work"

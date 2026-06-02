@@ -158,8 +158,7 @@ To insert new linked text (e.g., `[label](url)` style), use `insertText` to add 
 }
 ```
 
-> [!WARNING]
-> `insertText` shifts all subsequent indices. If inserting multiple links, work in reverse index order or calculate offsets.
+**Note:** `insertText` shifts all subsequent indices. If inserting multiple links, work in reverse index order or calculate offsets.
 
 ### Font Family
 
@@ -215,11 +214,9 @@ Convert paragraphs into native Google Docs lists using `createParagraphBullets`.
 }
 ```
 
-> [!IMPORTANT]
-> **Do not write list items with text prefixes** like `- ` or `1. ` when the intent is to create a native list. Write each item as a plain paragraph (one per line), then apply `createParagraphBullets` to the range. Native lists give proper indentation, numbering, and nesting — text prefixes are just plain text with no list behavior.
+**Note:** Do not write list items with text prefixes like `- ` or `1. ` when the intent is to create a native list. Write each item as a plain paragraph (one per line), then apply `createParagraphBullets` to the range. Native lists give proper indentation, numbering, and nesting — text prefixes are just plain text with no list behavior.
 
-> [!WARNING]
-> **If converting existing text that has `- ` or `1. ` prefixes**, you must strip the prefixes in a **separate** `batchUpdate` call **after** applying `createParagraphBullets`. The `createParagraphBullets` operation shifts character indices, so prefix deletions in the same batch will target wrong positions. Apply list formatting first, then re-read the document to get updated indices, then delete prefixes.
+**Note:** If converting existing text that has `- ` or `1. ` prefixes, you must strip the prefixes in a **separate** `batchUpdate` call **after** applying `createParagraphBullets`. The `createParagraphBullets` operation shifts character indices, so prefix deletions in the same batch will target wrong positions. Apply list formatting first, then re-read the document to get updated indices, then delete prefixes.
 
 Common bullet presets:
 | Preset | Style |

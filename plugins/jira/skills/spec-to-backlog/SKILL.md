@@ -101,7 +101,7 @@ Shall I create these tickets in [PROJECT]?
 
 ## Step 5: Create Epic FIRST
 
-**CRITICAL:** The Epic must be created before any child tickets.
+**The Epic must be created before any child tickets.**
 
 ```bash
 jira epic create \
