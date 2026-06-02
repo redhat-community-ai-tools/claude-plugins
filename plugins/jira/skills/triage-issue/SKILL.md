@@ -104,7 +104,7 @@ If similar resolved issues are found, note:
 
 ### Step 4: Present Findings to User
 
-**CRITICAL:** Always present findings and wait for user decision before taking any action.
+Present findings and wait for user decision before taking any action.
 
 #### For Likely Duplicate
 
@@ -262,3 +262,7 @@ Next Steps:
 - Status reports (use generate-status-report)
 
 **Use only when:** A bug or error needs to be triaged against existing Jira issues.
+
+## Rules
+
+- Always present triage findings and wait for user confirmation before creating issues or adding comments

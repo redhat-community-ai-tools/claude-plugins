@@ -7,6 +7,8 @@ description: Manage Jira issues on Red Hat Jira (redhat.atlassian.net) using jir
 
 Manage issues on Red Hat Jira (`redhat.atlassian.net`) via `jira-cli`. The tool is pre-configured with bearer token auth for the MGMT project.
 
+**Key constraints:** `--comments` requires a numeric argument (e.g., `--comments 10`) — using it alone errors. `jira-cli` has no `--json` flag — use `--plain` or `--raw`. `--no-input` is only valid for create/edit, not move/assign/comment. Never include `ORDER BY` in `-q` queries — jira-cli appends its own.
+
 ## Setup
 
 - **Binary:** `jira` (installed via `go install github.com/ankitpokhrel/jira-cli/cmd/jira@latest`)
@@ -39,11 +41,9 @@ jira issue view <KEY> --plain                    # View issue details
 jira issue view <KEY> --plain --comments 100     # Include comments (count is REQUIRED)
 ```
 
-**IMPORTANT:** `--comments` requires a numeric argument (e.g., `--comments 10`). Using `--comments` alone without a number will error with "flag needs an argument". Always specify a count.
-
 ### Search
 
-**IMPORTANT: `jira-cli` always prepends `project="MGMT"` to `-q`/`--jql` queries.** Use `-q` (not `--jql`) for all searches, and follow these rules:
+`jira-cli` always prepends `project="MGMT"` to `-q`/`--jql` queries. Use `-q` (not `--jql`) for all searches, and follow these rules:
 
 - **Within MGMT project:** Use `-q` normally — the project is auto-prepended.
 - **Across all projects:** Start the query with `project IS NOT EMPTY AND ...` — jira-cli detects the existing `project` clause and skips prepending.

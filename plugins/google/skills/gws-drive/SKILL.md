@@ -41,9 +41,8 @@ gws drive files get --params '{"fileId": "FILE_ID", "fields": "id,name,mimeType,
 
 ### Download a file
 
-> [!IMPORTANT]
-> Use `files get` with `"alt": "media"`, not `files download` (which may return backend errors).
-> The `--output` path must be relative (within the current directory).
+**Note:** Use `files get` with `"alt": "media"`, not `files download` (which may return backend errors).
+The `--output` path must be relative (within the current directory).
 
 ```bash
 gws drive files get --params '{"fileId": "FILE_ID", "alt": "media"}' --output ./filename.ext

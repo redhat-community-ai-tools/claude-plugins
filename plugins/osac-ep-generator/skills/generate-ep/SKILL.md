@@ -90,9 +90,9 @@ rg "<relevant-term>" enhancements/*/README.md --files-with-matches
 
 **Constraint:** Limit exploration to relevant files only. Use `--files-with-matches` first, then selectively read key sections. Don't overwhelm context with full file reads.
 
-### Phase 3: Interactive Clarification (REQUIRED)
+### Phase 3: Interactive Clarification
 
-**CRITICAL:** This phase is mandatory. Do NOT skip to drafting.
+This phase is mandatory — do not skip to drafting.
 
 After codebase exploration, **STOP and present findings to the user.**
 
@@ -316,6 +316,11 @@ git push
 ### Missing Jira Ticket
 - **Symptom**: User doesn't have a Jira ticket number
 - **Fix**: Prompt user for ticket number. If none exists, use `TBD` in frontmatter tracking-link and note in PR body: "Tracking ticket will be created after initial review"
+
+## Rules
+
+- Phase 3 (Interactive Clarification) is mandatory — always present codebase findings and ask clarifying questions before drafting the EP
+- Use `rg --files-with-matches` first, then read only key sections — do not read entire files during exploration
 
 ### Enhancement-Proposals Repo Not Cloned
 - **Symptom**: `ls enhancement-proposals/` fails with "No such file or directory"
