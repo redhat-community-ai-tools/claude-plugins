@@ -175,26 +175,6 @@ integration testing revealed bugs, I fixed them immediately in context
 rather than filing them for later.
 ```
 
-## Example Accomplishment (bad — just a data dump)
-
-```
-- MGMT-23194: Define Private Networking API Schema
-- MGMT-23399: Define Public Networking API Schema
-- MGMT-23409: Create database migrations
-- MGMT-23504: Implement public networking gRPC servers
-... (20 more tickets)
-```
-
-## Example Accomplishment (bad — structured report style)
-
-```
-### OSAC Networking — Full-Stack Design and Delivery
-
-**What:** Delivered the networking layer across 4 repos with 29 PRs.
-
-**How:** Used an architect-first approach with schema-driven design.
-```
-
 ## Writing the Priorities Section
 
 The priorities should also read as a direct answer: "My top priority
