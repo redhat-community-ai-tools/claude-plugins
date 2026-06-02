@@ -52,10 +52,10 @@ Action: Sarah - create user stories
 Action Item: Mike - update architecture
 ```
 
-**Pattern 4: TODO with assignee**
+**Pattern 4: Action item with assignee**
 ```
-TODO: Create user stories (Sarah)
-TODO: Update docs - Mike
+Action: Create user stories (Sarah)
+Action: Update docs - Mike
 ```
 
 **Pattern 5: Bullet with name**

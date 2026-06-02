@@ -30,7 +30,7 @@ Trigger this skill when:
 
 **File-based mode indicators:**
 - User provides a file path (e.g., "here's meeting-notes.md")
-- User provides a Jira ticket number (MGMT-XXXXX format)
+- User provides a Jira ticket number (MGMT-<number> format)
 - User references a document or requirements file
 
 **Conversational mode indicators:**
@@ -41,7 +41,7 @@ Trigger this skill when:
 - If file path provided: Read the file content using the Read tool
 - If Jira ticket number provided (matches `MGMT-\d+` pattern):
   ```bash
-  jira issue view MGMT-XXXXX --raw | jq '.fields | {summary, description, labels}'
+  jira issue view MGMT-<number> --raw | jq '.fields | {summary, description, labels}'
   ```
 - If conversational: Capture the user's description as the input
 
@@ -205,12 +205,12 @@ Use the Write tool to create the EP file at the determined path.
 cd /home/eran/go/src/github/eranco74/osac-workspace/enhancement-proposals
 git checkout -b enhancement/<feature-slug>
 git add enhancements/<feature-slug>/README.md
-git commit -m "MGMT-XXXXX: Add <feature-name> enhancement proposal"
+git commit -m "MGMT-<number>: Add <feature-name> enhancement proposal"
 ```
 
 **Step 2: Show PR preview to user**
 Display:
-- **Title**: `MGMT-XXXXX: Add <feature-name> enhancement proposal`
+- **Title**: `MGMT-<number>: Add <feature-name> enhancement proposal`
 - **Body**: Summary + Motivation + Tracking link
 - **Branch**: `enhancement/<feature-slug>`
 - **Files**: `enhancements/<feature-slug>/README.md`
@@ -222,7 +222,7 @@ Display:
 ```bash
 git push -u origin enhancement/<feature-slug>
 gh pr create --repo osac-project/enhancement-proposals \
-  --title "MGMT-XXXXX: Add <feature-name> enhancement proposal" \
+  --title "MGMT-<number>: Add <feature-name> enhancement proposal" \
   --body "$(cat <<'EOF'
 ## Summary
 <copy-from-EP-summary-section>
@@ -237,13 +237,13 @@ EOF
 ```
 
 **Step 5: Report PR URL**
-Report the PR URL to the user: "PR created: https://github.com/osac-project/enhancement-proposals/pull/XXX"
+Report the PR URL to the user: "PR created: https://github.com/osac-project/enhancement-proposals/pull/<number>"
 
 ### Phase 6: Review Feedback Loop
 
 **Goal:** Address reviewer feedback and iterate on the EP.
 
-**Trigger:** User says "address the review feedback on PR #XXX" or "update the EP based on reviews"
+**Trigger:** User says "address the review feedback on PR #<number>" or "update the EP based on reviews"
 
 **Step 1: Fetch reviews**
 ```bash
@@ -283,14 +283,14 @@ git push
 ```
 
 **Step 8: Notify user**
-"Changes pushed to PR #XXX. Summary of updates: <list-changes>"
+"Changes pushed to PR #<number>. Summary of updates: <list-changes>"
 
 ## Quick Reference
 
 | Task | Command |
 |------|---------|
 | Explore codebase | `rg --type proto "<resource>" --files-with-matches` |
-| Fetch Jira ticket | `jira issue view MGMT-XXXXX --raw \| jq '.fields \| {summary, description, labels}'` |
+| Fetch Jira ticket | `jira issue view MGMT-<number> --raw \| jq '.fields \| {summary, description, labels}'` |
 | Create branch | `git checkout -b enhancement/<feature-slug>` |
 | Create PR | `gh pr create --repo osac-project/enhancement-proposals --title "..." --body "..."` |
 | Fetch reviews | `gh pr view <N> --repo osac-project/enhancement-proposals --json reviews,comments` |
