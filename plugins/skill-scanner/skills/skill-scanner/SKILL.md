@@ -49,7 +49,7 @@ Look for instructions that could leak sensitive data to external parties.
 - DNS exfiltration: `dig`, `nslookup`, `host` with unusual arguments
 - Instructions like "send", "upload", "post", "transmit", "exfiltrate", "phone home" in context of data
 
-**Severity: CRITICAL** — any pattern that combines reading sensitive data AND sending it externally. **HIGH** if only one side is present (reading secrets without sending, or sending without reading secrets).
+**Severity: Critical** — any pattern that combines reading sensitive data AND sending it externally. **High** if only one side is present (reading secrets without sending, or sending without reading secrets).
 
 ### Destructive Commands (Critical)
 
@@ -63,7 +63,7 @@ Look for instructions that could destroy data or destabilize systems.
 - Disk operations: `dd`, `mkfs`, `fdisk`
 - Package removal: `pip uninstall`, `npm uninstall`, `apt remove` of system packages
 
-**Severity: CRITICAL** — destructive commands targeting broad or important paths. **HIGH** — destructive commands with limited scope.
+**Severity: Critical** — destructive commands targeting broad or important paths. **High** — destructive commands with limited scope.
 
 ### Persistence Attacks (High)
 
@@ -78,7 +78,7 @@ Look for instructions that modify the user's environment to maintain access or i
 - Systemd services: `systemctl`, `.service` files
 - Modifying OTHER skills or plugins (self-replication)
 
-**Severity: CRITICAL** — modifying Claude settings, other skills, or SSH authorized_keys. **HIGH** — modifying shell configs, git hooks, or cron jobs.
+**Severity: Critical** — modifying Claude settings, other skills, or SSH authorized_keys. **High** — modifying shell configs, git hooks, or cron jobs.
 
 ### Obfuscation (High)
 
@@ -96,7 +96,7 @@ Look for techniques that hide the true intent of instructions.
 
 **Check for hidden unicode** by examining raw bytes — zero-width spaces (U+200B), zero-width joiners (U+200D), and right-to-left marks (U+200F) are red flags in skill files.
 
-**Severity: CRITICAL** — obfuscated commands that appear to hide malicious intent. **HIGH** — obfuscation techniques present even if intent is unclear.
+**Severity: Critical** — obfuscated commands that appear to hide malicious intent. **High** — obfuscation techniques present even if intent is unclear.
 
 ### Social Engineering / Prompt Injection (High)
 
