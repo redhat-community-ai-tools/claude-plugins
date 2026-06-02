@@ -1,3 +1,6 @@
+---
+description: Run a cluster health check
+---
 # OpenShift Cluster Health Check
 
 Perform a comprehensive health check of my OpenShift cluster.

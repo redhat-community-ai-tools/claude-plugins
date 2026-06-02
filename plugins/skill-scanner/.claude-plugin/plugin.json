@@ -1,0 +1,8 @@
+{
+  "name": "skill-scanner",
+  "version": "1.0.0",
+  "description": "Scan Claude Code plugins and skills for security vulnerabilities, prompt injection, and malicious instructions",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}

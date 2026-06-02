@@ -1,3 +1,6 @@
+---
+description: Check operator health
+---
 # OpenShift Operator Health Check
 
 Use the openshift-operator-troubleshooting skill to help me check and troubleshoot operator health.

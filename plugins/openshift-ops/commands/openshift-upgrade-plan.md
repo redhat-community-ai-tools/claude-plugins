@@ -1,3 +1,6 @@
+---
+description: Plan a cluster upgrade
+---
 # OpenShift Cluster Upgrade Planning
 
 Use the openshift-cluster-upgrade skill to help me plan an OpenShift cluster upgrade.

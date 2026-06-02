@@ -1,3 +1,6 @@
+---
+description: Debug an OpenShift cluster issue
+---
 # OpenShift Debugging
 
 Use the openshift-debugging skill to help me troubleshoot an OpenShift cluster issue.

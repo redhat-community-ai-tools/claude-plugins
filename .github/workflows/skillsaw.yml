@@ -1,0 +1,24 @@
+name: Skillsaw Lint
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/**'
+      - '.claude-plugin/**'
+      - '.skillsaw.yaml'
+      - 'CLAUDE.md'
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/**'
+      - '.claude-plugin/**'
+      - '.skillsaw.yaml'
+      - 'CLAUDE.md'
+
+jobs:
+  skillsaw:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: stbenjam/skillsaw@v0

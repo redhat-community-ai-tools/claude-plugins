@@ -1,0 +1,8 @@
+{
+  "name": "daily-summary",
+  "version": "1.0.0",
+  "description": "Generate daily status updates formatted for Slack from Jira, GitHub, and git activity",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}

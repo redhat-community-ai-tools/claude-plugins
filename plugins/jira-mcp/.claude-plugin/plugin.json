@@ -1,0 +1,9 @@
+{
+  "name": "jira-mcp",
+  "version": "0.1.0",
+  "description": "JIRA integration via Model Context Protocol server for AI-assisted issue management, batch operations, and natural language workflows",
+  "author": {
+    "name": "Ronnie Rasouli",
+    "email": "rrasouli@redhat.com"
+  }
+}
