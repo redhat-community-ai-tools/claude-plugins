@@ -95,64 +95,7 @@ oc logs -n <operator-namespace> -l app=<operator-app> --tail=100
 oc logs -n <operator-namespace> -l app=<operator-app> -f
 ```
 
-### Step 4: Common Cluster Operator Issues
-
-**Authentication Operator**
-```bash
-# Check OAuth configuration
-oc get oauth cluster -o yaml
-oc get pods -n openshift-authentication
-oc logs -n openshift-authentication -l app=oauth-openshift
-```
-
-**Console Operator**
-```bash
-# Check console deployment
-oc get pods -n openshift-console
-oc get route console -n openshift-console
-oc logs -n openshift-console -l app=console
-```
-
-**DNS Operator**
-```bash
-# Check DNS pods
-oc get pods -n openshift-dns
-oc logs -n openshift-dns -l dns.operator.openshift.io/daemonset-dns=default
-```
-
-**Ingress Operator**
-```bash
-# Check router pods
-oc get pods -n openshift-ingress
-oc get ingresscontroller -n openshift-ingress-operator
-oc logs -n openshift-ingress-operator -l name=ingress-operator
-```
-
-**Monitoring Operator**
-```bash
-# Check monitoring stack
-oc get pods -n openshift-monitoring
-oc get prometheuses -n openshift-monitoring
-oc logs -n openshift-monitoring-operator -l app=cluster-monitoring-operator
-```
-
-**Network Operator**
-```bash
-# Check network operator
-oc get network.operator cluster -o yaml
-oc get pods -n openshift-network-operator
-oc get pods -n openshift-sdn  # or openshift-ovn-kubernetes
-oc logs -n openshift-network-operator -l name=network-operator
-```
-
-**Storage Operator**
-```bash
-# Check storage classes
-oc get storageclass
-oc get csidriver
-oc get pods -n openshift-cluster-storage-operator
-oc logs -n openshift-cluster-storage-operator -l name=cluster-storage-operator
-```
+For operator-specific debug commands (authentication, console, DNS, ingress, monitoring, network, storage), see `references/operator-specific-commands.md`.
 
 ## Troubleshooting OLM Operators
 
@@ -453,51 +396,7 @@ oc auth can-i create pods --as=system:serviceaccount:<namespace>:<operator-sa>
 9. **Keep Operators Updated**: Use stable channels and approved versions
 10. **Test in Non-Production**: Validate operator changes before production
 
-## Operator Health Checklist
-
-```bash
-# Quick health check script
-echo "=== Cluster Operators ==="
-oc get co
-echo ""
-echo "=== Degraded Operators ==="
-oc get co | grep -v "True.*False.*False"
-echo ""
-echo "=== OLM Operators ==="
-oc get csv -A
-echo ""
-echo "=== Failed CSVs ==="
-oc get csv -A | grep -i failed
-echo ""
-echo "=== Pending Install Plans ==="
-oc get installplan -A | grep -i false
-echo ""
-echo "=== Catalog Sources ==="
-oc get catalogsource -A
-```
-
-## Useful Commands
-
-```bash
-# One-liner to check all operator health
-oc get co && oc get csv -A && oc get subscription -A
-
-# Find all operator pods
-oc get pods -A | grep operator
-
-# Get all operator logs
-for ns in $(oc get namespaces -o name | cut -d/ -f2 | grep openshift); do
-  echo "=== Namespace: $ns ==="
-  oc logs -n $ns -l app=operator --tail=20
-done
-
-# Check operator resource usage
-oc adm top pods -A | grep operator
-
-# Export operator configuration
-oc get co <operator-name> -o yaml > operator-config.yaml
-oc get csv <csv-name> -n <namespace> -o yaml > operator-csv.yaml
-```
+For the operator health checklist script and quick commands, see `references/operator-specific-commands.md`.
 
 ## Related Skills
 
