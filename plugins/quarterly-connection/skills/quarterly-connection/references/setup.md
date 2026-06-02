@@ -44,7 +44,7 @@ Environment variables override config file values:
 ### GitLab
 1. Go to https://gitlab.com/-/profile/personal_access_tokens
 2. Create a token with `read_api` scope
-3. GitLab is optional — skip if you don't use it
+3. GitLab is optional — only configure if your team uses GitLab for code hosting
 
 ## Register with Claude Code
 

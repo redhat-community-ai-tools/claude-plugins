@@ -199,9 +199,9 @@ rather than filing them for later.
 
 The priorities should also read as a direct answer: "My top priority
 for Q2 is..." Explain not just what you plan to do, but why it matters
-and how it connects to the work just completed. Don't use a numbered
-list — write 2-3 paragraphs that tell a coherent story about where
-you're headed.
+and how it connects to the work just completed. Use 2-3 narrative
+paragraphs that tell a coherent story about where you're headed,
+rather than a numbered list.
 
 ## Phases
 

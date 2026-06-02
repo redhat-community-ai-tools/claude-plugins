@@ -83,7 +83,7 @@ Classify each work item:
 
 ### Jira IDs as links
 
-Every Jira ticket key must be a clickable Slack link using `<https://issues.redhat.com/browse/MGMT-1234|MGMT-1234>`. This applies everywhere a Jira ID appears — epic headers, ticket references, and mentions in descriptions or risks. Do NOT use markdown link syntax `[text](url)` — Slack won't render it.
+Every Jira ticket key must be a clickable Slack link using `<https://issues.redhat.com/browse/MGMT-1234|MGMT-1234>`. This applies everywhere a Jira ID appears — epic headers, ticket references, and mentions in descriptions or risks. Use Slack link syntax `<url|text>`, not markdown `[text](url)` which Slack won't render.
 
 ### Emoji codes
 

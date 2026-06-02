@@ -37,7 +37,7 @@ KEY=$(jira issue create -t Bug --project MGMT \
   --no-input --raw 2>/dev/null | jq -r '.key')
 ```
 
-**Key extraction:** `--raw` outputs JSON to stdout; `jq -r '.key'` extracts the issue key reliably. Do not use `grep -oP` — the text output goes to stderr and `grep` fails silently.
+**Key extraction:** Use `--raw | jq -r '.key'` to extract the issue key — `grep -oP` fails silently because text output goes to stderr.
 
 Then link to epic, assign, and move to In Progress:
 
