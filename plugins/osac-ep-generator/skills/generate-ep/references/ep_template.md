@@ -48,9 +48,9 @@ Start by filling out the header with the metadata for this enhancement.
 
 # Neat Enhancement Idea
 
-This is the title of the enhancement. Keep it simple and descriptive. A good
-title can help communicate what the enhancement is and should be considered as
-part of any review.
+This is the title of the enhancement. Use 3-10 words that name the feature or
+capability. A good title can help communicate what the enhancement is and should
+be considered as part of any review.
 
 The YAML `title` should be lowercased and spaces/punctuation should be
 replaced with `-`.
