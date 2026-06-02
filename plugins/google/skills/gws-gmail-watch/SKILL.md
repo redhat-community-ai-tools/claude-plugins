@@ -51,7 +51,7 @@ gws gmail +watch --project my-project --cleanup --output-dir ./emails
 
 - Gmail watch expires after 7 days — re-run to renew.
 - Without --cleanup, Pub/Sub resources persist for reconnection.
-- Press Ctrl-C to stop gracefully.
+- Press Ctrl-C to stop watching and clean up the connection.
 
 ## See Also
 

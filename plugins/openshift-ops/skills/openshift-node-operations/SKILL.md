@@ -465,7 +465,7 @@ oc get csr -o name | xargs oc adm certificate approve
 2. **Respect PodDisruptionBudgets**: Don't force drain unless necessary
 3. **Monitor Workload Rescheduling**: Ensure pods move successfully
 4. **Use Grace Periods**: Allow apps time to shut down cleanly
-5. **Label Nodes Appropriately**: Document node purpose and characteristics
+5. **Label Nodes by Role and Purpose**: Apply role (infra, storage, gpu) and environment (production, staging) labels
 6. **Test in Non-Production**: Practice node operations in dev/staging
 7. **Maintain Node Capacity**: Keep enough nodes for workload distribution
 8. **Document Changes**: Record why nodes were added/removed/modified

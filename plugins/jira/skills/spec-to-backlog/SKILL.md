@@ -62,7 +62,7 @@ Break the work into logical, independently implementable tasks.
 - **Size:** 3-10 tasks per spec typically
 - **Clarity:** Each task should be specific and actionable
 - **Independence:** Tasks can be worked on separately when possible
-- **Completeness:** Include backend, frontend, testing, documentation, infrastructure as needed
+- **Completeness:** Include backend, frontend, testing, documentation, and infrastructure tasks when the spec touches those areas
 
 **Choose appropriate issue types based on content:**
 - **Bug** — Fixing existing problems ("fix", "resolve", "broken")
@@ -145,7 +145,7 @@ Make them **testable** and **specific**:
 - "API returns 201 status on successful user creation"
 - "Password must be at least 8 characters and hashed with bcrypt"
 - NOT "User can log in" (too vague)
-- NOT "It works correctly" (not testable)
+- NOT "It works" (not testable)
 
 ---
 

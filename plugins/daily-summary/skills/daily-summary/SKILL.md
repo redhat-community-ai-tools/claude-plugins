@@ -13,7 +13,7 @@ The goal is to produce an accurate picture of the user's day. Different data sou
 
 ## Step 1: Gather Data
 
-Collect from ALL sources in parallel where possible. Cast a wide net — it's better to gather too much and filter than to miss work.
+Collect from ALL sources in parallel. Cast a wide net — it's better to gather too much and filter than to miss work.
 
 ### Jira (primary work tracker)
 
