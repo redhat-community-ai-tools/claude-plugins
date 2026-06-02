@@ -472,28 +472,6 @@ oc get csr -o name | xargs oc adm certificate approve
 9. **Use Machine Sets**: Leverage automation for infrastructure platforms
 10. **Monitor Machine Health**: Watch for machine provisioning failures
 
-## Useful Commands
-
-```bash
-# Quick node health check
-oc get nodes && oc get machines -n openshift-machine-api
-
-# Find pods on a specific node
-oc get pods -A -o wide --field-selector spec.nodeName=<node-name>
-
-# Count pods per node
-oc get pods -A -o wide | awk '{print $8}' | sort | uniq -c
-
-# View node capacity
-oc get nodes -o custom-columns=NAME:.metadata.name,CPU:.status.capacity.cpu,MEMORY:.status.capacity.memory
-
-# Check PodDisruptionBudgets
-oc get pdb -A
-
-# Emergency node reset (use with extreme caution)
-oc adm drain <node-name> --force --delete-emptydir-data --ignore-daemonsets --skip-wait-for-delete-timeout=0
-```
-
 ## Related Skills
 
 - `openshift-debugging` - For troubleshooting node-related issues
