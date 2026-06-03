@@ -82,7 +82,7 @@ gives you energy / takes your energy away?"**
 - Leave as template for the user to fill in
 
 ### Appendix
-- Detailed GitHub PR table by repository
+- Detailed GitHub PR table by repo
 - Key documents authored (from Google Docs)
 - Key presentations (from Google Slides)
 - Jira ticket details (optional, for reference)
@@ -166,7 +166,7 @@ of March, tenants can create VirtualNetworks, Subnets, and
 SecurityGroups through both APIs, and we demonstrated cross-cluster
 VM connectivity live. I owned this across the entire stack — API
 schema, database migrations, gRPC servers, K8s CRDs and controllers,
-and Ansible playbooks — merging 29 PRs across 4 repositories.
+and Ansible playbooks — merging 29 PRs across 4 repos.
 
 What made this work was taking an architect-first approach rather than
 jumping into code. I started by writing the networking design doc and

@@ -2,7 +2,7 @@
 name: ep-to-jira
 description: |
   Convert an approved OSAC enhancement proposal into a Jira epic with linked sub-tasks.
-  Performs codebase-aware dependency mapping to identify cross-repo impacts and breaking changes.
+  Performs source code-aware dependency mapping to identify cross-repo impacts and breaking changes.
   Produces a complexity assessment rating the architectural impact of proposed changes.
   
   Use when user wants to create Jira tasks from an EP, convert a proposal into work items,
@@ -15,14 +15,14 @@ description: |
 
 # EP Decomposition and Jira Task Creation
 
-This skill takes an approved OSAC Enhancement Proposal and decomposes it into a Jira epic with linked sub-tasks. As part of decomposition, it performs codebase-aware dependency mapping to identify cross-repo impacts and breaking changes, and produces a complexity assessment rating the architectural impact of the proposed changes.
+This skill takes an approved OSAC Enhancement Proposal and decomposes it into a Jira epic with linked sub-tasks. As part of decomposition, it performs source code-aware dependency mapping to identify cross-repo impacts and breaking changes, and produces a complexity assessment rating the architectural impact of the proposed changes.
 
 ## Overview
 
 The decomposition process follows these phases:
 
 1. **Read the EP** - Extract title, summary, tracking link, and proposed components
-2. **Dependency Mapping** - Identify cross-repo impacts using codebase exploration (rg, find, tree)
+2. **Dependency Mapping** - Identify cross-repo impacts using source code exploration (rg, find, tree)
 3. **Complexity Assessment** - Rate architectural impact on 5 dimensions (LOW/MEDIUM/HIGH)
 4. **Task Decomposition** - Break EP into ordered sub-tasks following extraction rules
 5. **Create Jira Epic** - Create epic with MGMT project and OSAC label

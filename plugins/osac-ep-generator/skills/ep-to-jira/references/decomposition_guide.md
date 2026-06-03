@@ -88,9 +88,9 @@ Any new infrastructure needs from the EP's "Infrastructure Needed" section.
 Rate each of these dimensions as **LOW** / **MEDIUM** / **HIGH**:
 
 ### Dimension 1: Repos Touched
-- **LOW:** 1 repository affected
-- **MEDIUM:** 2-3 repositories affected
-- **HIGH:** 4+ repositories affected
+- **LOW:** 1 repo affected
+- **MEDIUM:** 2-3 repos affected
+- **HIGH:** 4+ repos affected
 
 Check: List all repos that need changes based on dependency mapping.
 

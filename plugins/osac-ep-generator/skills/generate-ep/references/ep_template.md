@@ -115,7 +115,7 @@ reviewing the enhancement allows them to check that.
 The administrator wants to set up his OpenShift cluster as easily as possible, and
 reducing the install to a single click simplifies that process.
 
-Here are some real examples from previous enhancements:
+#### Real examples from previous enhancements
 * [As a member of OpenShift concerned with the release process (TRT, dev, staff engineer, maybe even PM),
 I want to opt in to pre-release features so that I can run periodic testing in CI and obtain a signal of
 feature quality.](https://github.com/openshift/enhancements/blob/master/enhancements/installer/feature-sets.md#user-stories)
@@ -319,7 +319,7 @@ enhancement:
 - What changes (in invocations, configurations, API use, etc.) is an existing
   cluster required to make on upgrade in order to make use of the enhancement?
 
-Upgrade expectations:
+### Upgrade expectations
 - Each component should remain available for user requests and
   workloads during upgrades. Ensure the components leverage best practices in handling [voluntary
   disruption](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/). Any exception to
@@ -373,6 +373,8 @@ Describe how to
   - Operator X will degrade with message "Failed to launch webhook server" and reason "WehhookServerFailed".
   - The metric `webhook_admission_duration_seconds("openpolicyagent-admission", "mutating", "put", "false")`
     will show >1s latency and alert `WebhookAdmissionLatencyHigh` will fire.
+
+### Disabling the extension
 
 - disable the API extension (e.g. remove MutatingWebhookConfiguration `xyz`, remove APIService `foo`)
 

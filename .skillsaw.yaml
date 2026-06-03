@@ -1,7 +1,7 @@
 # skillsaw configuration
 # https://github.com/stbenjam/skillsaw
 
-version: "0.11.4"
+version: "99.0.0"
 
 rules:
 
@@ -177,7 +177,7 @@ rules:
   # Warn about markdown sections longer than ~500 tokens
   content-section-length:
     enabled: auto
-    severity: info
+    severity: warning
 
   # Detect likely contradictions within instruction files
   content-contradiction:
@@ -197,7 +197,7 @@ rules:
   # Check that instruction files are organized into cognitive chunks with headings
   content-cognitive-chunks:
     enabled: auto
-    severity: info
+    severity: warning
 
   # Detect potential API keys, tokens, and passwords in instruction files
   content-embedded-secrets:
@@ -263,7 +263,8 @@ rules:
 exclude: []
 
 # Additional markdown files to run content rules on (glob format)
-content-paths: []
+content-paths:
+  - "CLAUDE.md"
 
 # Treat warnings as errors
 strict: true
