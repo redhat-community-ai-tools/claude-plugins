@@ -75,7 +75,7 @@ cycle_time = merged_date - created_date (in days)
 **Generate statistics:**
 - Average cycle time (Jira vs GitHub)
 - Longest 10 items by cycle time
-- Distribution by repository/project
+- Distribution by repo/project
 
 **Key insight:** Longest cycle times often indicate strategic/foundational work (not quick bug fixes).
 

@@ -8,9 +8,9 @@ description: |
 
 ## Overview
 
-This skill transforms rough requirements or meeting notes into a formal OSAC Enhancement Proposal following the osac-project/enhancement-proposals template. It embeds deep knowledge of the EP format, review expectations, and OSAC conventions so codebase exploration at runtime is only for the specific feature being proposed.
+This skill transforms rough requirements or meeting notes into a formal OSAC Enhancement Proposal following the osac-project/enhancement-proposals template. It embeds deep knowledge of the EP format, review expectations, and OSAC conventions so source code exploration at runtime is only for the specific feature being proposed.
 
-The skill acts as a "Senior Staff Engineer" who already knows the OSAC EP template structure and review culture, performing targeted codebase analysis to understand implementation patterns relevant to your specific proposal.
+The skill acts as a "Senior Staff Engineer" who already knows the OSAC EP template structure and review culture, performing targeted source code analysis to understand implementation patterns relevant to your specific proposal.
 
 ## Workflow
 
@@ -84,7 +84,7 @@ rg "<relevant-term>" enhancements/*/README.md --files-with-matches
 
 This phase is mandatory — do not skip to drafting.
 
-After codebase exploration, **STOP and present findings to the user.**
+After source code exploration, **STOP and present findings to the user.**
 
 **Structure your clarification:**
 
@@ -124,64 +124,13 @@ Create a lowercase, hyphen-separated slug based on the feature name:
 **Step 3: Create EP file**
 File path: `enhancement-proposals/enhancements/<feature-slug>/README.md`
 
-**Step 4: Fill ALL sections**
-Following the template from `ep_template.md`, populate each section:
+#### Step 4: Fill ALL sections
 
-**YAML Frontmatter:**
-```yaml
----
-title: <feature-slug>
-authors:
-  - <user-email-or-ask>
-creation-date: <today-YYYY-MM-DD>
-last-updated: <today-YYYY-MM-DD>
-tracking-link:
-  - <jira-url-or-TBD>
-see-also:
-  - <related-ep-paths-if-any>
-replaces:
-  - N/A
-superseded-by:
-  - N/A
----
-```
+Following `references/ep_template.md`, populate the YAML frontmatter (title, authors, dates, tracking-link, see-also) and all content sections:
 
-**Content sections (ALL required):**
-1. **Title**: Short, descriptive (e.g., "# OSAC Storage Network API")
-2. **Summary**: 1 paragraph summarizing what is being added and why
-3. **Terminology** (if applicable): Define key terms upfront
-4. **Motivation**:
-   - **User Stories**: At least 3-5 stories covering provider and tenant personas
-   - **Goals**: 3-7 bullet points describing success criteria from user perspective
-   - **Non-Goals**: 2-5 bullet points explicitly stating what is out of scope
-5. **Proposal**: High-level overview of the design (1-2 paragraphs per key resource/component)
-   - **Workflow Description**: Step-by-step user workflow with defined actors
-   - **API Extensions**: List of new gRPC services, CRDs, webhooks, finalizers
-   - **Implementation Details**: Deep technical content (proto schemas, controller logic, integration points)
-   - **Risks and Mitigations**: Specific risks with concrete mitigation strategies
-   - **Drawbacks**: Steel-man argument against the proposal
-6. **Alternatives**: Other approaches considered and why they were rejected
-7. **Open Questions** (optional): Areas requiring closure before implementation
-8. **Test Plan**: Testing strategy (unit, integration, e2e) with focus on tricky areas
-9. **Graduation Criteria**: Maturity levels (alpha, beta, GA) or placeholder if not targeting a release
-10. **Upgrade/Downgrade Strategy**: How the feature will be upgraded/downgraded
-11. **Version Skew Strategy**: How components will handle version skew
-12. **Support Procedures**: How to detect and resolve issues in production
-13. **Infrastructure Needed**: Additional infrastructure required (or "None")
+**Content sections (ALL required):** Title, Summary, Terminology (if applicable), Motivation (User Stories, Goals, Non-Goals), Proposal (Workflow, API Extensions, Implementation Details, Risks, Drawbacks), Alternatives, Open Questions, Test Plan, Graduation Criteria, Upgrade/Downgrade Strategy, Version Skew Strategy, Support Procedures, Infrastructure Needed. See `references/ep_template.md` for section guidance and examples.
 
-**Substantive placeholders:** For sections where details depend on implementation (Test Plan, Graduation Criteria), write substantive placeholders that describe WHAT will go there and WHY it's deferred. Don't just write "TBD".
-
-Example:
-```markdown
-## Test Plan
-
-Test plan will be developed during implementation phase. Expected coverage includes:
-- Unit tests: Proto validation, CIDR parsing, StorageClass selection logic
-- Integration tests: StorageNetwork creation workflow, Subnet attachment, PV provisioning end-to-end
-- E2e tests: Full workflow from StorageNetwork creation to running workload with persistent storage
-
-Focus areas for testing: CIDR conflict detection, CSI driver integration, multi-tenant isolation.
-```
+For sections where details depend on implementation (Test Plan, Graduation Criteria), write substantive placeholders describing WHAT will go there — not just "TBD". Example: "Test plan will include unit tests for proto validation, integration tests for creation workflows, and e2e tests for the full stack."
 
 **Step 5: Write the draft**
 Use the Write tool to create the EP file at the determined path.
@@ -233,7 +182,7 @@ For Phase 6 (review feedback loop), quick reference commands, and troubleshootin
 
 ## Rules
 
-- Phase 3 (Interactive Clarification) is mandatory — always present codebase findings and ask clarifying questions before drafting the EP
+- Phase 3 (Interactive Clarification) is mandatory — always present source code findings and ask clarifying questions before drafting the EP
 - Use `rg --files-with-matches` first, then read only key sections — do not read entire files during exploration
 
 ### Enhancement-Proposals Repo Not Cloned

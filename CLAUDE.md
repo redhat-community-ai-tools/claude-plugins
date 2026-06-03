@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a Claude Code plugin marketplace repository. It contains reusable plugins (skills, agents, commands) that can be installed into Claude Code via `/plugin marketplace add`.
+This is a Claude Code plugin marketplace repo. It contains reusable plugins (skills, agents, commands) that can be installed into Claude Code via `/plugin marketplace add`.
 
 ## Repository Structure
 

@@ -28,7 +28,7 @@ gws drive +upload <file>
 | Flag | Required | Default | Description |
 |------|----------|---------|-------------|
 | `<file>` | ✓ | — | Path to file to upload |
-| `--parent` | — | — | Parent folder ID |
+| `--parent` | — | — | Parent directory ID |
 | `--name` | — | — | Target filename (defaults to source filename) |
 
 ## Examples
@@ -50,4 +50,4 @@ gws drive +upload ./data.csv --name 'Sales Data.csv'
 ## See Also
 
 - [gws-shared](../gws-shared/SKILL.md) — Global flags and auth
-- [gws-drive](../gws-drive/SKILL.md) — All manage files, folders, and shared drives commands
+- [gws-drive](../gws-drive/SKILL.md) — All manage files, directories, and shared drives commands

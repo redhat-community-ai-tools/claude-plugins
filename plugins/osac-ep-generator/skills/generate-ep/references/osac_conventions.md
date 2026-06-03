@@ -174,7 +174,7 @@ The linter enforces that all required template sections are present. Do not remo
 ```markdown
 ## Infrastructure Needed
 
-No additional infrastructure is required for this enhancement. All work will be done in existing OSAC repositories.
+No additional infrastructure is required for this enhancement. All work will be done in existing OSAC repos.
 ```
 
 ### Common Linting Errors
