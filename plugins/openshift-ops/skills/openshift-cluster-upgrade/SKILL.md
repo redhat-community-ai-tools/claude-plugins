@@ -1,349 +1,60 @@
 ---
 name: openshift-cluster-upgrade
-description: Comprehensive guide for planning, executing, and troubleshooting OpenShift cluster upgrades including pre-upgrade checks, upgrade procedures, and post-upgrade validation. Use when upgrading clusters, investigating upgrade failures, or preparing upgrade strategies.
+description: Plan and troubleshoot OpenShift cluster upgrades with focus on irreversibility, upgrade-path validation, and stuck-upgrade diagnosis.
 ---
 
 # OpenShift Cluster Upgrade
 
-This skill provides systematic guidance for upgrading OpenShift clusters safely and effectively, including preparation, execution, monitoring, and troubleshooting.
+## Critical: Upgrades Are Irreversible
 
-## When to Use This Skill
+OpenShift cluster upgrades cannot be rolled back. There is no "undo." The only recovery from a catastrophically failed upgrade is restoring from an etcd backup, which requires full cluster downtime and loses all changes made after the backup. Prevention is everything — every section below exists to prevent you from starting an upgrade that will fail.
 
-- Planning cluster version upgrades
-- Executing cluster upgrades
-- Troubleshooting stuck or failed upgrades
-- Validating cluster health post-upgrade
-- Upgrading operators and cluster components
-- Managing upgrade channels and versions
+## Pre-Upgrade Gate Checks
 
-## Upgrade Workflow
+Do NOT proceed unless ALL of these pass:
+1. **All ClusterOperators healthy**: AVAILABLE=True, PROGRESSING=False, DEGRADED=False for every CO. A single degraded operator can block the upgrade partway through.
+2. **All nodes Ready**: A NotReady node will block MCP rollout and stall the upgrade.
+3. **No critical alerts firing**: Check Prometheus/AlertManager — active alerts often indicate problems that will worsen during upgrade.
+4. **Sufficient resource headroom**: Nodes need spare capacity because pods are evicted and rescheduled one node at a time during worker updates. If the cluster is already at capacity, pods will have nowhere to go.
+5. **Certificates not expiring soon**: Expired certs during upgrade cause cascading failures. Check CSRs and certificate secrets.
+6. **etcd backup taken**: Since upgrades are irreversible, an etcd snapshot is your only safety net.
 
-### Step 1: Pre-Upgrade Planning
+If any gate fails, fix it first. Starting an upgrade on a degraded cluster compounds problems.
 
-**Review Release Notes**
-- Check what's new in the target version
-- Review known issues and breaking changes
-- Verify deprecated API versions
-- Check operator compatibility
+## Upgrade Path Decision
 
-**Determine Upgrade Path**
-```bash
-# Check current version
-oc get clusterversion
+- **Standard**: Set the channel (stable-4.x), run `oc adm upgrade`, pick the target version. This is the happy path.
+- **EUS-to-EUS**: Extended Update Support lets you skip intermediate minor versions, but it's a TWO-HOP process. Example: 4.14 EUS → 4.15 (intermediate) → 4.16 EUS. You must fully complete the first hop before starting the second.
+- **Large clusters**: Pause the worker MachineConfigPool before upgrading (`oc patch mcp worker --type merge -p '{"spec":{"paused":true}}'`). This lets the control plane update first. Then unpause workers in batches by unpausing one MCP at a time or by using node selectors. This prevents all workers from draining simultaneously.
+- **Air-gapped**: Mirror the release images to your internal registry first, create an ImageContentSourcePolicy, then upgrade with `--to-image` pointing to the mirrored image.
 
-# View available upgrades
-oc adm upgrade
+## What Happens During an Upgrade (Three Phases)
 
-# Check upgrade graph
-oc adm upgrade --to-image=<registry-url> --allow-explicit-upgrade
-```
+1. **CVO updates cluster operators**: Downloads new release image, rolls out updated operators. Watch with `oc get co`.
+2. **Control plane nodes update**: API servers, controller managers, schedulers update one control plane node at a time. Brief API unavailability is normal.
+3. **Worker nodes update**: MachineConfigOperator renders new configs, nodes drain and reboot one at a time. This is the slowest phase. Watch with `oc get mcp` — UPDATED=True, UPDATING=False, DEGRADED=False means complete.
 
-**Backup Critical Components**
-```bash
-# Backup etcd
-oc get etcd -o yaml > etcd-backup.yaml
+## Stuck Upgrade Diagnosis
 
-# Take etcd snapshot (on control plane node)
-sudo /usr/local/bin/cluster-backup.sh /home/core/backup
+Follow this priority chain — each step is the most likely cause at that point:
 
-# Backup critical configurations
-oc get all -n <namespace> -o yaml > namespace-backup.yaml
-oc get cm -A -o yaml > configmaps-backup.yaml
-oc get secret -A -o yaml > secrets-backup.yaml
-```
+1. **Check clusterversion conditions**: `oc describe clusterversion` — the status conditions usually contain the actual error message explaining what's blocked
+2. **Find the degraded ClusterOperator**: `oc get co` — look for DEGRADED=True or AVAILABLE=False. This is the blocker ~60% of the time
+3. **Check MCP state**: `oc get mcp` — if worker or master pool shows DEGRADED=True, a node failed to apply the new machine config
+4. **Check for nodes that won't drain**: A node stuck in SchedulingDisabled with pods still running means drain is blocked. Check for PodDisruptionBudgets (`oc get pdb -A`) that prevent eviction — a PDB with `maxUnavailable: 0` will block drain forever
+5. **Check machine-config-daemon on the stuck node**: If MCP is degraded, the machine-config-daemon log on the specific node usually has the error. Use `oc logs -n openshift-machine-config-operator` with the node-specific daemon pod
+6. **Force drain as last resort**: Only for decommission scenarios. Force drain loses data in emptyDir volumes and ignores PDBs
 
-### Step 2: Pre-Upgrade Health Checks
+## Gotchas
 
-```bash
-# Check cluster operators
-oc get clusteroperators
-# Ensure all are AVAILABLE=True, PROGRESSING=False, DEGRADED=False
+- `--force` on `oc adm upgrade` bypasses version-graph safety checks. It does NOT force a stuck upgrade to continue. Almost never correct.
+- `--allow-explicit-upgrade` is only for upgrading to versions not in the recommended graph. Don't use it for normal upgrades.
+- Worker node updates are intentionally slow (one node at a time). A 20-node cluster can take 2+ hours for the worker phase alone. Don't panic at slow progress.
+- `oc adm upgrade --clear` cancels a pending upgrade but does NOT revert changes already applied. Use only if the upgrade hasn't started yet.
+- If the upgrade started but stalled, you must fix the blocker and let it continue — you cannot cancel mid-upgrade.
 
-# Check node health
-oc get nodes
-# All nodes should be Ready
+## When to Use Sibling Skills
 
-# Check cluster version status
-oc get clusterversion -o yaml
-
-# Check for failing pods
-oc get pods -A --field-selector status.phase!=Running,status.phase!=Succeeded
-
-# Check alerts
-oc get prometheus -n openshift-monitoring
-# Review any critical alerts
-
-# Check certificate expiration
-oc get csr
-oc get secrets -A | grep certificate
-
-# Verify resource availability
-oc adm top nodes
-oc describe nodes | grep -A 5 "Allocated resources"
-```
-
-### Step 3: Upgrade Channel Management
-
-```bash
-# View current channel
-oc get clusterversion -o jsonpath='{.items[0].spec.channel}'
-
-# Update channel if needed
-oc adm upgrade channel <channel-name>
-# Channels: stable-4.x, fast-4.x, eus-4.x, candidate-4.x
-
-# Available channels
-# stable-4.x: Production-ready releases
-# fast-4.x: Early access to stable releases
-# eus-4.x: Extended Update Support (for specific versions)
-# candidate-4.x: Release candidates (testing only)
-```
-
-### Step 4: Initiate Upgrade
-
-**Method 1: Web Console**
-1. Navigate to Administration → Cluster Settings
-2. Click "Update" in the Update Status section
-3. Select target version
-4. Click "Update"
-
-**Method 2: CLI**
-```bash
-# Upgrade to latest in channel
-oc adm upgrade --to-latest=true
-
-# Upgrade to specific version
-oc adm upgrade --to=<version>
-
-# Force upgrade (use with caution)
-oc adm upgrade --to=<version> --force
-
-# Allow explicit upgrade (for non-standard paths)
-oc adm upgrade --to=<version> --allow-explicit-upgrade
-```
-
-### Step 5: Monitor Upgrade Progress
-
-```bash
-# Watch cluster version status
-oc get clusterversion -w
-
-# Monitor cluster operators
-watch oc get clusteroperators
-
-# Check upgrade progress details
-oc describe clusterversion
-
-# Monitor Machine Config Operator
-oc get mcp
-oc get mcp -w
-
-# Watch node updates
-oc get nodes -w
-
-# Check specific operator progress
-oc get co <operator-name> -o yaml
-
-# View upgrade events
-oc get events -A --sort-by='.lastTimestamp' | grep -i upgrade
-```
-
-### Step 6: Understand Upgrade Phases
-
-**Phase 1: Cluster Version Operator Updates**
-- Downloads new release image
-- Updates cluster operators
-
-**Phase 2: Control Plane Update**
-- Updates API servers
-- Updates controller managers
-- Updates schedulers
-- One control plane node at a time
-
-**Phase 3: Worker Node Update**
-- Machine Config Operator renders new configs
-- Nodes drain and reboot one by one
-- Pods are rescheduled
-
-```bash
-# Monitor MCP status during worker updates
-oc get mcp
-# UPDATED=True, UPDATING=False, DEGRADED=False indicates completion
-
-# Check which nodes are updating
-oc get nodes -o wide
-# Look for SchedulingDisabled and version changes
-```
-
-### Step 7: Post-Upgrade Validation
-
-```bash
-# Verify new version
-oc get clusterversion
-oc get nodes
-
-# Check all operators are healthy
-oc get clusteroperators
-
-# Verify critical workloads
-oc get pods -A
-oc get deployments -A
-oc get statefulsets -A
-
-# Check for deprecated APIs
-oc get apiservices
-oc api-resources
-
-# Run cluster diagnostics
-oc adm must-gather
-
-# Test application functionality
-# - Access applications through routes
-# - Verify database connections
-# - Check persistent storage
-# - Test CI/CD pipelines
-```
-
-### Step 8: Operator Upgrades
-
-```bash
-# Check operator subscriptions
-oc get subscription -A
-
-# View available operator updates
-oc get csv -A
-
-# Update operator via subscription
-oc patch subscription <subscription-name> -n <namespace> \
-  --type='merge' -p '{"spec":{"channel":"<new-channel>"}}'
-
-# Manual approval for operator upgrades
-oc patch installplan <install-plan-name> -n <namespace> \
-  --type='merge' -p '{"spec":{"approved":true}}'
-
-# Check operator upgrade status
-oc get csv -n <namespace>
-oc describe csv <csv-name> -n <namespace>
-```
-
-## Troubleshooting Upgrades
-
-### Stuck Upgrade
-
-```bash
-# Check cluster version for errors
-oc describe clusterversion
-
-# Check failing operator
-oc get co
-oc describe co <degraded-operator>
-
-# Check operator logs
-oc logs -n <operator-namespace> deployment/<operator-deployment>
-
-# Check machine config pools
-oc get mcp
-oc describe mcp <mcp-name>
-
-# Check nodes that won't drain
-oc get nodes
-oc describe node <node-name>
-
-# Force drain if necessary (use with caution)
-oc adm drain <node-name> --ignore-daemonsets --delete-emptydir-data --force
-```
-
-### Failed Cluster Operator
-
-```bash
-# Get operator details
-oc describe co <operator-name>
-
-# Check related resources
-oc get all -n <operator-namespace>
-
-# Review operator logs
-oc logs -n <operator-namespace> -l app=<operator-app>
-
-# Check for resource constraints
-oc describe nodes
-oc adm top nodes
-
-# Restart operator pods if needed
-oc delete pod -n <operator-namespace> -l app=<operator-app>
-```
-
-### Node Not Updating
-
-```bash
-# Check MCP status
-oc get mcp
-oc describe mcp worker
-
-# Check machine config daemon logs
-oc logs -n openshift-machine-config-operator -l k8s-app=machine-config-daemon
-
-# Check node cordoning
-oc get nodes
-oc uncordon <node-name>
-
-# Check PDBs preventing drain
-oc get pdb -A
-oc describe pdb <pdb-name> -n <namespace>
-
-# Check for stuck pods
-oc get pods -A --field-selector spec.nodeName=<node-name>
-```
-
-### Rollback Considerations
-
-**Important**: OpenShift upgrades cannot be automatically rolled back. Prevention is critical.
-
-```bash
-# If upgrade fails, investigate and fix
-# Do NOT attempt to change version backward
-
-# Restore from etcd backup only as last resort
-# This is a destructive operation requiring cluster downtime
-
-# For critical failures:
-1. Open Red Hat support case
-2. Provide must-gather data
-3. Follow support guidance
-```
-
-## Best Practices
-
-### Before Upgrading
-
-1. **Test in Non-Production**: Upgrade dev/staging clusters first
-2. **Review Compatibility**: Check application and operator compatibility
-3. **Backup Everything**: etcd, PVs, configurations, and application data
-4. **Check Resources**: Ensure sufficient CPU, memory, and storage
-5. **Review Maintenance Window**: Plan for 2-4 hours minimum
-6. **Notify Stakeholders**: Inform teams of maintenance window
-7. **Verify Health**: Ensure cluster is completely healthy
-
-### During Upgrade
-
-1. **Monitor Actively**: Watch cluster operators and nodes
-2. **Don't Interrupt**: Let upgrade complete naturally
-3. **Check Alerts**: Monitor for new critical alerts
-4. **Document Issues**: Record any problems for investigation
-5. **Be Patient**: Worker node updates take time (one node at a time)
-
-### After Upgrade
-
-1. **Validate Functionality**: Test critical applications
-2. **Check Deprecations**: Review and address API deprecation warnings
-3. **Update Documentation**: Record new version and any issues encountered
-4. **Monitor for Days**: Watch for delayed issues
-5. **Update Operators**: Upgrade operators to compatible versions
-
-For upgrade strategies (EUS-to-EUS, large clusters, air-gapped) and quick commands, see `references/upgrade-strategies.md`.
-
-## Related Skills
-
-- `openshift-debugging` - For troubleshooting upgrade-related issues
-- `openshift-operator-troubleshooting` - For operator-specific upgrade problems
-- `openshift-node-operations` - For node management during upgrades
+- ClusterOperator degraded during upgrade → use **openshift-operator-troubleshooting** to diagnose the specific operator
+- Node won't drain or is NotReady → use **openshift-node-operations** for drain/node diagnosis
+- General cluster health investigation pre-upgrade → use **openshift-debugging** for triage

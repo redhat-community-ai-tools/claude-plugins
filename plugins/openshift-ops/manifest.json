@@ -1,7 +1,7 @@
 {
   "name": "openshift-ops",
   "version": "1.0.0",
-  "description": "Comprehensive Claude Code plugin providing expert-level skills for OpenShift cluster management, troubleshooting, and operations",
+  "description": "Opinionated diagnostic workflows for OpenShift cluster operations — decision trees, failure modes, and gotchas",
   "author": { "name": "Eran Cohen" },
   "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
   "repository": {
@@ -21,25 +21,25 @@
     {
       "name": "openshift-debugging",
       "path": "skills/openshift-debugging/SKILL.md",
-      "description": "Comprehensive troubleshooting and debugging skill for OpenShift clusters including pods, nodes, operators, networking, and storage issues. Use when diagnosing cluster problems, investigating failed deployments, or resolving operational issues.",
+      "description": "Diagnose OpenShift cluster issues using layered triage, failure-mode classification, and prioritized diagnostic workflows.",
       "tags": ["debugging", "troubleshooting", "diagnostics"]
     },
     {
       "name": "openshift-cluster-upgrade",
       "path": "skills/openshift-cluster-upgrade/SKILL.md",
-      "description": "Complete guide for planning, executing, and troubleshooting OpenShift cluster upgrades including pre-checks, upgrade monitoring, and troubleshooting stuck upgrades. Use when upgrading clusters or investigating upgrade failures.",
+      "description": "Plan and troubleshoot OpenShift cluster upgrades with focus on irreversibility, upgrade-path validation, and stuck-upgrade diagnosis.",
       "tags": ["upgrade", "maintenance", "operations"]
     },
     {
       "name": "openshift-node-operations",
       "path": "skills/openshift-node-operations/SKILL.md",
-      "description": "Node lifecycle management including adding/removing nodes, cordoning, draining, machine management, and node troubleshooting. Use when managing cluster capacity or performing node maintenance.",
+      "description": "Node lifecycle management with focus on safe drain procedures, automated-vs-manual infrastructure decisions, and node failure diagnosis.",
       "tags": ["nodes", "capacity", "maintenance"]
     },
     {
       "name": "openshift-operator-troubleshooting",
       "path": "skills/openshift-operator-troubleshooting/SKILL.md",
-      "description": "Deep dive into operator issues including cluster operator degradation, OLM failures, subscription issues, and operator upgrades. Use when operators are degraded, failing to install/upgrade, or causing cluster issues.",
+      "description": "Diagnose degraded cluster operators and failing OLM operators using status-triple analysis, CSV lifecycle debugging, and OLM component triage.",
       "tags": ["operators", "olm", "troubleshooting"]
     }
   ],
