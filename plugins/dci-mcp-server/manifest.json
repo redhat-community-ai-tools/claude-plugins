@@ -1,0 +1,56 @@
+{
+  "name": "dci-mcp-server",
+  "version": "0.3.0",
+  "description": "MCP server for DCI (Distributed CI), Jira, GitHub, GitLab, Google Drive, and Red Hat Support Case integration",
+  "author": {
+    "name": "Telco Partners CI team",
+    "email": "flepied@redhat.com"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/dci-mcp-server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/dci-mcp-server.git"
+  },
+  "keywords": [
+    "dci",
+    "mcp",
+    "jira",
+    "github",
+    "gitlab",
+    "google-drive",
+    "openshift",
+    "ci",
+    "distributed-ci",
+    "support-case"
+  ],
+  "skills": [
+    {
+      "name": "dci-mcp-management",
+      "path": "skills/dci-mcp-management/SKILL.md",
+      "description": "Manage DCI jobs, components, Jira tickets, GitHub/GitLab issues, Red Hat support cases, and Google Drive docs via the dci-mcp-server MCP integration",
+      "tags": ["dci", "mcp", "ci", "jira", "github", "gitlab", "openshift", "google-drive", "support-case"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "uv": {
+        "required": true,
+        "description": "uv package manager for running dci-mcp-server via uvx",
+        "installUrl": "https://docs.astral.sh/uv/"
+      },
+      "python3": {
+        "required": true,
+        "description": "Python 3.14+ runtime"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "CI/CD",
+    "Integration",
+    "MCP Integration"
+  ]
+}

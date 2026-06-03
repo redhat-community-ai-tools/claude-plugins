@@ -102,6 +102,15 @@
       "author": {
         "name": "Ronnie Rasouli"
       }
+    },
+    {
+      "name": "dci-mcp-server",
+      "source": "./plugins/dci-mcp-server",
+      "description": "MCP server for DCI (Distributed CI), Jira, GitHub, GitLab, Google Drive, and Red Hat Support Case integration",
+      "version": "0.3.0",
+      "author": {
+        "name": "Telco Partners CI team"
+      }
     }
   ]
 }
