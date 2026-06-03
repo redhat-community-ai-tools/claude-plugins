@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "description": "MCP server for DCI (Distributed CI), Jira, GitHub, GitLab, Google Drive, and Red Hat Support Case integration",
   "author": {
-    "name": "Telco AI Team",
+    "name": "Telco Partners CI team",
     "email": "flepied@redhat.com"
   },
   "homepage": "https://github.com/redhat-community-ai-tools/dci-mcp-server",
@@ -27,8 +27,8 @@
     {
       "name": "dci-mcp-management",
       "path": "skills/dci-mcp-management/SKILL.md",
-      "description": "Manage DCI jobs, components, Jira tickets, GitHub/GitLab issues, and Red Hat support cases via the dci-mcp-server Model Context Protocol integration",
-      "tags": ["dci", "mcp", "ci", "jira", "github", "gitlab", "openshift"]
+      "description": "Manage DCI jobs, components, Jira tickets, GitHub/GitLab issues, Red Hat support cases, and Google Drive docs via the dci-mcp-server MCP integration",
+      "tags": ["dci", "mcp", "ci", "jira", "github", "gitlab", "openshift", "google-drive", "support-case"]
     }
   ],
   "dependencies": {

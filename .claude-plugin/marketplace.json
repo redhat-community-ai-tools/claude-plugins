@@ -109,7 +109,7 @@
       "description": "MCP server for DCI (Distributed CI), Jira, GitHub, GitLab, Google Drive, and Red Hat Support Case integration",
       "version": "0.3.0",
       "author": {
-        "name": "Telco AI Team"
+        "name": "Telco Partners CI team"
       }
     }
   ]

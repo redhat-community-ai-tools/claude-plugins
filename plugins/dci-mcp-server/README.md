@@ -80,13 +80,21 @@ Add to `.mcp.json` (Claude Code) or `claude_desktop_config.json` (Claude Desktop
 - `create_jira_ticket` / `update_jira_ticket` - Write operations
 - `add_jira_comment` - Add comments to tickets
 - `list_jira_boards` / `list_jira_sprints` - Board and sprint management
+- `list_jira_transitions` - Get available workflow transitions
 - `search_jira_child_tickets` - Traverse 2-level Jira hierarchies
+- `get_jira_project_info` / `list_jira_project_components` / `list_jira_project_versions` - Project metadata
+- `search_jira_filters` / `get_jira_filter` / `list_jira_favourite_filters` - Saved filter management
+- `count_jira_tickets` - Count tickets matching a JQL query
+- `add_jira_weblink` - Add web links to tickets
+- `list_jira_issue_types_for_project` - List issue types in a project
+- `list_jira_custom_field_options` - List allowed values for custom fields
 
 ### GitHub Tools
 - `search_github_issues` - Search issues and PRs
 - `get_github_issue` - Get issue/PR details with comments
 - `get_github_pr_diff` / `get_github_pr_checks` - PR diffs and CI status
 - `get_github_repository_info` - Repository metadata
+- `get_github_rate_limit` - Check API rate limit status
 
 ### GitLab Tools
 - `search_gitlab_issues` / `search_gitlab_merge_requests` - Search GitLab
@@ -105,13 +113,28 @@ Add to `.mcp.json` (Claude Code) or `claude_desktop_config.json` (Claude Desktop
 - `convert_dci_report_to_google_doc` - Convert DCI reports to Google Docs
 - `list_google_docs` / `find_folder_by_name` - Browse Google Drive
 
+## Available Prompts
+
+MCP prompts provide structured analysis workflows that guide the AI through multi-step investigations.
+
+- `rca` — Root cause analysis of a failing DCI job using the 5 Whys method with log evidence gathering, adversarial verification, and confidence-rated findings
+- `weekly` — Weekly DCI job analysis with failure rates, top failure reasons, and recommendations
+- `biweekly` — Two-week DCI job analysis with statistics and anomaly detection
+- `quarterly` — Comprehensive 3-month analysis with pipeline/topic/component statistics, trend detection, and anomaly detection
+
+## When to Use
+
+This plugin is designed for **DCI-centric cross-platform workflows** — CI job analysis, cross-referencing DCI results with Jira tickets, GitHub/GitLab PRs, Red Hat support cases, and Google Drive reports.
+
+Its Jira/GitHub/GitLab tools overlap with the standalone `jira`, `jira-mcp`, and built-in GitHub plugins. For general-purpose Jira or GitHub work unrelated to DCI, prefer those dedicated plugins. Use this plugin when you need to correlate data across DCI and these platforms in a single MCP session.
+
 ## Skills
 
 ### dci-mcp-management
 
-AI-assisted DCI and multi-platform integration through MCP. Enables searching CI jobs, querying components, managing Jira tickets, reviewing GitHub/GitLab PRs, and accessing Red Hat support cases.
+AI-assisted DCI and multi-platform integration through MCP. Enables searching CI jobs, querying components, managing Jira tickets, reviewing GitHub/GitLab PRs, accessing Red Hat support cases, and creating Google Drive documents.
 
-See [skills/dci-mcp-management/SKILL.md](skills/dci-mcp-management/SKILL.md) for detailed documentation.
+See [skills/dci-mcp-management/SKILL.md](skills/dci-mcp-management/SKILL.md) for detailed usage patterns and query syntax.
 
 ## Links
 
