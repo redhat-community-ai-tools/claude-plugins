@@ -7,7 +7,7 @@
     {
       "name": "openshift-ops",
       "source": "./plugins/openshift-ops",
-      "description": "Comprehensive Claude Code plugin providing expert-level skills for OpenShift cluster management, troubleshooting, and operations",
+      "description": "Opinionated diagnostic workflows for OpenShift cluster operations — decision trees, failure modes, and gotchas",
       "version": "1.0.0",
       "author": {
         "name": "Eran Cohen"

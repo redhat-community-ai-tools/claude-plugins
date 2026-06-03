@@ -22,7 +22,7 @@ claude plugin update jira
 
 | Plugin | Description | Install | Requires |
 |--------|-------------|---------|----------|
-| **openshift-ops** | Cluster management, debugging, upgrades, node ops | `claude plugin install openshift-ops` | `oc` |
+| **openshift-ops** | Diagnostic workflows for cluster operations — decision trees, failure modes, gotchas | `claude plugin install openshift-ops` | `oc` |
 | **jira** | CLI-based JIRA management with advanced skills | `claude plugin install jira` | `jira` (jira-cli) |
 | **jira-mcp** | AI-assisted JIRA management via MCP server | `claude plugin install jira-mcp` | `jira-mcp-server`, `jira-cli` |
 | **polarion** | Manage Polarion test cases for OpenShift Extended Testing | `claude plugin install polarion` | `python3`, `polarion-mcp-server` |
@@ -37,10 +37,10 @@ claude plugin update jira
 ### openshift-ops
 
 4 skills for OpenShift cluster management:
-- **openshift-debugging** — Troubleshoot pods, nodes, operators, networking, storage
-- **openshift-cluster-upgrade** — Plan, execute, and troubleshoot cluster upgrades
-- **openshift-node-operations** — Add/remove nodes, cordoning, draining, maintenance
-- **openshift-operator-troubleshooting** — Debug cluster operators, OLM, subscriptions
+- **openshift-debugging** — Layered triage and failure-mode classification for cluster issues
+- **openshift-cluster-upgrade** — Irreversibility-aware upgrade planning and stuck-upgrade diagnosis
+- **openshift-node-operations** — Safe drain procedures and automated-vs-manual node lifecycle
+- **openshift-operator-troubleshooting** — Status-triple analysis for cluster operators, CSV lifecycle for OLM
 
 ### jira
 
