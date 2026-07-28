@@ -1,0 +1,8 @@
+{
+  "name": "demo-recording",
+  "version": "0.1.0",
+  "description": "Create polished asciinema terminal recordings for documentation or demos — CLI workflows, API sequences, or any terminal task",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}

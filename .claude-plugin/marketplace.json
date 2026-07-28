@@ -111,6 +111,15 @@
       "author": {
         "name": "Telco Partners CI team"
       }
+    },
+    {
+      "name": "demo-recording",
+      "source": "./plugins/demo-recording",
+      "description": "Create polished asciinema terminal recordings for documentation or demos — CLI workflows, API sequences, or any terminal task",
+      "version": "0.1.0",
+      "author": {
+        "name": "Eran Cohen"
+      }
     }
   ]
 }
