@@ -1,0 +1,53 @@
+{
+  "name": "demo-recording",
+  "version": "0.1.0",
+  "description": "Create polished asciinema terminal recordings for documentation or demos — CLI workflows, API sequences, or any terminal task",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "asciinema",
+    "demo",
+    "recording",
+    "api",
+    "documentation"
+  ],
+  "skills": [
+    {
+      "name": "demo-recording",
+      "path": "skills/demo-recording/SKILL.md",
+      "description": "Create asciinema terminal recordings for documentation or demos — generates scripts with optional auth, async polling, cleanup, and color/animation polish. Works for CLI workflows, API sequences, or any terminal task.",
+      "tags": ["asciinema", "demo", "recording", "terminal", "documentation"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "asciinema": {
+        "required": true,
+        "description": "Terminal session recorder",
+        "installUrl": "https://asciinema.org/docs/installation"
+      },
+      "curl": {
+        "required": true,
+        "description": "HTTP client for API requests"
+      },
+      "jq": {
+        "required": false,
+        "description": "JSON processor for parsing API responses"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Documentation"
+  ]
+}

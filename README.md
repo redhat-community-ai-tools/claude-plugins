@@ -33,6 +33,7 @@ claude plugin update jira
 | **quarterly-connection** | Red Hat Quarterly Connection reports from Jira, GitHub, Google Workspace, GitLab | `claude plugin install quarterly-connection` | `jira`, `gh`, `gws` |
 | **skill-scanner** | Scan plugins for security vulnerabilities | `claude plugin install skill-scanner` | — |
 | **dci-mcp-server** | DCI, Jira, GitHub, GitLab, Google Drive, Red Hat Support via MCP | `claude plugin install dci-mcp-server` | `uv`, `python3` |
+| **demo-recording** | Asciinema terminal recordings for CLI/API demos | `claude plugin install demo-recording` | `asciinema`, `curl` |
 
 ### openshift-ops
 
@@ -112,6 +113,10 @@ MCP server for [DCI (Distributed CI)](https://doc.distributed-ci.io/) with multi
 **Requires:** Python 3.14+, [uv](https://docs.astral.sh/uv/), DCI API credentials. Optional integrations: Jira, GitHub, GitLab, Red Hat Support, Google Drive.
 
 See [plugins/dci-mcp-server/README.md](plugins/dci-mcp-server/README.md)
+
+### demo-recording
+
+- **demo-recording** — Interactive workflow for creating asciinema terminal recordings. Includes simple and polished script templates with optional auth, async state polling, and reverse-order cleanup. Works for CLI workflows, API sequences, or any terminal task.
 
 ## Managing Plugins
 
