@@ -33,7 +33,7 @@ For pure CLI demos, strip the API helpers and use direct commands in `run_demo()
 ## Requirements
 
 - `asciinema` — terminal session recorder ([install](https://asciinema.org/docs/installation))
-- `curl` — HTTP client (for API demos)
+- `curl` (API demos only) — HTTP client
 - `jq` (optional) — JSON processor
 
 ## Install

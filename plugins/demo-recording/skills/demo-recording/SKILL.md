@@ -38,9 +38,9 @@ Interactive workflow for creating polished asciinema terminal recordings. Works 
 - Track created resources for cleanup
 
 **4. Record**
-- Dry-run: `./demo.sh --dry-run` (validates commands, auth, flow)
+- Test without recording: `./demo.sh --no-record` (runs the demo live without asciinema)
 - Record: `./demo.sh` or `./demo.sh --cleanup`
-- Test: `asciinema play <file>.cast`
+- Playback: `asciinema play <file>.cast`
 
 **5. Publish**
 - Ask: "Upload to asciinema.org?"
@@ -62,7 +62,7 @@ Both include: `refresh_auth()`, `api()`, `wait_for_state()`, cleanup tracking. F
 | API call | `api GET/POST/DELETE "<path>" [-d '{"json"}']` |
 | Async wait | `wait_for_state "<url>" "<jq_filter>" "READY" <timeout>` |
 | Track resource | `CREATED_RESOURCES+=("resourcetype/${id}")` |
-| Dry-run | `./demo.sh --dry-run` |
+| Test (no recording) | `./demo.sh --no-record` |
 | Record+cleanup | `./demo.sh --cleanup` |
 
 ## Common Issues

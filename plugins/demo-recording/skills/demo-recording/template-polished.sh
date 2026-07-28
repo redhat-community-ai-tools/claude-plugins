@@ -34,7 +34,7 @@ api() {
   local method=$1 path=$2
   shift 2
   local response http_code body
-  response=$(curl -sk -w '\n%{http_code}' -X "${method}" \
+  response=$(curl -s -w '\n%{http_code}' -X "${method}" \
     -H "Authorization: Bearer ${TOKEN}" \
     -H "Content-Type: application/json" \
     "${API_BASE}${path}" "$@")
@@ -112,16 +112,16 @@ cleanup_resources() {
 run_demo() {
   refresh_auth
 
-  # TODO: Add your demo steps here
-
   if [[ "${CLEANUP}" == "true" ]]; then
-    cleanup_resources
+    trap 'rc=$?; cleanup_resources; exit $rc' EXIT INT TERM
   fi
+
+  # TODO: Add your demo steps here
 }
 
 # Main
 case "${1:-}" in
-  --dry-run)
+  --no-record)
     run_demo
     ;;
   --cleanup)

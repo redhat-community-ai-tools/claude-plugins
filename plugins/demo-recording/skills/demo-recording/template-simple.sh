@@ -23,7 +23,7 @@ api() {
   local method=$1 path=$2
   shift 2
   local response http_code body
-  response=$(curl -sk -w '\n%{http_code}' -X "${method}" \
+  response=$(curl -s -w '\n%{http_code}' -X "${method}" \
     -H "Authorization: Bearer ${TOKEN}" \
     -H "Content-Type: application/json" \
     "${API_BASE}${path}" "$@")
@@ -73,6 +73,10 @@ cleanup_resources() {
 run_demo() {
   refresh_auth
 
+  if [[ "${CLEANUP}" == "true" ]]; then
+    trap 'rc=$?; cleanup_resources; exit $rc' EXIT INT TERM
+  fi
+
   # TODO: Add your demo steps here
   # Example (API):
   #   result=$(api POST "/resources" -d '{"name":"demo"}')
@@ -82,15 +86,11 @@ run_demo() {
   # Example (CLI):
   #   myctl create widget --name demo-widget
   #   CREATED_RESOURCES+=("widget/demo-widget")
-
-  if [[ "${CLEANUP}" == "true" ]]; then
-    cleanup_resources
-  fi
 }
 
 # Main
 case "${1:-}" in
-  --dry-run)
+  --no-record)
     run_demo
     ;;
   --cleanup)

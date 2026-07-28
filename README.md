@@ -33,7 +33,7 @@ claude plugin update jira
 | **quarterly-connection** | Red Hat Quarterly Connection reports from Jira, GitHub, Google Workspace, GitLab | `claude plugin install quarterly-connection` | `jira`, `gh`, `gws` |
 | **skill-scanner** | Scan plugins for security vulnerabilities | `claude plugin install skill-scanner` | — |
 | **dci-mcp-server** | DCI, Jira, GitHub, GitLab, Google Drive, Red Hat Support via MCP | `claude plugin install dci-mcp-server` | `uv`, `python3` |
-| **demo-recording** | Asciinema terminal recordings for CLI/API demos | `claude plugin install demo-recording` | `asciinema`, `curl` |
+| **demo-recording** | Asciinema terminal recordings for CLI/API demos | `claude plugin install demo-recording` | `asciinema` |
 
 ### openshift-ops
 
