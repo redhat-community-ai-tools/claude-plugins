@@ -235,6 +235,8 @@ After generating, offer to:
 
 ## Guidelines
 
+See [guidelines.md](guidelines.md) for security, privacy, data accuracy, and error handling rules.
+
 - Always confirm the quarter and year before gathering data
 - Ask for usernames upfront rather than guessing
 - If a platform returns an error, continue with what works
