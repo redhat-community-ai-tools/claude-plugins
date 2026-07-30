@@ -1,0 +1,8 @@
+{
+  "name": "writing-makefiles",
+  "version": "0.1.0",
+  "description": "Write developer-shortcut Makefiles with self-documenting help, standard targets, and common-mistake avoidance",
+  "author": {
+    "name": "Riccardo Piccoli"
+  }
+}

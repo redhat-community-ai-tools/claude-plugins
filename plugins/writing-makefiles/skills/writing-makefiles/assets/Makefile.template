@@ -1,0 +1,60 @@
+# Copy this in, then:
+#   1. Rename PKG/tool commands for your stack (go/python/node/etc).
+#   2. Delete targets you don't need, add ones you do.
+#   3. Keep each recipe to 1-3 lines; anything bigger goes in scripts/ and
+#      gets called from here (see "Wrap Scripts, Don't Inline Logic" in SKILL.md).
+
+SHELL := /bin/bash
+.DEFAULT_GOAL := help
+.DELETE_ON_ERROR:
+
+# --- Variables (defaults overridable: `make test ARGS=-v`) ---
+GO      ?= go
+PKG     ?= ./...
+ARGS    ?=
+
+##@ General
+
+.PHONY: help
+help: ## Display this help.
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9\/-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+##@ Setup
+
+.PHONY: deps
+deps: ## Install/update dependencies.
+	$(GO) mod download
+
+##@ Development
+
+.PHONY: build
+build: ## Build the binary.
+	$(GO) build -o bin/app .
+
+.PHONY: test
+test: ## Run tests. Pass extra flags with ARGS="-run TestFoo".
+	$(GO) test $(ARGS) $(PKG)
+
+.PHONY: lint
+lint: ## Run the linter.
+	golangci-lint run
+
+.PHONY: fmt
+fmt: ## Format code.
+	$(GO) fmt $(PKG)
+
+.PHONY: run
+run: build ## Build and run locally.
+	./bin/app
+
+##@ Release
+
+.PHONY: release
+release: ## Cut a release. Non-trivial steps live in scripts/release.sh.
+	scripts/release.sh $(ARGS)
+
+##@ Cleanup
+
+.PHONY: clean
+clean: ## Remove build artifacts.
+	rm -rf bin/

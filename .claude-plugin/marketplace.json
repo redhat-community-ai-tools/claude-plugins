@@ -120,6 +120,15 @@
       "author": {
         "name": "Eran Cohen"
       }
+    },
+    {
+      "name": "writing-makefiles",
+      "source": "./plugins/writing-makefiles",
+      "description": "Write developer-shortcut Makefiles with self-documenting help, standard targets, and common-mistake avoidance",
+      "version": "0.1.0",
+      "author": {
+        "name": "Riccardo Piccoli"
+      }
     }
   ]
 }

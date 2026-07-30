@@ -34,6 +34,7 @@ claude plugin update jira
 | **skill-scanner** | Scan plugins for security vulnerabilities | `claude plugin install skill-scanner` | — |
 | **dci-mcp-server** | DCI, Jira, GitHub, GitLab, Google Drive, Red Hat Support via MCP | `claude plugin install dci-mcp-server` | `uv`, `python3` |
 | **demo-recording** | Asciinema terminal recordings for CLI/API demos | `claude plugin install demo-recording` | `asciinema` |
+| **writing-makefiles** | Self-documenting Makefiles with standard targets and common-mistake avoidance | `claude plugin install writing-makefiles` | `make` |
 
 ### openshift-ops
 
@@ -117,6 +118,10 @@ See [plugins/dci-mcp-server/README.md](plugins/dci-mcp-server/README.md)
 ### demo-recording
 
 - **demo-recording** — Interactive workflow for creating asciinema terminal recordings. Includes simple and polished script templates with optional auth, async state polling, and reverse-order cleanup. Works for CLI workflows, API sequences, or any terminal task.
+
+### writing-makefiles
+
+- **writing-makefiles** — Guidance for developer-shortcut Makefiles: self-documenting `make help`, standard target names, "wrap scripts, don't inline logic" pattern, common mistakes, and testing strategies
 
 ## Managing Plugins
 
