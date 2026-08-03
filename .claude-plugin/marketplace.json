@@ -129,6 +129,15 @@
       "author": {
         "name": "Riccardo Piccoli"
       }
+    },
+    {
+      "name": "rpm-packaging",
+      "source": "./plugins/rpm-packaging",
+      "description": "Write RPM spec files, build with rpmbuild/mock/koji, debug build failures, and package software for Fedora/RHEL/CentOS",
+      "version": "0.1.0",
+      "author": {
+        "name": "Riccardo Piccoli"
+      }
     }
   ]
 }

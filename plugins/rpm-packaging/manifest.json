@@ -1,0 +1,57 @@
+{
+  "name": "rpm-packaging",
+  "version": "0.1.0",
+  "description": "Write RPM spec files, build with rpmbuild/mock/koji, debug build failures, and package software for Fedora/RHEL/CentOS",
+  "author": {
+    "name": "Riccardo Piccoli"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "rpm",
+    "rpmbuild",
+    "mock",
+    "koji",
+    "copr",
+    "fedora",
+    "rhel",
+    "centos",
+    "packaging",
+    "spec-file"
+  ],
+  "skills": [
+    {
+      "name": "rpm-packaging",
+      "path": "skills/rpm-packaging/SKILL.md",
+      "description": "Use when writing RPM spec files, building RPMs with rpmbuild/mock/koji, debugging build failures, packaging software for Fedora/RHEL/CentOS, or working with rpm macros, scriptlets, dependencies (BuildRequires/Requires), subpackages, SRPMs, rpmlint, signing, or yum/dnf repositories. Also use when packaging C/C++, Python, Go, Rust, or Java projects as RPMs.",
+      "tags": ["rpm", "rpmbuild", "mock", "fedora", "rhel", "packaging"]
+    }
+  ],
+  "dependencies": {
+    "tools": {
+      "rpmbuild": {
+        "required": false,
+        "description": "RPM build tool (from rpm-build package)"
+      },
+      "mock": {
+        "required": false,
+        "description": "Chroot-based RPM build environment"
+      },
+      "rpmlint": {
+        "required": false,
+        "description": "RPM package linter"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "Developer Tools",
+    "Packaging"
+  ]
+}
