@@ -1,0 +1,8 @@
+{
+  "name": "rpm-packaging",
+  "version": "0.1.0",
+  "description": "Write RPM spec files, build with rpmbuild/mock/koji, debug build failures, and package software for Fedora/RHEL/CentOS",
+  "author": {
+    "name": "Riccardo Piccoli"
+  }
+}

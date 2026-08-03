@@ -35,6 +35,7 @@ claude plugin update jira
 | **dci-mcp-server** | DCI, Jira, GitHub, GitLab, Google Drive, Red Hat Support via MCP | `claude plugin install dci-mcp-server` | `uv`, `python3` |
 | **demo-recording** | Asciinema terminal recordings for CLI/API demos | `claude plugin install demo-recording` | `asciinema` |
 | **writing-makefiles** | Self-documenting Makefiles with standard targets and common-mistake avoidance | `claude plugin install writing-makefiles` | `make` |
+| **rpm-packaging** | RPM spec files, rpmbuild/mock/koji, Fedora/RHEL/CentOS packaging | `claude plugin install rpm-packaging` | `rpmbuild` (optional) |
 
 ### openshift-ops
 
@@ -122,6 +123,10 @@ See [plugins/dci-mcp-server/README.md](plugins/dci-mcp-server/README.md)
 ### writing-makefiles
 
 - **writing-makefiles** — Guidance for developer-shortcut Makefiles: self-documenting `make help`, standard target names, "wrap scripts, don't inline logic" pattern, common mistakes, and testing strategies
+
+### rpm-packaging
+
+- **rpm-packaging** — Comprehensive RPM packaging guidance: spec file anatomy, build lifecycle, macros, dependencies, scriptlets, subpackages, rpmlint, signing, and repository creation. Includes language-specific templates (C/C++, Python, Go, Rust, Java) and container-based testing patterns
 
 ## Managing Plugins
 
