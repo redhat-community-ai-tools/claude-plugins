@@ -42,7 +42,7 @@ It scans every `target: ## description` line and every `##@ Category` line and p
 
 ## Standard Target Names
 
-Use these names so any dev familiar with `make` guesses correctly without reading the file:
+Use these names so any dev familiar with `make` can guess the right target without reading the file:
 
 | Target | Purpose |
 |---|---|
