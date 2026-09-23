@@ -36,6 +36,7 @@ claude plugin update jira
 | **demo-recording** | Asciinema terminal recordings for CLI/API demos | `claude plugin install demo-recording` | `asciinema` |
 | **writing-makefiles** | Self-documenting Makefiles with standard targets and common-mistake avoidance | `claude plugin install writing-makefiles` | `make` |
 | **rpm-packaging** | RPM spec files, rpmbuild/mock/koji, Fedora/RHEL/CentOS packaging | `claude plugin install rpm-packaging` | `rpmbuild` (optional) |
+| **helm-chart-release** | Release Helm charts to registry.redhat.io via Konflux | `claude plugin install helm-chart-release` | — |
 
 ### openshift-ops
 
@@ -127,6 +128,10 @@ See [plugins/dci-mcp-server/README.md](plugins/dci-mcp-server/README.md)
 ### rpm-packaging
 
 - **rpm-packaging** — Comprehensive RPM packaging guidance: spec file anatomy, build lifecycle, macros, dependencies, scriptlets, subpackages, rpmlint, signing, and repository creation. Includes language-specific templates (C/C++, Python, Go, Rust, Java) and container-based testing patterns
+
+### helm-chart-release
+
+- **release-helm-chart-konflux** — Release Helm charts to registry.redhat.io through the Konflux Helm release pipeline: Pyxis onboarding, Konflux component/Tekton setup with `build-helm-chart-oci-ta`, chart versioning, and RPA/ECP configuration in `konflux-release-data`. Includes a troubleshooting checklist mapping release failures back to the missing step.
 
 ## Managing Plugins
 
