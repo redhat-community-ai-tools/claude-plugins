@@ -1,0 +1,8 @@
+{
+  "name": "helm-chart-release",
+  "version": "0.1.0",
+  "description": "Release Helm charts to registry.redhat.io via the Konflux Helm release pipeline — Pyxis onboarding, Tekton pipeline configuration, versioning, and release-data setup",
+  "author": {
+    "name": "Eran Cohen"
+  }
+}
