@@ -1,0 +1,39 @@
+{
+  "name": "helm-chart-release",
+  "version": "0.1.0",
+  "description": "Release Helm charts to registry.redhat.io via the Konflux Helm release pipeline — Pyxis onboarding, Tekton pipeline configuration, versioning, and release-data setup",
+  "author": {
+    "name": "Eran Cohen"
+  },
+  "homepage": "https://github.com/redhat-community-ai-tools/claude-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redhat-community-ai-tools/claude-plugins.git"
+  },
+  "keywords": [
+    "konflux",
+    "helm",
+    "registry.redhat.io",
+    "pyxis",
+    "release-engineering",
+    "tekton",
+    "red-hat"
+  ],
+  "skills": [
+    {
+      "name": "release-helm-chart-konflux",
+      "path": "skills/release-helm-chart-konflux/SKILL.md",
+      "description": "Release a Helm chart to registry.redhat.io through Konflux — Pyxis onboarding, Konflux component setup, build-helm-chart-oci-ta pipeline configuration, chart versioning, and RPA/ECP setup in konflux-release-data. Use when the user wants to onboard, configure, debug, or release a Helm chart via Konflux.",
+      "tags": ["konflux", "helm", "pyxis", "release", "tekton"]
+    }
+  ],
+  "compatibility": {
+    "claude_code": ">=2.0.0"
+  },
+  "license": "MIT",
+  "categories": [
+    "DevOps",
+    "Release Engineering",
+    "CI/CD"
+  ]
+}
