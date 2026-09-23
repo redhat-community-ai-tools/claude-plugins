@@ -21,4 +21,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: stbenjam/skillsaw@v0
+      - uses: stbenjam/skillsaw@v0.16.0
